@@ -27,7 +27,7 @@ analysis.module.ts : 통계, 레포트 모듈
 */
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  await app.listen(process.env.PORT ?? 3000);
+    const app = await NestFactory.create(AppModule);
+    await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
