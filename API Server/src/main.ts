@@ -7,8 +7,8 @@ Author: Hwang euntea
 
 Module: 
 app.module.ts : 전체 기능을 한번에 모으는 모듈
-users.module.ts : 사용자(학생, 교사) 관리 모듈
--학생/교사 CRUD 기능
+users.module.ts : 사용자(학생) 관리 모듈
+-학생 CRUD 기능
 -생체 정보 등록
 auth.module.ts : 인증 모듈
 *앱/웹*
