@@ -1,1 +1,1 @@
-# School-Self-Study-Kiosk-Service
+# Study-Check-Kiosk-Service
