@@ -5,6 +5,7 @@ import {
     Index,
     OneToMany,
 } from 'typeorm';
+import { Attendance } from '../study/attendance.entity';
 
 @Entity('users')
 export class User {
@@ -20,4 +21,7 @@ export class User {
 
     @Column({ unique: true })
     email: string;
+
+    @OneToMany(() => Attendance, (attendance) => attendance.student_id)
+    attendances: Attendance[];
 }
