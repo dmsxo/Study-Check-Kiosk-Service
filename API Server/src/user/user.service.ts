@@ -1,10 +1,23 @@
 import { Injectable } from '@nestjs/common';
+import { User } from './user.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class UserService {
+    constructor(
+        @InjectRepository(User)
+        private userRepo: Repository<User>,
+    ){}
+
     create_user() {}
 
-    get_user() {}
+    get_everyone() : Partial<Repository<User>>{
+        return this.userRepo;
+    }
+
+    get_user(id: number) {
+    }
 
     update_user() {}
 
