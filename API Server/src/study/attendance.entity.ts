@@ -7,7 +7,16 @@ export class Attendance {
     id: number;
 
     @Column()
-    date: Date;
+    date: string; // YYYY-MM-DD
+
+    @Column()
+    check_in: string; // HH:MM:SS
+
+    @Column({ nullable: true })
+    check_out: string; // HH:MM:SS
+
+    @Column({ nullable: true })
+    description: string;
 
     @Column()
     @ManyToOne(() => User, (student) => student.attendances)
