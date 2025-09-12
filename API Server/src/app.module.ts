@@ -13,13 +13,7 @@ import { typeORMConfig } from './configs/typeorm.config';
         StudyModule,
         AnalysisModule,
 
-        TypeOrmModule.forRoot({
-            type: 'sqlite',
-            database: 'db.sqlite',
-            entities: [Attendance, User],
-            synchronize: true,
-            logging: ['query', 'error', 'warn'],
-        }),
+        TypeOrmModule.forRoot(typeORMConfig),
     ],
     controllers: [],
     providers: [],

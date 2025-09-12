@@ -18,10 +18,6 @@ export class Attendance {
     @Column({ nullable: true })
     description: string;
 
-<<<<<<< HEAD:API Server/src/study/attendance.entity.ts
-    @ManyToOne(() => User, (student) => student.attendances)
-=======
     @ManyToOne(() => User, (student_id) => student_id.attendances)
->>>>>>> ba6db3b78fecbb7cf5ec234dba4ee8100b98d84a:API Server/src/entitys/attendance.entity.ts
     student_id: User;
 }
