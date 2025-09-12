@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { User } from '../entitys/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -10,15 +10,44 @@ export class UserService {
         private userRepo: Repository<User>,
     ) {}
 
-    create_user() {}
-
-    get_everyone(): Partial<Repository<User>> {
-        return this.userRepo;
+    async create_user(student: User): Promise<User> {
+        const newStudent = await this.userRepo.create(student);
+        const savedStudent = await this.userRepo.save(newStudent);
+        return savedStudent;
     }
 
-    get_user(id: number) {}
+    async get_everyone(): Promise<User[]> {
+        const students = await this.userRepo.find();
+        if (students.length === 0) {
+            throw new NotFoundException('No users found');
+        }
+        return students;
+    }
 
-    update_user() {}
+    async get_user(student_id: number): Promise<User> {
+        const student = await this.userRepo.findOneBy({
+            student_id: student_id,
+        });
+        if (!student) {
+            throw new NotFoundException(
+                `User with student_id ${student_id} not found`,
+            );
+        }
+        return student;
+    }
 
-    delete_user() {}
+    async update_user(
+        student_id: number,
+        updateData: Partial<User>,
+    ): Promise<User> {
+        const student = await this.get_user(student_id);
+        const updatedStudent = Object.assign(student, updateData);
+        return await this.userRepo.save(updatedStudent);
+    }
+
+    async delete_user(student_id: number): Promise<User> {
+        const student = await this.get_user(student_id);
+        const result = await this.userRepo.remove(student);
+        return result;
+    }
 }
