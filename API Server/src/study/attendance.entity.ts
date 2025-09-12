@@ -18,7 +18,6 @@ export class Attendance {
     @Column({ nullable: true })
     description: string;
 
-    @Column()
     @ManyToOne(() => User, (student) => student.attendances)
     student_id: User;
 }

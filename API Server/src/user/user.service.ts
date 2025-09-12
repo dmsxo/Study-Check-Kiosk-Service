@@ -7,17 +7,16 @@ import { Repository } from 'typeorm';
 export class UserService {
     constructor(
         @InjectRepository(User)
-        private userRepo: Repository<User>,
-    ){}
+        private readonly userRepo: Repository<User>,
+    ) {}
 
     create_user() {}
 
-    get_everyone() : Partial<Repository<User>>{
+    get_everyone(): Partial<Repository<User>> {
         return this.userRepo;
     }
 
-    get_user(id: number) {
-    }
+    get_user(id: number) {}
 
     update_user() {}
 

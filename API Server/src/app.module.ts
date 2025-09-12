@@ -9,18 +9,18 @@ import { User } from './user/user.entity';
 
 @Module({
     imports: [
-        UserModule, 
-        AuthModule, 
-        StudyModule, 
+        UserModule,
+        AuthModule,
+        StudyModule,
         AnalysisModule,
 
         TypeOrmModule.forRoot({
             type: 'sqlite',
             database: 'db.sqlite',
             entities: [Attendance, User],
-            synchronize: true, 
-            logging: ['query', 'error', 'warn']
-        })
+            synchronize: true,
+            logging: ['query', 'error', 'warn'],
+        }),
     ],
     controllers: [],
     providers: [],
