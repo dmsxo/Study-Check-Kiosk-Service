@@ -1,6 +1,5 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-
 /*
 School Self-Study Kiosk Project
 Author: Hwang euntea
