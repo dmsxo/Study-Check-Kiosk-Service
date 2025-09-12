@@ -5,7 +5,7 @@ import {
     Index,
     OneToMany,
 } from 'typeorm';
-import { Attendance } from '../study/attendance.entity';
+import { Attendance } from './attendance.entity';
 
 @Entity('users')
 export class User {

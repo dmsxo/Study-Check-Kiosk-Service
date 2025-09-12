@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-import { User } from '../user/user.entity';
+import { User } from './user.entity';
 
 @Entity('attendances')
 export class Attendance {
@@ -18,7 +18,6 @@ export class Attendance {
     @Column({ nullable: true })
     description: string;
 
-    @Column()
-    @ManyToOne(() => User, (student) => student.attendances)
+    @ManyToOne(() => User, (student_id) => student_id.attendances)
     student_id: User;
 }
