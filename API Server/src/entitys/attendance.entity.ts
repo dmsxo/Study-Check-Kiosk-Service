@@ -1,19 +1,29 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import {
+    Entity,
+    PrimaryGeneratedColumn,
+    Column,
+    ManyToOne,
+    Unique,
+} from 'typeorm';
 import { User } from './user.entity';
 
 @Entity('attendances')
+@Unique(['student_id', 'date'])
 export class Attendance {
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column()
+    type: string; // morning, evning
+
+    @Column({ type: 'date' })
     date: string; // YYYY-MM-DD
 
-    @Column()
-    check_in: string; // HH:MM:SS
+    @Column({ type: 'time' })
+    check_in_time: Date; // HH:MM:SS
 
-    @Column({ nullable: true })
-    check_out: string; // HH:MM:SS
+    @Column({ type: 'time', nullable: true })
+    check_out_time: Date; // HH:MM:SS
 
     @Column({ nullable: true })
     description: string;
