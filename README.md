@@ -1,1 +1,1 @@
-# Study-Check-Kiosk-Service
+# 자율 학습 출석체크 키오스크
