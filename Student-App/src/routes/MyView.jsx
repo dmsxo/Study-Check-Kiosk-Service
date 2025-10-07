@@ -4,8 +4,8 @@ import { UserRound, SquarePen, LogOut, SunMoon, Bell } from "lucide-react";
 
 function MyView() {
   return (
-    <div className="h-full min-w-fit p-4 space-y-2">
-      <h1 className="font-black text-xl">마이페이지</h1>
+    <div className="h-full min-w-fit p-4 space-y-3">
+      <h1 className="font-black text-xl mb-4">나의 정보</h1>
       {/* 기본 프로필 정보 */}
       <div className="flex items-start min-w-fit p-4 rounded-xl shadow-md border border-slate-200">
         <UserRound className="shrink-0 size-12 text-gray-400" />
