@@ -1,5 +1,5 @@
-import React from "react";
-import { ChartLine } from "lucide-react";
+import React from 'react';
+import { ChartLine } from 'lucide-react';
 
 function Login() {
   return (
