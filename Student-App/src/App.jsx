@@ -1,34 +1,40 @@
 import { useState } from "react";
 import { BrowserRouter, Route, Routes, Link } from "react-router-dom";
+import { CalendarCheck, ChartLine, UserRound } from "lucide-react";
 import QRView from "./routes/QRView";
 import StatView from "./routes/StatView";
 import MyView from "./routes/MyView";
+import Login from "./routes/Login";
 
 function App() {
   return (
-    <>
-      <div className="flexed">
+    <div className="flex flex-col h-svh">
+      <main className="flex-1 overflow-auto">
         <Routes>
           <Route path="/" element={<QRView />} />
           <Route path="/stat" element={<StatView />} />
           <Route path="/mypage" element={<MyView />} />
+          {/* <Route path="/login" element={<Login />} /> */}
         </Routes>
-      </div>
+      </main>
 
-      <nav className="fixed bottom-0 w-full h-16 bg-white border-t">
-        <div className="flex h-full">
-          <Link to="/" className="h-full flex-auto">
-            <button className="h-full w-full">QR</button>
+      <nav className="shrink-0 border-t-2 border-black">
+        <div className="grid h-full grid-cols-3">
+          <Link to="/" className="flex flex-col items-center py-2">
+            <CalendarCheck className="mb-1" />
+            <span className="text-xs">출석체크</span>
           </Link>
-          <Link to="/stat" className="h-full flex-auto">
-            <button className="h-full w-full">Stat</button>
+          <Link to="/stat" className="flex flex-col items-center py-2">
+            <ChartLine className="mb-1" />
+            <span className="text-xs">통계</span>
           </Link>
-          <Link to="/mypage" className="h-full flex-auto">
-            <button className="h-full w-full">My</button>
+          <Link to="/mypage" className="flex flex-col items-center py-2">
+            <UserRound className="mb-1" />
+            <span className="text-xs">마이페이지</span>
           </Link>
         </div>
       </nav>
-    </>
+    </div>
   );
 }
 
