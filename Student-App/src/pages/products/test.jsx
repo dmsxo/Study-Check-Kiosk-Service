@@ -1,5 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { QrCode, User, BarChart3, Clock, Award, Target, CheckCircle, Bell, Settings, LogOut, Calendar } from 'lucide-react';
+import {
+  QrCode,
+  User,
+  BarChart3,
+  Clock,
+  Award,
+  Target,
+  CheckCircle,
+  Bell,
+  Settings,
+  LogOut,
+  Calendar,
+} from 'lucide-react';
 
 const StudentApp = () => {
   const [currentTab, setCurrentTab] = useState('qr');
@@ -13,12 +25,12 @@ const StudentApp = () => {
   const [selectedPeriod, setSelectedPeriod] = useState('week');
   const [selectedSession, setSelectedSession] = useState('morning');
 
-//   useEffect(() => {
-//     const timer = setInterval(() => {
-//       setCurrentTime(new Date());
-//     }, 1000);
-//     return () => clearInterval(timer);
-//   }, []);
+  //   useEffect(() => {
+  //     const timer = setInterval(() => {
+  //       setCurrentTime(new Date());
+  //     }, 1000);
+  //     return () => clearInterval(timer);
+  //   }, []);
 
   const formatTime = (minutes) => {
     const hours = Math.floor(minutes / 60);
@@ -30,7 +42,7 @@ const StudentApp = () => {
     const currentHour = currentTime.getHours();
     const isMorning = currentHour >= 7 && currentHour < 12;
     const isEvening = currentHour >= 18 && currentHour < 22;
-    
+
     const getSessionType = () => {
       if (isMorning) return '아침 독서';
       if (isEvening) return '야간 자율학습';
@@ -65,16 +77,19 @@ const StudentApp = () => {
                 {getSessionType()} 티켓
               </h2>
               <p className="text-sm text-slate-500">
-                {currentTime.toLocaleDateString('ko-KR', { 
-                  month: 'long', 
+                {currentTime.toLocaleDateString('ko-KR', {
+                  month: 'long',
                   day: 'numeric',
-                  weekday: 'short'
+                  weekday: 'short',
                 })}
               </p>
             </div>
             <div className="text-right">
               <div className="text-lg font-semibold text-slate-900">
-                {currentTime.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
+                {currentTime.toLocaleTimeString('ko-KR', {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}
               </div>
             </div>
           </div>
@@ -83,20 +98,28 @@ const StudentApp = () => {
         <div className="flex-1 flex flex-col items-center justify-center p-8">
           {!isCheckedIn ? (
             <div className="w-full max-w-sm relative">
-              <div className={`bg-white shadow-xl border border-slate-200 relative overflow-hidden transition-all duration-1500 ${
-                isTearing ? 'animate-pulse' : ''
-              }`} style={{
-                borderRadius: '20px',
-                background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)'
-              }}>
-                <div className={`transition-all duration-1500 ${
-                  isTearing ? '-translate-y-4 rotate-2' : ''
-                }`}>
+              <div
+                className={`bg-white shadow-xl border border-slate-200 relative overflow-hidden transition-all duration-1500 ${
+                  isTearing ? 'animate-pulse' : ''
+                }`}
+                style={{
+                  borderRadius: '20px',
+                  background:
+                    'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
+                }}
+              >
+                <div
+                  className={`transition-all duration-1500 ${
+                    isTearing ? '-translate-y-4 rotate-2' : ''
+                  }`}
+                >
                   <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-4">
                     <div className="flex justify-between items-center">
                       <div>
                         <h3 className="font-bold text-lg">학습 티켓</h3>
-                        <p className="text-blue-100 text-sm">{getSessionType()}</p>
+                        <p className="text-blue-100 text-sm">
+                          {getSessionType()}
+                        </p>
                       </div>
                       <div className="text-right">
                         <div className="text-2xl mb-1">{getSessionIcon()}</div>
@@ -113,7 +136,9 @@ const StudentApp = () => {
                       </div>
                       <div className="text-right">
                         <div className="text-xs text-slate-500">좌석</div>
-                        <div className="font-mono font-bold text-slate-900">A-15</div>
+                        <div className="font-mono font-bold text-slate-900">
+                          A-15
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -123,7 +148,10 @@ const StudentApp = () => {
                       <div>
                         <div className="text-slate-500">날짜</div>
                         <div className="font-semibold text-slate-900">
-                          {currentTime.toLocaleDateString('ko-KR', { month: '2-digit', day: '2-digit' })}
+                          {currentTime.toLocaleDateString('ko-KR', {
+                            month: '2-digit',
+                            day: '2-digit',
+                          })}
                         </div>
                       </div>
                       <div>
@@ -144,21 +172,28 @@ const StudentApp = () => {
                   </div>
                   <div className="absolute inset-0 flex justify-center items-center">
                     <div className="flex space-x-3">
-                      {Array.from({length: 8}).map((_, i) => (
-                        <div key={i} className="w-2 h-2 bg-slate-300 rounded-full"></div>
+                      {Array.from({ length: 8 }).map((_, i) => (
+                        <div
+                          key={i}
+                          className="w-2 h-2 bg-slate-300 rounded-full"
+                        ></div>
                       ))}
                     </div>
                   </div>
                 </div>
 
-                <div className={`px-6 py-6 text-center transition-all duration-1500 ${
-                  isTearing ? 'translate-y-4 -rotate-1' : ''
-                }`}>
+                <div
+                  className={`px-6 py-6 text-center transition-all duration-1500 ${
+                    isTearing ? 'translate-y-4 -rotate-1' : ''
+                  }`}
+                >
                   <div className="w-32 h-32 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-center mx-auto mb-4">
                     <QrCode size={80} className="text-slate-700" />
                   </div>
                   <p className="text-slate-600 font-medium text-sm">입장권</p>
-                  <p className="text-slate-500 text-xs mt-1">QR코드를 스캔해주세요</p>
+                  <p className="text-slate-500 text-xs mt-1">
+                    QR코드를 스캔해주세요
+                  </p>
                 </div>
               </div>
 
@@ -169,7 +204,7 @@ const StudentApp = () => {
                 </div>
               )}
 
-              <button 
+              <button
                 onClick={handleCheckIn}
                 disabled={isTearing}
                 className="w-full mt-6 py-4 bg-blue-600 text-white rounded-2xl font-semibold shadow-lg transition-all duration-300 hover:bg-blue-700 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
@@ -179,15 +214,23 @@ const StudentApp = () => {
             </div>
           ) : (
             <div className="w-full max-w-sm space-y-6">
-              <div className="bg-white shadow-lg border border-slate-200 overflow-hidden" style={{
-                borderRadius: '20px 20px 5px 5px',
-                background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)'
-              }}>
+              <div
+                className="bg-white shadow-lg border border-slate-200 overflow-hidden"
+                style={{
+                  borderRadius: '20px 20px 5px 5px',
+                  background:
+                    'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
+                }}
+              >
                 <div className="h-2 bg-white relative overflow-hidden">
-                  <div className="absolute bottom-0 w-full h-2" style={{
-                    background: '#e2e8f0',
-                    clipPath: 'polygon(0% 0%, 3% 100%, 6% 0%, 9% 100%, 12% 0%, 15% 100%, 18% 0%, 21% 100%, 24% 0%, 27% 100%, 30% 0%, 33% 100%, 36% 0%, 39% 100%, 42% 0%, 45% 100%, 48% 0%, 51% 100%, 54% 0%, 57% 100%, 60% 0%, 63% 100%, 66% 0%, 69% 100%, 72% 0%, 75% 100%, 78% 0%, 81% 100%, 84% 0%, 87% 100%, 90% 0%, 93% 100%, 96% 0%, 99% 100%, 100% 0%)'
-                  }}></div>
+                  <div
+                    className="absolute bottom-0 w-full h-2"
+                    style={{
+                      background: '#e2e8f0',
+                      clipPath:
+                        'polygon(0% 0%, 3% 100%, 6% 0%, 9% 100%, 12% 0%, 15% 100%, 18% 0%, 21% 100%, 24% 0%, 27% 100%, 30% 0%, 33% 100%, 36% 0%, 39% 100%, 42% 0%, 45% 100%, 48% 0%, 51% 100%, 54% 0%, 57% 100%, 60% 0%, 63% 100%, 66% 0%, 69% 100%, 72% 0%, 75% 100%, 78% 0%, 81% 100%, 84% 0%, 87% 100%, 90% 0%, 93% 100%, 96% 0%, 99% 100%, 100% 0%)',
+                    }}
+                  ></div>
                 </div>
 
                 <div className="px-6 py-4">
@@ -206,43 +249,57 @@ const StudentApp = () => {
                 </div>
               </div>
 
-              <div className="bg-white shadow-lg border border-slate-200 overflow-hidden" style={{
-                borderRadius: '5px 5px 20px 20px',
-                background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)'
-              }}>
+              <div
+                className="bg-white shadow-lg border border-slate-200 overflow-hidden"
+                style={{
+                  borderRadius: '5px 5px 20px 20px',
+                  background:
+                    'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
+                }}
+              >
                 <div className="h-2 bg-white relative overflow-hidden">
-                  <div className="absolute top-0 w-full h-2" style={{
-                    background: '#e2e8f0',
-                    clipPath: 'polygon(0% 100%, 3% 0%, 6% 100%, 9% 0%, 12% 100%, 15% 0%, 18% 100%, 21% 0%, 24% 100%, 27% 0%, 30% 100%, 33% 0%, 36% 100%, 39% 0%, 42% 100%, 45% 0%, 48% 100%, 51% 0%, 54% 100%, 57% 0%, 60% 100%, 63% 0%, 66% 100%, 69% 0%, 72% 100%, 75% 0%, 78% 100%, 81% 0%, 84% 100%, 87% 0%, 90% 100%, 93% 0%, 96% 100%, 99% 0%, 100% 100%)'
-                  }}></div>
+                  <div
+                    className="absolute top-0 w-full h-2"
+                    style={{
+                      background: '#e2e8f0',
+                      clipPath:
+                        'polygon(0% 100%, 3% 0%, 6% 100%, 9% 0%, 12% 100%, 15% 0%, 18% 100%, 21% 0%, 24% 100%, 27% 0%, 30% 100%, 33% 0%, 36% 100%, 39% 0%, 42% 100%, 45% 0%, 48% 100%, 51% 0%, 54% 100%, 57% 0%, 60% 100%, 63% 0%, 66% 100%, 69% 0%, 72% 100%, 75% 0%, 78% 100%, 81% 0%, 84% 100%, 87% 0%, 90% 100%, 93% 0%, 96% 100%, 99% 0%, 100% 100%)',
+                    }}
+                  ></div>
                 </div>
 
                 <div className="px-6 py-6 text-center">
                   <div className="w-40 h-40 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-center mx-auto mb-4">
                     <QrCode size={100} className="text-slate-700" />
                   </div>
-                  
+
                   <div className="grid grid-cols-2 gap-4 text-sm mb-4">
                     <div className="text-center">
                       <div className="text-slate-500">학습 시간</div>
-                      <div className="font-semibold text-slate-900">{formatTime(studyTime)}</div>
+                      <div className="font-semibold text-slate-900">
+                        {formatTime(studyTime)}
+                      </div>
                     </div>
                     <div className="text-center">
                       <div className="text-slate-500">연속 출석</div>
-                      <div className="font-semibold text-slate-900">{consecutiveDays}일</div>
+                      <div className="font-semibold text-slate-900">
+                        {consecutiveDays}일
+                      </div>
                     </div>
                   </div>
 
                   <div className="bg-green-50 rounded-lg p-3">
                     <div className="flex items-center justify-center gap-2">
                       <Clock size={16} className="text-green-600" />
-                      <span className="text-green-800 font-medium text-sm">학습 진행 중</span>
+                      <span className="text-green-800 font-medium text-sm">
+                        학습 진행 중
+                      </span>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <button 
+              <button
                 onClick={() => setIsCheckedIn(false)}
                 className="w-full py-4 bg-slate-600 text-white rounded-2xl font-semibold shadow-lg transition-all duration-300 hover:bg-slate-700"
               >
@@ -257,7 +314,9 @@ const StudentApp = () => {
                 <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-2">
                   <CheckCircle size={20} className="text-blue-600" />
                 </div>
-                <h4 className="font-medium text-slate-900 text-sm">수고하셨습니다!</h4>
+                <h4 className="font-medium text-slate-900 text-sm">
+                  수고하셨습니다!
+                </h4>
                 <p className="text-slate-600 text-xs">{getGoodbyeMessage()}</p>
               </div>
             </div>
@@ -277,21 +336,21 @@ const StudentApp = () => {
       morning: {
         weeklyRate: [85, 92, 78, 95, 88],
         monthlyRate: [82, 87, 91, 89, 85, 93, 88, 90, 86, 94, 89, 87],
-        grassData: Array.from({length: 365}, (_, i) => ({
+        grassData: Array.from({ length: 365 }, (_, i) => ({
           date: new Date(2025, 0, 1 + i),
           attended: Math.random() > 0.3,
-          level: Math.random() > 0.3 ? 1 : 0
-        }))
+          level: Math.random() > 0.3 ? 1 : 0,
+        })),
       },
       evening: {
         weeklyRate: [92, 88, 95, 82, 90],
         monthlyRate: [89, 92, 85, 94, 88, 91, 87, 93, 86, 89, 92, 90],
-        grassData: Array.from({length: 365}, (_, i) => ({
+        grassData: Array.from({ length: 365 }, (_, i) => ({
           date: new Date(2025, 0, 1 + i),
           attended: Math.random() > 0.2,
-          hours: Math.random() > 0.2 ? Math.floor(Math.random() * 4) + 1 : 0
-        }))
-      }
+          hours: Math.random() > 0.2 ? Math.floor(Math.random() * 4) + 1 : 0,
+        })),
+      },
     };
 
     const getIntensityColor = (hours, isEvening = false) => {
@@ -308,26 +367,35 @@ const StudentApp = () => {
     };
 
     const generateGrassCalendar = () => {
-      const currentData = selectedSession === 'morning' ? stats.morning.grassData : stats.evening.grassData;
+      const currentData =
+        selectedSession === 'morning'
+          ? stats.morning.grassData
+          : stats.evening.grassData;
       const weeks = [];
-      
+
       // Get last 20 weeks for display
       const endDate = new Date();
       const startDate = new Date(endDate);
       startDate.setDate(endDate.getDate() - 140);
-      
+
       for (let weekIndex = 0; weekIndex < 20; weekIndex++) {
         const week = [];
         for (let dayIndex = 0; dayIndex < 7; dayIndex++) {
           const currentDate = new Date(startDate);
           currentDate.setDate(startDate.getDate() + weekIndex * 7 + dayIndex);
-          
-          const dataIndex = Math.floor((currentDate - new Date(2025, 0, 1)) / (1000 * 60 * 60 * 24));
-          const dayData = currentData[dataIndex] || { attended: false, hours: 0, level: 0 };
-          
+
+          const dataIndex = Math.floor(
+            (currentDate - new Date(2025, 0, 1)) / (1000 * 60 * 60 * 24)
+          );
+          const dayData = currentData[dataIndex] || {
+            attended: false,
+            hours: 0,
+            level: 0,
+          };
+
           week.push({
             date: currentDate,
-            ...dayData
+            ...dayData,
           });
         }
         weeks.push(week);
@@ -336,9 +404,10 @@ const StudentApp = () => {
     };
 
     const weeks = generateGrassCalendar();
-    const currentRateData = selectedPeriod === 'week' 
-      ? stats[selectedSession].weeklyRate 
-      : stats[selectedSession].monthlyRate;
+    const currentRateData =
+      selectedPeriod === 'week'
+        ? stats[selectedSession].weeklyRate
+        : stats[selectedSession].monthlyRate;
 
     const maxRate = Math.max(...currentRateData);
     const minRate = Math.min(...currentRateData);
@@ -346,26 +415,42 @@ const StudentApp = () => {
     return (
       <div className="flex-1 bg-slate-100 overflow-y-auto">
         <div className="p-6 bg-white backdrop-blur-xl border-b border-slate-200 shadow-sm">
-          <h2 className="text-lg font-semibold text-slate-900 mb-1">학습 통계</h2>
-          <p className="text-slate-600 text-sm">자율학습 참여 현황을 분석해보세요</p>
+          <h2 className="text-lg font-semibold text-slate-900 mb-1">
+            학습 통계
+          </h2>
+          <p className="text-slate-600 text-sm">
+            자율학습 참여 현황을 분석해보세요
+          </p>
         </div>
 
         <div className="p-6">
           <div className="grid grid-cols-4 gap-3 mb-6">
             <div className="bg-white rounded-xl p-4 shadow-md border border-slate-200 text-center">
-              <div className="text-lg font-bold text-slate-900 mb-1">{stats.currentStreak}</div>
-              <div className="text-xs text-slate-500 font-medium">연속 출석</div>
+              <div className="text-lg font-bold text-slate-900 mb-1">
+                {stats.currentStreak}
+              </div>
+              <div className="text-xs text-slate-500 font-medium">
+                연속 출석
+              </div>
             </div>
             <div className="bg-white rounded-xl p-4 shadow-md border border-slate-200 text-center">
-              <div className="text-lg font-bold text-amber-600 mb-1">{stats.longestStreak}</div>
-              <div className="text-xs text-amber-600 font-medium">최장 연속</div>
+              <div className="text-lg font-bold text-amber-600 mb-1">
+                {stats.longestStreak}
+              </div>
+              <div className="text-xs text-amber-600 font-medium">
+                최장 연속
+              </div>
             </div>
             <div className="bg-white rounded-xl p-4 shadow-md border border-slate-200 text-center">
-              <div className="text-lg font-bold text-blue-600 mb-1">{stats.totalDays}</div>
+              <div className="text-lg font-bold text-blue-600 mb-1">
+                {stats.totalDays}
+              </div>
               <div className="text-xs text-blue-600 font-medium">전체 출석</div>
             </div>
             <div className="bg-white rounded-xl p-4 shadow-md border border-slate-200 text-center">
-              <div className="text-lg font-bold text-green-600 mb-1">{stats.attendanceRate}%</div>
+              <div className="text-lg font-bold text-green-600 mb-1">
+                {stats.attendanceRate}%
+              </div>
               <div className="text-xs text-green-600 font-medium">출석률</div>
             </div>
           </div>
@@ -399,21 +484,46 @@ const StudentApp = () => {
           <div className="bg-white rounded-xl p-5 shadow-md border border-slate-200 mb-6">
             <div className="flex justify-between items-center mb-4">
               <h3 className="font-semibold text-slate-900">
-                {selectedSession === 'morning' ? '아침 독서' : '야간 자율학습'} 활동
+                {selectedSession === 'morning' ? '아침 독서' : '야간 자율학습'}{' '}
+                활동
               </h3>
               <div className="flex items-center gap-2 text-xs text-slate-500">
                 <span>적게</span>
                 <div className="flex gap-1">
                   <div className="w-2 h-2 bg-slate-100 rounded-sm"></div>
-                  <div className={`w-2 h-2 rounded-sm ${selectedSession === 'morning' ? 'bg-green-200' : 'bg-purple-200'}`}></div>
-                  <div className={`w-2 h-2 rounded-sm ${selectedSession === 'morning' ? 'bg-green-400' : 'bg-purple-400'}`}></div>
-                  <div className={`w-2 h-2 rounded-sm ${selectedSession === 'morning' ? 'bg-green-600' : 'bg-purple-600'}`}></div>
-                  <div className={`w-2 h-2 rounded-sm ${selectedSession === 'morning' ? 'bg-green-800' : 'bg-purple-800'}`}></div>
+                  <div
+                    className={`w-2 h-2 rounded-sm ${
+                      selectedSession === 'morning'
+                        ? 'bg-green-200'
+                        : 'bg-purple-200'
+                    }`}
+                  ></div>
+                  <div
+                    className={`w-2 h-2 rounded-sm ${
+                      selectedSession === 'morning'
+                        ? 'bg-green-400'
+                        : 'bg-purple-400'
+                    }`}
+                  ></div>
+                  <div
+                    className={`w-2 h-2 rounded-sm ${
+                      selectedSession === 'morning'
+                        ? 'bg-green-600'
+                        : 'bg-purple-600'
+                    }`}
+                  ></div>
+                  <div
+                    className={`w-2 h-2 rounded-sm ${
+                      selectedSession === 'morning'
+                        ? 'bg-green-800'
+                        : 'bg-purple-800'
+                    }`}
+                  ></div>
                 </div>
                 <span>많이</span>
               </div>
             </div>
-            
+
             {/* Grass Grid */}
             <div className="overflow-x-auto">
               <div className="flex gap-1 min-w-max">
@@ -424,13 +534,19 @@ const StudentApp = () => {
                         key={dayIndex}
                         className={`w-3 h-3 rounded-sm transition-all hover:scale-110 cursor-pointer ${
                           selectedSession === 'morning'
-                            ? (day.attended ? 'bg-green-400' : 'bg-slate-100')
+                            ? day.attended
+                              ? 'bg-green-400'
+                              : 'bg-slate-100'
                             : getIntensityColor(day.hours, true)
                         }`}
                         title={`${day.date.toLocaleDateString('ko-KR')} - ${
                           selectedSession === 'morning'
-                            ? (day.attended ? '출석' : '미출석')
-                            : day.hours > 0 ? `${day.hours}시간 학습` : '미참여'
+                            ? day.attended
+                              ? '출석'
+                              : '미출석'
+                            : day.hours > 0
+                            ? `${day.hours}시간 학습`
+                            : '미참여'
                         }`}
                       ></div>
                     ))}
@@ -438,7 +554,7 @@ const StudentApp = () => {
                 ))}
               </div>
             </div>
-            
+
             {/* Month Labels */}
             <div className="flex justify-between text-xs text-slate-500 mt-2">
               <span>5개월 전</span>
@@ -483,10 +599,10 @@ const StudentApp = () => {
                 <span>25%</span>
                 <span>0%</span>
               </div>
-              
+
               <div className="absolute left-8 top-0 right-0 h-full">
                 {[0, 25, 50, 75, 100].map((value) => (
-                  <div 
+                  <div
                     key={value}
                     className="absolute w-full border-t border-slate-200"
                     style={{ bottom: `${value}%` }}
@@ -500,9 +616,10 @@ const StudentApp = () => {
                     if (index === currentRateData.length - 1) return null;
                     const x1 = (index / (currentRateData.length - 1)) * 100;
                     const y1 = 100 - rate;
-                    const x2 = ((index + 1) / (currentRateData.length - 1)) * 100;
+                    const x2 =
+                      ((index + 1) / (currentRateData.length - 1)) * 100;
                     const y2 = 100 - currentRateData[index + 1];
-                    
+
                     return (
                       <line
                         key={`line-${index}`}
@@ -510,32 +627,33 @@ const StudentApp = () => {
                         y1={`${y1}%`}
                         x2={`${x2}%`}
                         y2={`${y2}%`}
-                        stroke={selectedSession === 'morning' ? '#10b981' : '#a855f7'}
+                        stroke={
+                          selectedSession === 'morning' ? '#10b981' : '#a855f7'
+                        }
                         strokeWidth="2"
                         className="transition-all duration-500"
                       />
                     );
                   })}
-                  
+
                   {currentRateData.map((rate, index) => {
                     const x = (index / (currentRateData.length - 1)) * 100;
                     const y = 100 - rate;
-                    
+
                     return (
                       <g key={`point-${index}`}>
                         <circle
                           cx={`${x}%`}
                           cy={`${y}%`}
                           r="4"
-                          fill={selectedSession === 'morning' ? '#10b981' : '#a855f7'}
+                          fill={
+                            selectedSession === 'morning'
+                              ? '#10b981'
+                              : '#a855f7'
+                          }
                           className="hover:r-6 transition-all duration-200 cursor-pointer"
                         />
-                        <circle
-                          cx={`${x}%`}
-                          cy={`${y}%`}
-                          r="2"
-                          fill="white"
-                        />
+                        <circle cx={`${x}%`} cy={`${y}%`} r="2" fill="white" />
                       </g>
                     );
                   })}
@@ -545,18 +663,31 @@ const StudentApp = () => {
               <div className="absolute bottom-0 left-8 right-0 flex justify-between text-xs text-slate-500 -mb-6">
                 {currentRateData.map((_, index) => (
                   <span key={index}>
-                    {selectedPeriod === 'week' ? `${index + 1}주` : `${index + 1}월`}
+                    {selectedPeriod === 'week'
+                      ? `${index + 1}주`
+                      : `${index + 1}월`}
                   </span>
                 ))}
               </div>
             </div>
-            
+
             <div className="flex justify-between items-center mt-8 text-sm">
               <div className="flex items-center gap-2">
-                <div className={`w-3 h-3 rounded-full ${
-                  selectedSession === 'morning' ? 'bg-green-500' : 'bg-purple-500'
-                }`}></div>
-                <span className="text-slate-600">평균: {Math.round(currentRateData.reduce((a, b) => a + b, 0) / currentRateData.length)}%</span>
+                <div
+                  className={`w-3 h-3 rounded-full ${
+                    selectedSession === 'morning'
+                      ? 'bg-green-500'
+                      : 'bg-purple-500'
+                  }`}
+                ></div>
+                <span className="text-slate-600">
+                  평균:{' '}
+                  {Math.round(
+                    currentRateData.reduce((a, b) => a + b, 0) /
+                      currentRateData.length
+                  )}
+                  %
+                </span>
               </div>
               <div className="text-slate-600">
                 최고: {maxRate}% | 최저: {minRate}%
@@ -570,55 +701,79 @@ const StudentApp = () => {
                 <Calendar size={18} className="text-slate-600" />
                 이번 달 현황
               </h3>
-              <span className="text-sm text-slate-500 bg-slate-50 px-2 py-1 rounded-lg">9월 2025</span>
+              <span className="text-sm text-slate-500 bg-slate-50 px-2 py-1 rounded-lg">
+                9월 2025
+              </span>
             </div>
-            
+
             <div className="grid grid-cols-7 gap-1 mb-3">
               {['일', '월', '화', '수', '목', '금', '토'].map((day) => (
-                <div key={day} className="text-center text-xs text-slate-500 py-2 font-medium">
+                <div
+                  key={day}
+                  className="text-center text-xs text-slate-500 py-2 font-medium"
+                >
                   {day}
                 </div>
               ))}
             </div>
-            
+
             <div className="grid grid-cols-7 gap-1">
-              {Array.from({length: 30}, (_, i) => {
+              {Array.from({ length: 30 }, (_, i) => {
                 const morningAttended = Math.random() > 0.3;
                 const eveningHours = Math.floor(Math.random() * 4);
                 const isToday = i === 22;
-                
+
                 return (
-                  <div key={i} className="aspect-square rounded-lg flex flex-col items-center justify-center text-xs font-medium transition-all hover:scale-105 cursor-pointer relative overflow-hidden border border-slate-200">
+                  <div
+                    key={i}
+                    className="aspect-square rounded-lg flex flex-col items-center justify-center text-xs font-medium transition-all hover:scale-105 cursor-pointer relative overflow-hidden border border-slate-200"
+                  >
                     {/* Background based on selected session */}
-                    <div className={`absolute inset-0 ${
-                      isToday 
-                        ? 'bg-blue-500' 
-                        : selectedSession === 'morning'
-                          ? (morningAttended ? 'bg-green-100' : 'bg-slate-50')
-                          : getIntensityColor(eveningHours, true).replace('bg-', 'bg-').replace('slate-100', 'slate-50')
-                    }`}></div>
-                    
+                    <div
+                      className={`absolute inset-0 ${
+                        isToday
+                          ? 'bg-blue-500'
+                          : selectedSession === 'morning'
+                          ? morningAttended
+                            ? 'bg-green-100'
+                            : 'bg-slate-50'
+                          : getIntensityColor(eveningHours, true)
+                              .replace('bg-', 'bg-')
+                              .replace('slate-100', 'slate-50')
+                      }`}
+                    ></div>
+
                     {/* Date number */}
-                    <span className={`relative z-10 ${
-                      isToday ? 'text-white font-bold' : 'text-slate-700'
-                    }`}>
+                    <span
+                      className={`relative z-10 ${
+                        isToday ? 'text-white font-bold' : 'text-slate-700'
+                      }`}
+                    >
                       {i + 1}
                     </span>
-                    
+
                     {/* Indicator dots */}
                     <div className="relative z-10 flex gap-0.5 mt-0.5">
                       {morningAttended && (
-                        <div className={`w-1 h-1 rounded-full ${isToday ? 'bg-white' : 'bg-green-500'}`}></div>
+                        <div
+                          className={`w-1 h-1 rounded-full ${
+                            isToday ? 'bg-white' : 'bg-green-500'
+                          }`}
+                        ></div>
                       )}
                       {eveningHours > 0 && (
-                        <div className={`w-1 h-1 rounded-full ${isToday ? 'bg-white' : 'bg-purple-500'}`}></div>
+                        <div
+                          className={`w-1 h-1 rounded-full ${
+                            isToday ? 'bg-white' : 'bg-purple-500'
+                          }`}
+                        ></div>
                       )}
                     </div>
                   </div>
                 );
               })}
             </div>
-            
+
             {/* Legend */}
             <div className="flex justify-center gap-6 mt-4 text-xs text-slate-500">
               <div className="flex items-center gap-1">
@@ -659,8 +814,12 @@ const StudentApp = () => {
                 <Bell size={16} className="text-blue-600" />
               </div>
               <div className="text-left">
-                <div className="text-slate-900 font-medium text-sm">알림 설정</div>
-                <div className="text-slate-500 text-xs">푸시 알림 및 일정 관리</div>
+                <div className="text-slate-900 font-medium text-sm">
+                  알림 설정
+                </div>
+                <div className="text-slate-500 text-xs">
+                  푸시 알림 및 일정 관리
+                </div>
               </div>
             </div>
             <div className="w-10 h-5 bg-blue-500 rounded-full relative">
@@ -674,8 +833,12 @@ const StudentApp = () => {
                 <Settings size={16} className="text-slate-600" />
               </div>
               <div className="text-left">
-                <div className="text-slate-900 font-medium text-sm">앱 설정</div>
-                <div className="text-slate-500 text-xs">테마, 언어 및 기본 설정</div>
+                <div className="text-slate-900 font-medium text-sm">
+                  앱 설정
+                </div>
+                <div className="text-slate-500 text-xs">
+                  테마, 언어 및 기본 설정
+                </div>
               </div>
             </div>
             <div className="w-6 h-6 bg-slate-100 rounded-lg flex items-center justify-center">
@@ -689,8 +852,12 @@ const StudentApp = () => {
                 <Target size={16} className="text-green-600" />
               </div>
               <div className="text-left">
-                <div className="text-slate-900 font-medium text-sm">목표 설정</div>
-                <div className="text-slate-500 text-xs">학습 목표 및 일정 계획</div>
+                <div className="text-slate-900 font-medium text-sm">
+                  목표 설정
+                </div>
+                <div className="text-slate-500 text-xs">
+                  학습 목표 및 일정 계획
+                </div>
               </div>
             </div>
             <div className="w-6 h-6 bg-slate-100 rounded-lg flex items-center justify-center">
@@ -708,11 +875,15 @@ const StudentApp = () => {
             </div>
             <div className="flex justify-between items-center">
               <span className="text-slate-600 text-sm">마지막 업데이트</span>
-              <span className="text-slate-900 font-medium text-sm">2025.09.15</span>
+              <span className="text-slate-900 font-medium text-sm">
+                2025.09.15
+              </span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-slate-600 text-sm">문의하기</span>
-              <span className="text-blue-600 font-medium text-sm">dev@school.edu</span>
+              <span className="text-blue-600 font-medium text-sm">
+                dev@school.edu
+              </span>
             </div>
           </div>
         </div>
@@ -738,32 +909,32 @@ const StudentApp = () => {
           <button
             onClick={() => setCurrentTab('qr')}
             className={`flex-1 flex flex-col items-center py-3 transition-colors ${
-              currentTab === 'qr' 
-                ? 'text-blue-600 bg-blue-50' 
+              currentTab === 'qr'
+                ? 'text-blue-600 bg-blue-50'
                 : 'text-slate-500 hover:text-slate-700'
             }`}
           >
             <QrCode size={20} className="mb-1" />
             <span className="text-xs font-medium">체크인</span>
           </button>
-          
+
           <button
             onClick={() => setCurrentTab('stats')}
             className={`flex-1 flex flex-col items-center py-3 transition-colors ${
-              currentTab === 'stats' 
-                ? 'text-blue-600 bg-blue-50' 
+              currentTab === 'stats'
+                ? 'text-blue-600 bg-blue-50'
                 : 'text-slate-500 hover:text-slate-700'
             }`}
           >
             <BarChart3 size={20} className="mb-1" />
             <span className="text-xs font-medium">통계</span>
           </button>
-          
+
           <button
             onClick={() => setCurrentTab('profile')}
             className={`flex-1 flex flex-col items-center py-3 transition-colors ${
-              currentTab === 'profile' 
-                ? 'text-blue-600 bg-blue-50' 
+              currentTab === 'profile'
+                ? 'text-blue-600 bg-blue-50'
                 : 'text-slate-500 hover:text-slate-700'
             }`}
           >
