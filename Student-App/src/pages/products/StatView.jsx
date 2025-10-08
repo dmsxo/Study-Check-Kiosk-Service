@@ -40,7 +40,6 @@ function StatView() {
       const date = new Date(today);
       date.setDate(date.getDate() - i);
       const dateStr = date.toISOString().split('T')[0];
-      console.log(dateStr);
 
       if (Math.random() > 0.3) {
         data[dateStr] = Math.floor(Math.random() * 4) + 1;

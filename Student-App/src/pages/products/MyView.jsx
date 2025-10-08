@@ -1,8 +1,16 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { UserRound, SquarePen, LogOut, SunMoon, Bell } from 'lucide-react';
 
-function MyView() {
+function MyView({ setIsLoggedIn }) {
+  let navigate = useNavigate();
+
+  function Logout() {
+    setIsLoggedIn(false);
+    navigate('/login');
+  }
+
   return (
     <div className="bg-gray-50 h-full">
       <div className="min-w-fit max-w-3xl p-4 space-y-3 ml-auto mr-auto">
@@ -76,13 +84,13 @@ function MyView() {
           </div>
         </div>
         {/* 로그아웃 버튼 */}
-        <Link
-          to="/login"
-          className="flex items-center justify-center bg-white min-w-fit gap-2 p-4 rounded-xl border border-slate-200 text-red-600"
+        <button
+          onClick={Logout}
+          className="w-full flex items-center justify-center bg-white min-w-fit gap-2 p-4 rounded-xl border border-slate-200 text-red-600"
         >
           <LogOut size={18} />
           <h3 className="text-sm align-middle">로그아웃</h3>
-        </Link>
+        </button>
       </div>
     </div>
   );
