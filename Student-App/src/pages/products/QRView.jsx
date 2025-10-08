@@ -14,10 +14,17 @@ function QRView() {
           notchRatioY={0.3}
           className="flex flex-col w-11/12 min-w-3xs max-w-lg ml-auto mr-auto"
         >
-          <div className="flex-1 p-6">
-            <h1 className="font-black text-2xl">학습 티켓</h1>
+          <div className="flex-1 p-6 gap-5">
+            <h3 className="text-gray-500 text-sm">20129 황은태</h3>
+            <h1 className="font-medium text-gray-900 text-2xl">
+              야간 자율학습 출석 티켓
+            </h1>
+            <h2 className="font-medium text-sm text-gray-700 mt-3">시간</h2>
+            <h3 className="font-medium text-gray-600">
+              2025-10-08 19:00 ~ 22:00
+            </h3>
           </div>
-          <div className="w-full aspect-square p-16 mb-8">
+          <div className="w-full aspect-square p-10 mb-8">
             <QRCodeSVG value="" className="size-full" />
           </div>
         </TicketBackground>

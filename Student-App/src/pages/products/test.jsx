@@ -6,7 +6,7 @@
 export default function TicketBackground({
   radius = 20,
   notchRatioY = 0.5, // 높이 대비 구멍 위치 비율
-  notchRatioRadius = 0.03, // 폭 대비 구멍 반지름 비율
+  notchRatioRadius = 0.05, // 폭 대비 구멍 반지름 비율
   cutLineColor = '#9ca3af', // 절취선 색상
   className = '',
   children,
