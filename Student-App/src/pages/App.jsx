@@ -20,9 +20,9 @@ function App() {
         </Routes>
       </main>
 
-      <nav className="shrink-0 border-t-2 border-slate-200">
+      <nav className="shrink-0 border-t-2 border-gray-200">
         <div className="grid h-full grid-cols-3">
-          <Link to="/qr" className="flex flex-col items-center py-2">
+          <Link to="/" className="flex flex-col items-center py-2">
             <CalendarCheck className="mb-1 text-gray-500" />
             <span className="text-xs text-gray-500">출석 체크</span>
           </Link>
