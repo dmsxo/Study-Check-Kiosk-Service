@@ -2,7 +2,7 @@ import React from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { useState, useRef } from 'react';
 import { User, Settings, Bell, Mail } from 'lucide-react';
-import TicketBackground from './test';
+import TicketBackground from '../../components/QRViewComponents/TicketUI';
 
 function QRView() {
   return (
