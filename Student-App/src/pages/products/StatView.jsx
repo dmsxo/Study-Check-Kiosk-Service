@@ -139,7 +139,7 @@ function StatView() {
   ];
 
   return (
-    <div className="bg-gray-50 h-full">
+    <div className="bg-gray-50 h-fit">
       <div className="min-w-fit max-w-3xl p-4 space-y-3 ml-auto mr-auto">
         <h1 className="font-semibold text-gray-900 text-xl mb-4">출석 현황</h1>
 
