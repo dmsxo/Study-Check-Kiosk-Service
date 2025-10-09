@@ -7,15 +7,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeORMConfig } from './configs/typeorm.config';
 
 @Module({
-    imports: [
-        UserModule,
-        AuthModule,
-        StudyModule,
-        AnalysisModule,
+  imports: [
+    UserModule,
+    AuthModule,
+    StudyModule,
+    AnalysisModule,
 
-        TypeOrmModule.forRoot(typeORMConfig),
-    ],
-    controllers: [],
-    providers: [],
+    TypeOrmModule.forRoot(typeORMConfig),
+  ],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

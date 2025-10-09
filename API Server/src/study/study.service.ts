@@ -5,12 +5,12 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class StudyService {
-    constructor(
-        @InjectRepository(Attendance)
-        private attendanceRepo: Repository<Attendance>,
-    ) {}
+  constructor(
+    @InjectRepository(Attendance)
+    private attendanceRepo: Repository<Attendance>,
+  ) {}
 
-    async check_in(student_id: number) {}
+  async check_in(student_id: number) {}
 
-    async check_out(student_id: number) {}
+  async check_out(student_id: number) {}
 }

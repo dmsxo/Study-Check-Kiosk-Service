@@ -1,27 +1,27 @@
 import {
-    Column,
-    Entity,
-    PrimaryGeneratedColumn,
-    Index,
-    OneToMany,
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  Index,
+  OneToMany,
 } from 'typeorm';
 import { Attendance } from './attendance.entity';
 
 @Entity('users')
 export class User {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column()
-    name: string;
+  @Column()
+  name: string;
 
-    @Column({ unique: true })
-    @Index()
-    student_id: number;
+  @Column({ unique: true })
+  @Index()
+  student_id: number;
 
-    @Column({ unique: true })
-    email: string;
+  @Column({ unique: true })
+  email: string;
 
-    @OneToMany(() => Attendance, (attendance) => attendance.student_id)
-    attendances: Attendance[];
+  @OneToMany(() => Attendance, (attendance) => attendance.student_id)
+  attendances: Attendance[];
 }

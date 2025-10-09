@@ -6,9 +6,9 @@ import { UserController } from './user.controller';
 
 @Global()
 @Module({
-    imports: [TypeOrmModule.forFeature([User])],
-    controllers: [UserController],
-    providers: [UserService],
-    exports: [UserService],
+  imports: [TypeOrmModule.forFeature([User])],
+  controllers: [UserController],
+  providers: [UserService],
+  exports: [UserService],
 })
 export class UserModule {}
