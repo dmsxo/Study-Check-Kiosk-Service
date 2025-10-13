@@ -36,9 +36,9 @@ function getStreakData(data){
 export function getRecords(data){
   const total = data.length;
 
-  const { streak, longestStreak } = getStreakData(data.map(day => day.date));
-
   const studyTimes = data.map(day => getTimeDiff(day.check_in, day.check_out));
+
+  const { streak, longestStreak } = getStreakData(data.map(day => day.date));
 
   return {total, streak, longestStreak, studyTimes};
 }
