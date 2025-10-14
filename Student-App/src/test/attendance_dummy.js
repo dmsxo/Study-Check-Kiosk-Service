@@ -1,4 +1,4 @@
-const dummy = [
+export const attendances = [
   {
     "type": "morning",
     "date": "2025-03-04",
@@ -671,6 +671,4 @@ const dummy = [
     "check_out_time": "08:16:00",
     "description": "10월, 8일도 알찼다"
   }
-]
-
-export default dummy;
+];

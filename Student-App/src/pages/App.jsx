@@ -8,14 +8,15 @@ import MyView from './products/MyView';
 import ProtectedRoute from '../routes/ProtectedRoute';
 import PublicRoute from '../routes/PublicRoute';
 
-import { getGroupData, getRecords } from '../helpers/attendance.helper';
+import { getFullStatData } from '../helpers/attendance.helper';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const { morning, night } = getGroupData();
-  const { total, studyTimes } = getRecords(night);
-  console.log(studyTimes);
+  const { morning, night } = getFullStatData();
+
+  console.log(morning);
+  console.log(night);
 
   return (
     <BrowserRouter>
