@@ -13,11 +13,6 @@ import { getFullStatData } from '../helpers/attendance.helper';
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const { morning, night } = getFullStatData();
-
-  console.log(morning);
-  console.log(night);
-
   return (
     <BrowserRouter>
       <Routes>
