@@ -1,16 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
 import { Calendar, Flame, TrendingUp, Percent } from 'lucide-react';
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from 'recharts';
 
 import LayoutContaner from '../../components/UIComponents/LayoutContaner';
 import ScreenFrame from '../../components/UIComponents/ScreenFrame';
@@ -19,6 +9,7 @@ import StreakCalendar from '../../components/StatViewComponents/StreakCalendar';
 import StatCard from '../../components/StatViewComponents/StatCard';
 import { getFullStatData } from '../../helpers/stats.helper';
 import { getColorClass } from '../../helpers/calendar.helper';
+import RateChart from '../../components/StatViewComponents/RateChart';
 
 function StatView() {
   // 현재 보고 있는 카테고리
@@ -34,16 +25,16 @@ function StatView() {
   const activityData = studyType === 'night' ? night : morning;
 
   const currentData = [
-    { month: '1월', rate: 85, total: 240, present: 204 },
-    { month: '2월', rate: 88, total: 216, present: 190 },
-    { month: '3월', rate: 92, total: 248, present: 228 },
-    { month: '4월', rate: 87, total: 240, present: 209 },
-    { month: '5월', rate: 90, total: 248, present: 223 },
-    { month: '6월', rate: 89, total: 240, present: 214 },
-    { month: '7월', rate: 91, total: 248, present: 226 },
-    { month: '8월', rate: 86, total: 248, present: 213 },
-    { month: '9월', rate: 93, total: 240, present: 223 },
-    { month: '10월', rate: 94, total: 248, present: 233 },
+    { label: '3월', rate: 92 },
+    { label: '4월', rate: 87 },
+    { label: '5월', rate: 90 },
+    { label: '6월', rate: 89 },
+    { label: '7월', rate: 91 },
+    { label: '8월', rate: 70 },
+    { label: '9월', rate: 93 },
+    { label: '10월', rate: 94 },
+    { label: '11월', rate: 80 },
+    { label: '12월', rate: 100 },
   ];
 
   return (
@@ -120,7 +111,7 @@ function StatView() {
                 ></span>
                 <span className="text-sm text-gray-900 font-medium">
                   {Math.floor(selectedDate.studytime / 3600)}시간{' '}
-                  {Math.floor((selectedDate.studytime % 3600) / 60)}분 공부함
+                  {Math.round((selectedDate.studytime % 3600) / 60)}분 공부함
                 </span>
               </>
             ) : (
@@ -132,40 +123,8 @@ function StatView() {
 
       {/* 출석률 그래프 */}
       <LayoutContaner addSytle="space-y-3">
-        <h3 className="font-semibold text-gray-900 mb-3">출석률 추이</h3>
-        <ResponsiveContainer width="95%" height={300} className="mr-auto">
-          <LineChart data={currentData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-            <XAxis
-              dataKey={'month'}
-              stroke="#6b7280"
-              style={{ fontSize: '12px' }}
-            />
-            <YAxis
-              stroke="#6b7280"
-              style={{ fontSize: '12px' }}
-              domain={[0, 100]}
-            />
-            <Tooltip
-              contentStyle={{
-                backgroundColor: '#fff',
-                border: '1px solid #e5e7eb',
-                borderRadius: '8px',
-                boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-              }}
-            />
-            <Legend />
-            <Line
-              type="monotone"
-              dataKey="rate"
-              name="출석률 (%)"
-              stroke="#6366f1"
-              strokeWidth={3}
-              dot={{ fill: '#6366f1', r: 5 }}
-              activeDot={{ r: 7 }}
-            />
-          </LineChart>
-        </ResponsiveContainer>
+        <h3 className="font-semibold text-gray-900 mb-3 bg-eme">출석률 추이</h3>
+        <RateChart curruntData={currentData} />
       </LayoutContaner>
     </ScreenFrame>
   );
