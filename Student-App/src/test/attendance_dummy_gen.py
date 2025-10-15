@@ -1,73 +1,61 @@
 import json
 import random
-from datetime import datetime, timedelta, time
+from datetime import datetime, timedelta
 
-# 1️⃣ 랜덤 날짜 생성 (중복 제거 + 주말 제외 + 주 3회 이상)
-def generate_unique_dates(start, end, min_per_week=3):
-    all_dates = []
-    current = start
-    week_dates = []
-
-    while current <= end:
-        if current.weekday() < 5:  # 월~금
-            week_dates.append(current)
-        # 주말이 끝났거나 마지막 날짜일 때
-        if current.weekday() == 4 or current == end:
-            # 주별 min_per_week개 이상 랜덤 선택
-            if len(week_dates) <= min_per_week:
-                selected = week_dates
-            else:
-                selected = random.sample(week_dates, min_per_week)
-            all_dates.extend(selected)
-            week_dates = []
-        current += timedelta(days=1)
-    return all_dates
-
-# 2️⃣ 랜덤 시간 생성
-def random_time(start_hour, start_minute, end_hour, end_minute):
-    start_minutes = start_hour * 60 + start_minute
-    end_minutes = end_hour * 60 + end_minute
-    if start_minutes > end_minutes:
-        start_minutes = end_minutes  # 안전하게 처리
-    rand_minute = random.randint(start_minutes, end_minutes)
-    h = rand_minute // 60
-    m = rand_minute % 60
-    return time(h, m)
-
-# 3️⃣ 출석 레코드 생성
-def generate_attendance_record(date):
-    type_ = random.choice(['morning', 'night'])
-
-    if type_ == 'morning':
-        check_in = random_time(7, 0, 8, 20)
-        start_hour = check_in.hour
-        start_minute = check_in.minute + 1
-        check_out = random_time(start_hour, start_minute, 8, 20)
-    else:
-        check_in = random_time(18, 0, 21, 40)
-        start_hour = check_in.hour
-        start_minute = check_in.minute + 1
-        check_out = random_time(start_hour, start_minute, 22, 0)
-
-    description = f"{date.month}월, {date.day}일도 알찼다"
-
-    return {
-        "type": type_,
-        "date": date.isoformat(),
-        "check_in_time": check_in.strftime("%H:%M:%S"),
-        "check_out_time": check_out.strftime("%H:%M:%S"),
-        "description": description
-    }
-
-# 4️⃣ 실행
 start_date = datetime(2025, 3, 4)
-end_date = datetime(2025, 10, 9)
+end_date = datetime(2025, 12, 31)
 
-unique_dates = generate_unique_dates(start_date, end_date, min_per_week=3)
-attendance_list = [generate_attendance_record(d) for d in unique_dates]
+delta = end_date - start_date
+all_dates = [start_date + timedelta(days=i) for i in range(delta.days + 1)]
 
-# 5️⃣ JSON 파일로 저장
-with open('attendance.json', 'w', encoding='utf-8') as f:
-    json.dump(attendance_list, f, ensure_ascii=False, indent=2)
+attendance_data = []
 
-print(f"attendance.json 생성 완료! 총 {len(attendance_list)}개 레코드")
+for date in all_dates:
+    for t_type in ["morning", "night"]:
+        # 출석 여부 결정
+        attend_prob = 0.9 if t_type == "morning" else 0.8
+        if random.random() > attend_prob:
+            continue
+
+        # 시간 생성
+        if t_type == "morning":
+            check_in_time = "07:30:00"
+            check_out_time = "08:30:00"
+        else:
+            # night 체크인 18~22시, 체크아웃은 체크인 이후 ~ 22시
+            check_in_hour = random.randint(18, 21)  # 21시까지 체크인 가능
+            check_in_minute = random.randint(0, 59)
+            check_in_dt = datetime(date.year, date.month, date.day, check_in_hour, check_in_minute)
+
+            # 최소 1분 이상, 최대 22:00 이전 체크아웃
+            max_checkout_dt = datetime(date.year, date.month, date.day, 22, 0)
+            # 최소 체크아웃: 체크인 + 1분
+            min_checkout_dt = check_in_dt + timedelta(minutes=1)
+
+            # 체크아웃 랜덤
+            if min_checkout_dt >= max_checkout_dt:
+                check_out_dt = max_checkout_dt
+            else:
+                delta_seconds = int((max_checkout_dt - min_checkout_dt).total_seconds())
+                random_seconds = random.randint(0, delta_seconds)
+                check_out_dt = min_checkout_dt + timedelta(seconds=random_seconds)
+
+            check_in_time = check_in_dt.strftime("%H:%M:%S")
+            check_out_time = check_out_dt.strftime("%H:%M:%S")
+
+        description = f"{date.month}월 {date.day}일도 알찼다"
+
+        attendance_data.append({
+            "type": t_type,
+            "date": date.strftime("%Y-%m-%d"),
+            "check_in_time": check_in_time,
+            "check_out_time": check_out_time,
+            "description": description
+        })
+
+# JSON으로 저장
+json_data = json.dumps(attendance_data, ensure_ascii=False, indent=2)
+with open("attendance_dummy.json", "w", encoding="utf-8") as f:
+    f.write(json_data)
+
+print("출석 데이터 생성 완료! 총", len(attendance_data), "개 기록")

@@ -1,3 +1,4 @@
+import { data } from "react-router-dom";
 import { attendances } from "../test/attendance_dummy";
 import { schoolDays } from "../test/school_days_dummy";
 import { getTimeDiff, compareDates } from "../utils/date.utils";
@@ -91,7 +92,7 @@ function getStats(attendance, schoolDaysRaw){
    * @param {string} endDate
    * @returns 
    */
-  function getAttendanceRate(startDate, endDate){
+  function getRate(startDate, endDate){
     const { days, count } = Object.values(calendar).reduce((acc, cur) => {
       if(compareDates(startDate, cur.date) && compareDates(cur.date, endDate)){
         acc.days++;
@@ -101,9 +102,8 @@ function getStats(attendance, schoolDaysRaw){
     },
     { days:0, count:0 });
 
-    console.log(count, days);
     if(days === 0) return 0;
-    else return Math.round(count / days * 100) / 100;
+    else return Math.round(count / days * 10000) / 100;
   }
 
   return {
@@ -111,7 +111,7 @@ function getStats(attendance, schoolDaysRaw){
     calendar,
     streak,
     longest_streak,
-    getAttendanceRate
+    getRate
   }
 }
 
@@ -133,4 +133,12 @@ export function getFullStatData(){
     morning: morningStats,
     night: nightStats
   };
+}
+
+export function getRateByMonth(){
+
+}
+
+export function getRateByWeek(){
+  
 }

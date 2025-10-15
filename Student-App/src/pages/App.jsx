@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import MainLayout from './products/MainLayout';
 import Login from './auth/Login';
 import QRView from './products/QRView';
@@ -7,8 +7,6 @@ import StatView from './products/StatView';
 import MyView from './products/MyView';
 import ProtectedRoute from '../routes/ProtectedRoute';
 import PublicRoute from '../routes/PublicRoute';
-
-import { getFullStatData } from '../helpers/attendance.helper';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
