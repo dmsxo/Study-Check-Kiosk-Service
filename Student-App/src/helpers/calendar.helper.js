@@ -1,3 +1,5 @@
+import { dateToStr } from "../utils/date.utils";
+
 export function generateMonthCalendar(attendanceCalendar, currentDate) {
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -14,8 +16,7 @@ export function generateMonthCalendar(attendanceCalendar, currentDate) {
   }
   // 현재 달의 날짜들
   for (let day = 1; day <= daysInMonth; day++) {
-    const date = new Date(Date.UTC(year, month, day));
-    const dateStr = date.toISOString().split('T')[0];
+    const dateStr = dateToStr(year, month, day)
     calendar.push({
       date: dateStr,
       studytime: attendanceCalendar[dateStr]?.studytime || null,
@@ -39,14 +40,26 @@ export function getTextColor (studytime) {
   return 'text-gray-700';
 }
 
-export function prevMonth(currentDate, setCurrentDate) {
+export function prevYear(setCurrentDate) {
   setCurrentDate(
-    new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1)
+    cur => new Date(cur.getFullYear()-1, 1, 1)
   );
-};
+}
 
-export function nextMonth(currentDate, setCurrentDate) {
+export function nextYear(setCurrentDate) {
   setCurrentDate(
-    new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)
+    cur => new Date(cur.getFullYear()+1, 1, 1)
   );
-};
+}
+
+export function prevMonth(setCurrentDate) {
+  setCurrentDate(
+    cur => new Date(cur.getFullYear(), cur.getMonth() - 1, 1)
+  );
+}
+
+export function nextMonth(setCurrentDate) {
+  setCurrentDate(
+    cur => new Date(cur.getFullYear(), cur.getMonth() + 1, 1)
+  );
+}

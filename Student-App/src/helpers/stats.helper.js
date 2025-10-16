@@ -1,7 +1,7 @@
-import { data } from "react-router-dom";
 import { attendances } from "../test/attendance_dummy";
 import { schoolDays } from "../test/school_days_dummy";
 import { getTimeDiff, compareDates } from "../utils/date.utils";
+import { dateToStr } from "../utils/date.utils";
 
 /*
 출석 raw data --------┯--> 1년 출석 캘린더 (휴일 스트릭 유지 가능)
@@ -35,7 +35,7 @@ function groupByStudyType(raw){
  */
 function buildAttendanceCalendar(attendance, schoolDaysRaw){
   const calendar = {};
-
+  // 등교 가능 날짜 체크
   schoolDaysRaw.forEach(e => {
     if(!e.grade2) return;
     calendar[e.date] = {
@@ -45,11 +45,12 @@ function buildAttendanceCalendar(attendance, schoolDaysRaw){
     }
   });
 
+  // 출석 raw 데이터 적용
   if(attendance){
     attendance.forEach(e => {
       if(calendar[e.date]){
-        calendar[e.date].studytime = getTimeDiff(e.check_in_time, e.check_out_time);
-        calendar[e.date].description = e.description;
+        calendar[e.date].studytime = getTimeDiff(e.check_in_time, e.check_out_time); // 그날 총 공부 시간
+        calendar[e.date].description = e.description; // 자율학습 디스크립션?
       }
     });
   }
@@ -82,9 +83,9 @@ function getStreakData(calendar){
  * @returns 
  */
 function getStats(attendance, schoolDaysRaw){
-  const total = attendance.length; 
-  const calendar = buildAttendanceCalendar(attendance, schoolDaysRaw);
-  const {streak, longest_streak} = getStreakData(calendar);
+  const total = attendance.length; // 총 출석일
+  const calendar = buildAttendanceCalendar(attendance, schoolDaysRaw); // 출석 가능 일자 기준 1년치 출석 데이터
+  const {streak, longest_streak} = getStreakData(calendar); // 스트릭과 최장 스트릭
 
   /**
    * 두 YYYY-MM-DD 형식 날짜 사이의 기간 출석률을 반환
@@ -101,7 +102,8 @@ function getStats(attendance, schoolDaysRaw){
       return acc;
     },
     { days:0, count:0 });
-
+    
+    console.log(count, "/", days);
     if(days === 0) return 0;
     else return Math.round(count / days * 10000) / 100;
   }
@@ -120,12 +122,12 @@ function getStats(attendance, schoolDaysRaw){
  * @returns 
  */
 export function getFullStatData(){
-  // 추후 API 호출할 raw datas
+  // 추후 API 호출할 raw datas (현 dummy)
   const rawAttendances = attendances;
   const rawSchoolDays = schoolDays;
   // 1년치 출석 캘린더 생성
   const attendanceByType = groupByStudyType(rawAttendances);
-
+  // 아침 독서, 야간 자율 학습 별 통계 객체 생성
   const morningStats = getStats(attendanceByType.morning, rawSchoolDays);
   const nightStats = getStats(attendanceByType.night, rawSchoolDays);
 
@@ -135,10 +137,31 @@ export function getFullStatData(){
   };
 }
 
-export function getRateByMonth(){
+/**
+ * @param {*} attendanceCalendar 
+ * @param {string} curruntDate 
+ */
+export function getRateByMonth(stats, curruntDate){
+  let curruntRates = [];
+  
+  for(let i = 0; i < 12; i++){
+    const startDate = dateToStr(curruntDate.getFullYear(), i, 1);
+    const endDate = dateToStr(curruntDate.getFullYear(), i+1, 0);
+    console.log(startDate, endDate);
+    curruntRates.push({ label:`${i+1}월`, rate: stats.getRate(startDate, endDate)});
+  }
 
+  console.log(curruntRates);
+  return curruntRates;
 }
 
-export function getRateByWeek(){
-  
+/**
+ * @param {*} attendanceCalendar 
+ * @param {string} curruntDate 
+ */
+export function getRateByWeek(attendanceCalendar, curruntDate){
+  const dayInMonth = new Date(curruntDate.getFullYear(), curruntDate.getMonth() + 1, 0).getDate();
+
+  let curruntRates = [];
+
 }

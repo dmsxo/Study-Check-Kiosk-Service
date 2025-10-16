@@ -6,7 +6,7 @@ export function getTimeDiff(time1, time2){
 }
 
 /**
- * day 1이 day2보다 빠른지 느린지 반환
+ * day 1이 day2보다 빠른지 느린지 반환 day1 <= day2 라면 참
  * @param {string} day1 
  * @param {string} day2 
  */
@@ -14,5 +14,15 @@ export function compareDates(day1, day2){
   const [y1, m1, d1] = day1.split('-').map(Number);
   const [y2, m2, d2] = day2.split('-').map(Number);
 
-  return (y1 < y2 ? true : (m1 < m2 ? true : d1 < d2));
+  return (y1 === y2 ? (m1 === m2 ? (d1 <= d2) : (m1 < m2)) : (y1 < y2));
+}
+
+export function dateToStr(year, month, day){
+  const date = new Date(Date.UTC(year, month, day));
+  return date.toISOString().split('T')[0];
+}
+
+export function strToDate(date){
+  const [year, month, day] = date.split('-');
+  return new Date(Date.UTC(year, month, day));
 }
