@@ -6,61 +6,67 @@ import {
   Tooltip,
   ResponsiveContainer,
   Area,
-} from "recharts";
+} from 'recharts';
+import { ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
 import {
   prevMonth,
   nextMonth,
   prevYear,
   nextYear,
-} from "../../helpers/calendar.helper";
-import CalendarHeader from "./../UIComponents/CalendarHeader";
-import { getRateByMonth, getRateByWeek } from "../../helpers/stats.helper";
+} from '../../helpers/calendar.helper';
+import { CalendarHeader } from '../UIComponents';
+import { getRateByMonth, getRateByWeek } from '../../helpers/stats.helper';
 
 function displayText(viewMode, curruntView) {
   const year = curruntView.getFullYear();
   const month = curruntView.getMonth() + 1;
-  if (viewMode === "month") {
+  if (viewMode === 'month') {
     return `${year}년`;
-  } else if (viewMode === "week") {
+  } else if (viewMode === 'week') {
     return `${year}년 ${month}월`;
   }
 }
 
 function prev(viewMode, setCurruntView) {
-  if (viewMode === "month") {
+  if (viewMode === 'month') {
     prevYear(setCurruntView);
-  } else if (viewMode === "week") {
+  } else if (viewMode === 'week') {
     prevMonth(setCurruntView);
   }
 }
 
 function next(viewMode, setCurruntView) {
-  if (viewMode === "month") {
+  if (viewMode === 'month') {
     nextYear(setCurruntView);
-  } else if (viewMode === "week") {
+  } else if (viewMode === 'week') {
     nextMonth(setCurruntView);
   }
 }
 
-const currentData = [
-  { label: "3월", rate: 92 },
-  { label: "4월", rate: 87 },
-  { label: "5월", rate: 90 },
-  { label: "6월", rate: 89 },
-  { label: "7월", rate: 91 },
-  { label: "8월", rate: 70 },
-  { label: "9월", rate: 93 },
-  { label: "10월", rate: 94 },
-  { label: "11월", rate: 80 },
-  { label: "12월", rate: 100 },
-];
-
 function getRateData(stats, viewMode, curruntView) {
-  if (viewMode === "month") {
+  if (viewMode === 'month') {
     return getRateByMonth(stats, curruntView);
-  } else if (viewMode === "week") {
+  } else if (viewMode === 'week') {
     return getRateByWeek(stats, curruntView);
   }
+}
+
+function goToday(setCurruntView) {
+  setCurruntView(new Date());
+}
+
+function zoomIn(setViewMode) {
+  setViewMode((cur) => {
+    if (cur === 'month') return 'week';
+    return cur;
+  });
+}
+
+function zoomOut(setViewMode) {
+  setViewMode((cur) => {
+    if (cur === 'week') return 'month';
+    return cur;
+  });
 }
 
 function RateChart({
@@ -68,10 +74,29 @@ function RateChart({
   setViewMode,
   curruntView,
   setCurruntView,
-  stats,
+  getRate,
 }) {
   return (
     <>
+      <div className="flex justify-between p-2 mb-2">
+        <div className="flex items-center gap-3">
+          <button onClick={() => zoomOut(setViewMode)}>
+            <ZoomOut className="size-4.5 text-gray-700" />
+          </button>
+          <h4 className="text-sm text-gray-700">
+            {viewMode === 'month' ? '월' : '주'}
+          </h4>
+          <button onClick={() => zoomIn(setViewMode)}>
+            <ZoomIn className="size-4.5 text-gray-700" />
+          </button>
+        </div>
+        <button
+          className="flex gap-1 items-center px-4 py-1 text-sm font-se text-gray-700 rounded-lg border border-slate-200"
+          onClick={() => goToday(setCurruntView)}
+        >
+          오늘로
+        </button>
+      </div>
       <CalendarHeader
         text={displayText(viewMode, curruntView)}
         prev={() => prev(viewMode, setCurruntView)}
@@ -79,7 +104,7 @@ function RateChart({
       />
       <ResponsiveContainer width="100%" height="70%">
         <AreaChart
-          data={getRateData(stats, viewMode, curruntView)}
+          data={getRateData(getRate, viewMode, curruntView)}
           margin={{ top: 5, right: 25, bottom: 5, left: -25 }}
         >
           <defs>
@@ -99,21 +124,21 @@ function RateChart({
           </defs>
           <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
           <XAxis
-            dataKey={"label"}
+            dataKey={'label'}
             stroke="#6b7280"
-            style={{ fontSize: "12px" }}
+            style={{ fontSize: '12px' }}
           />
           <YAxis
             stroke="#6b7280"
-            style={{ fontSize: "12px" }}
+            style={{ fontSize: '12px' }}
             domain={[0, 100]}
           />
           <Tooltip
             contentStyle={{
-              backgroundColor: "#fff",
-              border: "1px solid #e5e7eb",
-              borderRadius: "8px",
-              boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+              backgroundColor: '#fff',
+              border: '1px solid #e5e7eb',
+              borderRadius: '8px',
+              boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
             }}
           />
           <Area
@@ -124,8 +149,10 @@ function RateChart({
             strokeWidth={2}
             fill="url(#colorValue)"
             filter="url(#shadow)"
-            dot={{ stroke: "#00bc7d", fill: "#ffffff", r: 5 }}
+            dot={{ stroke: '#00bc7d', fill: '#ffffff', r: 5 }}
             activeDot={{ r: 7 }}
+            animationEasing="ease-out"
+            animationDuration={300}
           />
         </AreaChart>
       </ResponsiveContainer>

@@ -42,13 +42,13 @@ export function getTextColor (studytime) {
 
 export function prevYear(setCurrentDate) {
   setCurrentDate(
-    cur => new Date(cur.getFullYear()-1, 1, 1)
+    cur => new Date(cur.getFullYear()-1, 0, 1)
   );
 }
 
 export function nextYear(setCurrentDate) {
   setCurrentDate(
-    cur => new Date(cur.getFullYear()+1, 1, 1)
+    cur => new Date(cur.getFullYear()+1, 0, 1)
   );
 }
 

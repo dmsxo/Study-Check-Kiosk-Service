@@ -141,14 +141,14 @@ export function getFullStatData(){
  * @param {*} attendanceCalendar 
  * @param {string} curruntDate 
  */
-export function getRateByMonth(stats, curruntDate){
+export function getRateByMonth(getRate, curruntDate){
   let curruntRates = [];
   
   for(let i = 0; i < 12; i++){
     const startDate = dateToStr(curruntDate.getFullYear(), i, 1);
     const endDate = dateToStr(curruntDate.getFullYear(), i+1, 0);
     console.log(startDate, endDate);
-    curruntRates.push({ label:`${i+1}월`, rate: stats.getRate(startDate, endDate)});
+    curruntRates.push({ label:`${i+1}월`, rate: getRate(startDate, endDate)});
   }
 
   console.log(curruntRates);
@@ -159,9 +159,19 @@ export function getRateByMonth(stats, curruntDate){
  * @param {*} attendanceCalendar 
  * @param {string} curruntDate 
  */
-export function getRateByWeek(attendanceCalendar, curruntDate){
-  const dayInMonth = new Date(curruntDate.getFullYear(), curruntDate.getMonth() + 1, 0).getDate();
-
+export function getRateByWeek(getRate, curruntDate){
   let curruntRates = [];
 
+  const year = curruntDate.getFullYear(), month = curruntDate.getMonth();
+  const lastDate = new Date(year, month + 1, 0).getDate();
+  let weekCount = 1, startDate = 1, endDate = 7;
+  
+  while (endDate <= lastDate){
+    console.log(endDate, lastDate);
+    const rate = getRate(dateToStr(year, month, startDate), dateToStr(year, month, Math.min(endDate, lastDate)));
+    curruntRates.push({ label:`${weekCount}주차`, rate: rate});
+    startDate += 7, endDate += 7; weekCount++;
+  }
+
+  return curruntRates
 }

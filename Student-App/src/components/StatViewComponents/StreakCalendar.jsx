@@ -4,8 +4,8 @@ import {
   getTextColor,
   nextMonth,
   prevMonth,
-} from "../../helpers/calendar.helper";
-import CalendarHeader from "../UIComponents/CalendarHeader";
+} from '../../helpers/calendar.helper';
+import { CalendarHeader } from '../UIComponents';
 
 function StreakCalendar({
   currentDate,
@@ -14,7 +14,7 @@ function StreakCalendar({
   attendanceCalendar,
 }) {
   // 요일 배열
-  const weekDays = ["일", "월", "화", "수", "목", "금", "토"];
+  const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
 
   // 월별 달력 생성
   const calendar = generateMonthCalendar(attendanceCalendar, currentDate);
@@ -48,14 +48,14 @@ function StreakCalendar({
                 onClick={() => setSelectedDate(day)}
                 className={`w-full h-full rounded border transition-all flex items-center justify-center ${getColorClass(
                   day.studytime
-                )} ${day.isToday ? "ring-2 ring-blue-500" : ""}`}
+                )} ${day.isToday ? 'ring-2 ring-blue-500' : ''}`}
               >
                 <span
                   className={`text-xs font-medium ${getTextColor(
                     day.studytime
                   )}`}
                 >
-                  {day.date.split("-")[2]}
+                  {day.date.split('-')[2]}
                 </span>
               </button>
             ) : (

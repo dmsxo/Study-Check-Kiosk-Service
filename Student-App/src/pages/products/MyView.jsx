@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import { Link, Navigate } from 'react-router-dom';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserRound, SquarePen, LogOut, SunMoon, Bell } from 'lucide-react';
-import LayoutContaner from '../../components/UIComponents/LayoutContaner';
-import ScreenFrame from '../../components/UIComponents/ScreenFrame';
-import Toggle from '../../components/UIComponents/Toggle';
+import {
+  LayoutContaner,
+  ScreenFrame,
+  Toggle,
+} from '../../components/UIComponents';
 
 function MyView({ setIsLoggedIn }) {
   const [notificationsOn, setNotificationsOn] = useState(false);

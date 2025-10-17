@@ -1,31 +1,34 @@
-import React from "react";
-import { useState } from "react";
-import { Calendar, Flame, TrendingUp, Percent } from "lucide-react";
-
-import LayoutContaner from "../../components/UIComponents/LayoutContaner";
-import ScreenFrame from "../../components/UIComponents/ScreenFrame";
-import ToggleTabs from "../../components/UIComponents/ToggleTabs";
-import StreakCalendar from "../../components/StatViewComponents/StreakCalendar";
-import StatCard from "../../components/StatViewComponents/StatCard";
-import { getFullStatData } from "../../helpers/stats.helper";
-import { getColorClass } from "../../helpers/calendar.helper";
-import RateChart from "../../components/StatViewComponents/RateChart";
+import React from 'react';
+import { useState } from 'react';
+import { Calendar, Flame, TrendingUp, Percent } from 'lucide-react';
+import {
+  LayoutContaner,
+  ScreenFrame,
+  ToggleTabs,
+} from '../../components/UIComponents';
+import {
+  StatCard,
+  StreakCalendar,
+  RateChart,
+} from '../../components/StatViewComponents';
+import { getFullStatData } from '../../helpers/stats.helper';
+import { getColorClass } from '../../helpers/calendar.helper';
 
 function StatView() {
   // 현재 보고 있는 카테고리
-  const [studyType, setStudyType] = useState("night");
+  const [studyType, setStudyType] = useState('night');
 
   // 달력 상태
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(null);
 
   // 출석률 그래프 상태
-  const [viewMode, setViewMode] = useState("month");
+  const [viewMode, setViewMode] = useState('month');
   const [curruntView, setCurruntView] = useState(new Date());
 
   // 아침 독서, 야간 자율학습 출석 통계 객체
   const { morning, night } = getFullStatData();
-  const activityData = studyType === "night" ? night : morning; // 현재 통계
+  const activityData = studyType === 'night' ? night : morning; // 현재 통계
 
   return (
     <ScreenFrame>
@@ -33,8 +36,8 @@ function StatView() {
 
       {/* 카테고리 선택 탭 */}
       <ToggleTabs
-        categories={["morning", "night"]}
-        buttonNames={["아침 독서", "야간 자율학습"]}
+        categories={['morning', 'night']}
+        buttonNames={['아침 독서', '야간 자율학습']}
         value={studyType}
         onChange={(cat) => setStudyType(cat)}
       />
@@ -45,27 +48,27 @@ function StatView() {
         <div className="grid grid-cols-2 gap-2 mb-4">
           <StatCard
             Icon={Flame}
-            color={"text-orange-500"}
-            title={"연속 출석일"}
+            color={'text-orange-500'}
+            title={'연속 출석일'}
             value={activityData.streak}
           />
           <StatCard
             Icon={TrendingUp}
-            color={"text-purple-500"}
-            title={"최장 연속 출석일"}
+            color={'text-purple-500'}
+            title={'최장 연속 출석일'}
             value={activityData.longest_streak}
           />
           <StatCard
             Icon={Calendar}
-            color={"text-emerald-500"}
-            title={"총 출석일"}
+            color={'text-emerald-500'}
+            title={'총 출석일'}
             value={activityData.total}
           />
           <StatCard
             Icon={Percent}
-            color={"text-blue-500"}
-            title={"출석률"}
-            value={`${activityData.getRate("2025-01-01", "2025-12-31")}%`}
+            color={'text-blue-500'}
+            title={'출석률'}
+            value={`${activityData.getRate('2025-01-01', '2025-12-31')}%`}
           />
         </div>
       </LayoutContaner>
@@ -100,7 +103,7 @@ function StatView() {
                   )}`}
                 ></span>
                 <span className="text-sm text-gray-900 font-medium">
-                  {Math.floor(selectedDate.studytime / 3600)}시간{" "}
+                  {Math.floor(selectedDate.studytime / 3600)}시간{' '}
                   {Math.round((selectedDate.studytime % 3600) / 60)}분 공부함
                 </span>
               </>
@@ -121,7 +124,7 @@ function StatView() {
               setViewMode={setViewMode}
               curruntView={curruntView}
               setCurruntView={setCurruntView}
-              stats={activityData}
+              getRate={activityData.getRate}
             />
           </div>
         </div>
