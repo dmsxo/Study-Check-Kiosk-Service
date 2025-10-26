@@ -7,9 +7,11 @@ import StatView from './products/StatView';
 import MyView from './products/MyView';
 import ProtectedRoute from '../routes/ProtectedRoute';
 import PublicRoute from '../routes/PublicRoute';
+import { userData } from '../test/usetData';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const user = userData;
 
   return (
     <BrowserRouter>
@@ -33,7 +35,7 @@ function App() {
           <Route path="stat" element={<StatView />} />
           <Route
             path="mypage"
-            element={<MyView setIsLoggedIn={setIsLoggedIn} />}
+            element={<MyView setIsLoggedIn={setIsLoggedIn} user={user} />}
           />
         </Route>
       </Routes>

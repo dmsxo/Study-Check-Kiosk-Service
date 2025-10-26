@@ -103,7 +103,6 @@ function getStats(attendance, schoolDaysRaw){
     },
     { days:0, count:0 });
     
-    console.log(count, "/", days);
     if(days === 0) return 0;
     else return Math.round(count / days * 10000) / 100;
   }
@@ -150,8 +149,6 @@ export function getRateByMonth(getRate, curruntDate){
     console.log(startDate, endDate);
     curruntRates.push({ label:`${i+1}월`, rate: getRate(startDate, endDate)});
   }
-
-  console.log(curruntRates);
   return curruntRates;
 }
 
@@ -166,7 +163,7 @@ export function getRateByWeek(getRate, curruntDate){
   const lastDate = new Date(year, month + 1, 0).getDate();
   let weekCount = 1, startDate = 1, endDate = 7;
   
-  while (endDate <= lastDate){
+  while (endDate < lastDate + 7){
     console.log(endDate, lastDate);
     const rate = getRate(dateToStr(year, month, startDate), dateToStr(year, month, Math.min(endDate, lastDate)));
     curruntRates.push({ label:`${weekCount}주차`, rate: rate});

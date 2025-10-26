@@ -7,7 +7,18 @@ import {
   Toggle,
 } from '../../components/UIComponents';
 
-function MyView({ setIsLoggedIn }) {
+function parseStudentID(studentID) {
+  let info = studentID;
+  const num = info % 100;
+  info = Math.floor(info / 100);
+  const classNum = info % 100;
+  info = Math.floor(info / 100);
+  const grade = info;
+
+  return { grade, classNum, num };
+}
+
+function MyView({ setIsLoggedIn, user }) {
   const [notificationsOn, setNotificationsOn] = useState(false);
   const [isDark, setIsDark] = useState(false);
 
@@ -18,6 +29,9 @@ function MyView({ setIsLoggedIn }) {
     navigate('/login');
   }
 
+  const { name, studentID, description, gmail } = user; // api로 대체
+  const { grade, classNum, num } = parseStudentID(studentID);
+
   return (
     <ScreenFrame>
       <h1 className="font-semibold text-gray-900 text-xl mb-4">나의 정보</h1>
@@ -25,11 +39,11 @@ function MyView({ setIsLoggedIn }) {
       <LayoutContaner addSytle="flex items-start">
         <UserRound className="shrink-0 size-12 text-gray-500" />
         <div className="flex-1 ml-4">
-          <h2 className="font-semibold text-gray-900 mb-1">황은태</h2>
-          <h3 className="text-gray-500 text-sm"> 2학년 1 반 29번</h3>
-          <h3 className="text-gray-500 text-sm mb-1"> hwangeuntea@gmail.com</h3>
+          <h2 className="font-semibold text-gray-900 mb-1">{name}</h2>
+          <h3 className="text-gray-500 text-sm">{`${grade}학년 ${classNum}반 ${num}번`}</h3>
+          <h3 className="text-gray-500 text-sm mb-1"> {gmail}</h3>
           <em className="font-serif text-gray-900 bg-amber-50 rounded-lg">
-            "시발"
+            {description}
           </em>
         </div>
         <button className="size-6 ml-auto">
