@@ -13,4 +13,8 @@ export class StudyService {
   async check_in(student_id: number) {}
 
   async check_out(student_id: number) {}
+
+  async generate_code() {}
+
+  async verify_code() {}
 }
