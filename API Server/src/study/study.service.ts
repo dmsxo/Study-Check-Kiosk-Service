@@ -10,11 +10,7 @@ export class StudyService {
     private attendanceRepo: Repository<Attendance>,
   ) {}
 
-  async check_in(student_id: number) {}
+  async check_in(student_id: number, attendanceData: Partial<Attendance>) {}
 
-  async check_out(student_id: number) {}
-
-  async generate_code() {}
-
-  async verify_code() {}
+  async check_out(student_id: number, attendanceData: Partial<Attendance>) {}
 }
