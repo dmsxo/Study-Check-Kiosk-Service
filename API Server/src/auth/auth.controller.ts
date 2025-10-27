@@ -10,4 +10,10 @@ export class AuthController {
 
   @Post('logout')
   logout() {}
+
+  @Post('checkin/code')
+  generate_code() {}
+
+  @Post('checkin/verify')
+  verify_code() {}
 }

@@ -10,10 +10,4 @@ export class StudyController {
 
   @Post('checkout')
   check_out(@Param('id') id: number, @Body() attendanceData) {}
-
-  @Post('code')
-  generate_code() {}
-
-  @Post('verify')
-  verify_code() {}
 }
