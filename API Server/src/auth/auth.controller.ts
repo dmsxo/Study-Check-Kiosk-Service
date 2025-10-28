@@ -1,4 +1,4 @@
-import { Controller, Post } from '@nestjs/common';
+import { Controller, Post, Get } from '@nestjs/common';
 import { AuthService } from './auth.service';
 
 @Controller('auth')
@@ -12,8 +12,12 @@ export class AuthController {
   logout() {}
 
   @Post('checkin/code')
-  generate_code() {}
+  generate_code() {
+    return this.authService.generate_code();
+  }
 
-  @Post('checkin/verify')
-  verify_code() {}
+  @Get('checkin/verify')
+  verify_code() {
+    return this.authService.verify_code();
+  }
 }
