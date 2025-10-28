@@ -1,17 +1,21 @@
-import { Body, Controller, Param, Post } from '@nestjs/common';
+import { Controller, Param, Post, Query } from '@nestjs/common';
 import { StudyService } from './study.service';
 
 @Controller('users/:id/study')
 export class StudyController {
   constructor(private readonly studyService: StudyService) {}
 
-  @Post('checkin')
-  check_in(@Param('id') id: number, @Body() attendanceData) {
-    this.studyService.check_in(id, attendanceData);
+  @Post('checkin/:studyType')
+  check_in(@Param('id') id: number, @Param('studyType') studyType) {
+    this.studyService.check_in(id, studyType);
   }
 
-  @Post('checkout')
-  check_out(@Param('id') id: number, @Body() attendanceData) {
-    this.studyService.check_out(id, attendanceData);
+  @Post('checkout/:studyType')
+  check_out(
+    @Param('id') id: number,
+    @Param('studyType') studyType,
+    @Query('description') description?: string,
+  ) {
+    this.studyService.check_out(id, studyType, description ?? '');
   }
 }
