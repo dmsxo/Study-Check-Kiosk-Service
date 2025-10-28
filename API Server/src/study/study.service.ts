@@ -39,7 +39,7 @@ export class StudyService {
       check_in_time: time,
       date: today,
     });
-    return this.attendanceRepo.save(attendance);
+    return await this.attendanceRepo.save(attendance);
   }
 
   async check_out(student_id: number, studyType: string, description: string) {
@@ -48,10 +48,13 @@ export class StudyService {
     const time = new Date();
 
     //만약 이미 오늘자 출석기록이 있다면 에러
-    const today_attendance = await this.attendanceRepo.findOneBy({
-      student_id: user,
-      type: studyType,
-      date: today,
+    const today_attendance = await this.attendanceRepo.findOne({
+      where: {
+        student_id: user,
+        type: studyType,
+        date: today,
+      },
+      relations: ['student_id'],
     });
 
     if (!today_attendance)
@@ -61,5 +64,7 @@ export class StudyService {
 
     today_attendance.check_out_time = time;
     today_attendance.description = description;
+
+    return await this.attendanceRepo.save(today_attendance);
   }
 }
