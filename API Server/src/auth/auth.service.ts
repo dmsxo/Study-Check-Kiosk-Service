@@ -10,7 +10,7 @@ export class AuthService {
 
   logout() {}
 
-  async generate_code(issuer: string, ttl: number) {
+  async generate_code(issuer: string, ttl: number): Promise<string> {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890123456789';
     let code: string = '';
     for (let i = 0; i < 6; i++) {
@@ -21,7 +21,9 @@ export class AuthService {
     return code;
   }
 
-  async verify_code(code: string) {
-    return (await this.cacheManager.get(`auth:${code}`)) ?? 'NotFound:404';
+  async verify_code(code: string): Promise<string> {
+    return (
+      (await this.cacheManager.get<string>(`auth:${code}`)) ?? 'NotFound:404'
+    );
   }
 }

@@ -21,14 +21,14 @@ export class AuthController {
   generate_code(
     @Body('issuer') issuer: string,
     @Body('ttl') ttl: number = 60000,
-  ) {
+  ): Promise<string> {
     if (issuer === undefined)
       throw new BadRequestException('The issuer field does not exist');
     return this.authService.generate_code(issuer, ttl);
   }
 
   @Post('checkin/verify')
-  verify_code(@Body('code') code: string) {
+  verify_code(@Body('code') code: string): Promise<string> {
     if (code === undefined)
       throw new BadRequestException('The code field does not exist');
     return this.authService.verify_code(code);
