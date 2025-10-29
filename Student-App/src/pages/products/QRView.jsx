@@ -10,10 +10,7 @@ function QRView() {
       <div className="flex flex-col min-w-fit max-w-3xl p-4 space-y-3 ml-auto mr-auto">
         <h1 className="font-black text-gray-900 text-xl mb-4">출석 체크</h1>
 
-        <TicketBackground
-          notchRatioY={0.3}
-          className="flex flex-col w-11/12 min-w-3xs max-w-lg ml-auto mr-auto"
-        >
+        <div className="bg-white rounded-2xl flex flex-col w-11/12 min-w-3xs max-w-lg ml-auto mr-auto">
           <div className="flex-1 p-6 gap-5">
             <h3 className="text-gray-500 text-sm">20129 황은태</h3>
             <h1 className="font-medium text-gray-900 text-2xl">
@@ -27,7 +24,7 @@ function QRView() {
           <div className="w-full aspect-square p-10 mb-8">
             <QRCodeSVG value="" className="size-full" />
           </div>
-        </TicketBackground>
+        </div>
       </div>
     </div>
   );
