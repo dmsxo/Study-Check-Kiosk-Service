@@ -17,7 +17,7 @@ export class StudyService {
     private userService: UserService,
   ) {}
 
-  async check_in(student_id: number, studyType: string) {
+  async check_in(student_id: number, studyType: string): Promise<Attendance> {
     const user = await this.userService.get_user(student_id);
     const today = formatDate();
     const time = new Date();
@@ -42,7 +42,11 @@ export class StudyService {
     return await this.attendanceRepo.save(attendance);
   }
 
-  async check_out(student_id: number, studyType: string, description: string) {
+  async check_out(
+    student_id: number,
+    studyType: string,
+    description: string,
+  ): Promise<Attendance> {
     const user = await this.userService.get_user(student_id);
     const today = formatDate();
     const time = new Date();
