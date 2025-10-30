@@ -2,10 +2,18 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import { SerialPort } from 'serialport'
+
+let mainWindow;
+
+const PORT_PATH = 'COM8'; 
+const BAUD_RATE = 115200;
+
+let port = new SerialPort({ path: PORT_PATH, baudRate: BAUD_RATE, autoOpen: true });
 
 function createWindow() {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 900,
     height: 670,
     show: false,
@@ -69,6 +77,23 @@ app.on('window-all-closed', () => {
     app.quit()
   }
 })
+
+// 시리얼 데이터 들어오면 바로 Renderer로 전송
+port.on('data', (chunk) => {
+  const line = chunk.toString().trim();
+  if (line && mainWindow) {
+    mainWindow.webContents.send('serial-data', line);
+  }
+});
+
+ipcMain.on('scan-qr', () => {
+  if (!port || !port.isOpen) {
+    console.warn('[ipc] 포트 미연결 상태에서 start-qr 요청');
+    if (mainWindow) mainWindow.webContents.send('serial-error', '포트 미연결');
+    return;
+  }
+  port.write('s'); // QR 스캔 시작 신호 전송
+});
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.

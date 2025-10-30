@@ -1,10 +1,18 @@
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import HomeView from './pages/HomeView';
+import KeyChekinView from './pages/KeyCheckinView';
+import QRCheckinView from './pages/QRCheckinView';
+
 function App() {
   return (
-    <div className="h-screen flex items-center justify-center gap-4">
-      <button className="border border-slate-200 rounded-2xl p-4">QR로 체크인</button>
-      {/* <button className="border border-slate-200 rounded-2xl p-4">발급 키로 체크인</button> */}
-    </div>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomeView />} />
+        <Route path="/QR" element={<QRCheckinView />} />
+        <Route path="/Key" element={<KeyChekinView />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
