@@ -5,9 +5,11 @@ import { User, Settings, Bell, Mail } from 'lucide-react';
 import TicketBackground from '../../components/QRViewComponents/TicketUI';
 
 function QRView() {
+  const [code, setCode] = useState('');
+
   return (
-    <div className="bg-gray-100 h-full">
-      <div className="flex flex-col min-w-fit max-w-3xl p-4 space-y-3 ml-auto mr-auto">
+    <div className="bg-gray-100 min-h-full h-fit">
+      <div className="flex flex-col min-h-full min-w-fit max-w-3xl p-4 space-y-3">
         <h1 className="font-black text-gray-900 text-xl mb-4">출석 체크</h1>
 
         <div className="bg-white rounded-2xl flex flex-col w-11/12 min-w-3xs max-w-lg ml-auto mr-auto">
@@ -26,6 +28,9 @@ function QRView() {
           </div>
         </div>
       </div>
+      <button className="border border-slate-200 bg-white rounded-2xl w-full p-2">
+        QR 새로 생성
+      </button>
     </div>
   );
 }
