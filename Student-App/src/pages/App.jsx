@@ -7,7 +7,7 @@ import StatView from './products/StatView';
 import MyView from './products/MyView';
 import ProtectedRoute from '../routes/ProtectedRoute';
 import PublicRoute from '../routes/PublicRoute';
-import { userData } from '../test/usetData';
+import { userData } from '../test/userData';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
