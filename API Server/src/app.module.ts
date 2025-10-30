@@ -5,6 +5,8 @@ import { StudyModule } from './study/study.module';
 import { AnalysisModule } from './analysis/analysis.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeORMConfig } from './configs/typeorm.config';
+import { CacheModule } from '@nestjs/cache-manager';
+import * as redisStore from 'cache-manager-ioredis';
 
 @Module({
   imports: [
@@ -14,6 +16,14 @@ import { typeORMConfig } from './configs/typeorm.config';
     AnalysisModule,
 
     TypeOrmModule.forRoot(typeORMConfig),
+    CacheModule.register({
+      isGlobal: true,
+      store: redisStore,
+      host: 'localhost',
+      port: 6379,
+      db: 0,
+      prefix: '',
+    }),
   ],
   controllers: [],
   providers: [],

@@ -8,7 +8,7 @@ import {
 import { User } from './user.entity';
 
 @Entity('attendances')
-@Unique(['student_id', 'date'])
+@Unique(['student_id', 'date', 'type'])
 export class Attendance {
   @PrimaryGeneratedColumn()
   id: number;
