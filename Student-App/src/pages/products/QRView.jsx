@@ -1,11 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { useState, useRef } from 'react';
 import { User, Settings, Bell, Mail } from 'lucide-react';
 import TicketBackground from '../../components/QRViewComponents/TicketUI';
+import { getCode } from '../../api/checkin';
 
 function QRView() {
   const [code, setCode] = useState('');
+
+  const getAuthCode = async () => {
+    const code = await getCode();
+    setCode(code);
+  };
+
+  useEffect(getAuthCode, []);
 
   return (
     <div className="bg-gray-100 min-h-full h-fit">
@@ -24,11 +32,14 @@ function QRView() {
             </h3>
           </div>
           <div className="w-full aspect-square p-10 mb-8">
-            <QRCodeSVG value="" className="size-full" />
+            <QRCodeSVG value={code} className="size-full" />
           </div>
         </div>
       </div>
-      <button className="border border-slate-200 bg-white rounded-2xl w-full p-2">
+      <button
+        className="border border-slate-200 bg-white rounded-2xl w-full p-2"
+        onClick={getAuthCode}
+      >
         QR 새로 생성
       </button>
     </div>
