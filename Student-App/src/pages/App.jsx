@@ -1,17 +1,28 @@
-import { useState } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import MainLayout from './products/MainLayout';
-import Login from './auth/Login';
-import QRView from './products/QRView';
-import StatView from './products/StatView';
-import MyView from './products/MyView';
-import ProtectedRoute from '../routes/ProtectedRoute';
-import PublicRoute from '../routes/PublicRoute';
-import { userData } from '../test/userData';
+import { useState, useEffect } from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import MainLayout from "./products/MainLayout";
+import Login from "./auth/Login";
+import QRView from "./products/QRView";
+import StatView from "./products/StatView";
+import MyView from "./products/MyView";
+import ProtectedRoute from "../routes/ProtectedRoute";
+import PublicRoute from "../routes/PublicRoute";
+import { userData } from "../test/userData";
+import { getCode } from "../api/checkin";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [code, setCode] = useState("");
   const user = userData;
+
+  const getAuthCode = async () => {
+    const code = await getCode();
+    setCode(code);
+  };
+
+  useEffect(() => {
+    getAuthCode();
+  }, []);
 
   return (
     <BrowserRouter>
@@ -31,7 +42,10 @@ function App() {
             </ProtectedRoute>
           }
         >
-          <Route index element={<QRView />} />
+          <Route
+            index
+            element={<QRView code={code} getAuthCode={getAuthCode} />}
+          />
           <Route path="stat" element={<StatView />} />
           <Route
             path="mypage"

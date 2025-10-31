@@ -7,9 +7,9 @@ function HomeView() {
       <Link to={'/QR'} className="border border-slate-200 rounded-2xl p-4">
         QR로 체크인
       </Link>
-      <Link to={'/Key'} className="border border-slate-200 rounded-2xl p-4">
+      {/* <Link to={'/Key'} className="border border-slate-200 rounded-2xl p-4">
         발급 키로 체크인
-      </Link>
+      </Link> */}
     </div>
   );
 }

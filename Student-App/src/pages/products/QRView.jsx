@@ -1,28 +1,17 @@
-import React, { useEffect } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { useState, useRef } from "react";
 import { User, Settings, Bell, Mail } from "lucide-react";
 import TicketBackground from "../../components/QRViewComponents/TicketUI";
-import { getCode } from "../../api/checkin";
 
-function QRView() {
-  const [code, setCode] = useState("");
-
-  const getAuthCode = async () => {
-    const code = await getCode();
-    setCode(code);
-  };
-
-  useEffect(() => {
-    getAuthCode();
-  }, []);
+function QRView({ code, getAuthCode }) {
+  const [isStudy, setIsStudy] = useState(false);
 
   return (
     <div className="bg-gray-100 min-h-full h-fit">
       <div className="flex flex-col min-h-full min-w-fit max-w-3xl p-4 space-y-3">
         <h1 className="font-black text-gray-900 text-xl mb-4">출석 체크</h1>
 
-        <div className="bg-white rounded-2xl flex flex-col w-11/12 min-w-3xs max-w-lg ml-auto mr-auto">
+        <div className="bg-white rounded-2xl flex flex-col w-11/12 min-w-3xs max-w-lg mx-auto">
           <div className="flex-1 p-6 gap-5">
             <h3 className="text-gray-500 text-sm">20129 황은태</h3>
             <h1 className="font-medium text-gray-900 text-2xl">
@@ -37,13 +26,19 @@ function QRView() {
             <QRCodeSVG value={code} className="size-full" />
           </div>
         </div>
+        <button
+          className="border border-slate-200 bg-white rounded-2xl w-11/12 p-2 mx-auto"
+          onClick={getAuthCode}
+        >
+          QR 새로 생성
+        </button>
+        {/* <button
+          className="border border-slate-200 bg-white rounded-2xl w-11/12 p-2 mx-auto"
+          onClick={getAuthCode}
+        >
+          키오스크 발급 키로 출석하기
+        </button> */}
       </div>
-      <button
-        className="border border-slate-200 bg-white rounded-2xl w-full p-2"
-        onClick={getAuthCode}
-      >
-        QR 새로 생성
-      </button>
     </div>
   );
 }

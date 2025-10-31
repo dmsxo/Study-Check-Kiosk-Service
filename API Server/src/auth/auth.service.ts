@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { randomInt } from 'crypto';
 
@@ -22,8 +22,8 @@ export class AuthService {
   }
 
   async verify_code(code: string): Promise<string> {
-    return (
-      (await this.cacheManager.get<string>(`auth:${code}`)) ?? 'NotFound:404'
-    );
+    const issuer = await this.cacheManager.get<string>(`auth:${code}`);
+    if (!issuer) throw new NotFoundException('Invalid code.');
+    return issuer;
   }
 }
