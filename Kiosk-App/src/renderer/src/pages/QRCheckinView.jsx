@@ -18,6 +18,7 @@ function QRCheckinView() {
     if (window.serialAPI) {
       const stopListening = window.serialAPI.onData((data) => {
         setQrValue(data);
+        console.log(data);
         if (data === '404') {
           setState('timeout');
         } else {
