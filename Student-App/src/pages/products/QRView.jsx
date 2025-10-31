@@ -1,19 +1,21 @@
-import React, { useEffect } from 'react';
-import { QRCodeSVG } from 'qrcode.react';
-import { useState, useRef } from 'react';
-import { User, Settings, Bell, Mail } from 'lucide-react';
-import TicketBackground from '../../components/QRViewComponents/TicketUI';
-import { getCode } from '../../api/checkin';
+import React, { useEffect } from "react";
+import { QRCodeSVG } from "qrcode.react";
+import { useState, useRef } from "react";
+import { User, Settings, Bell, Mail } from "lucide-react";
+import TicketBackground from "../../components/QRViewComponents/TicketUI";
+import { getCode } from "../../api/checkin";
 
 function QRView() {
-  const [code, setCode] = useState('');
+  const [code, setCode] = useState("");
 
   const getAuthCode = async () => {
     const code = await getCode();
     setCode(code);
   };
 
-  useEffect(getAuthCode, []);
+  useEffect(() => {
+    getAuthCode();
+  }, []);
 
   return (
     <div className="bg-gray-100 min-h-full h-fit">

@@ -1,9 +1,9 @@
-import { axios } from 'axios';
+import axios from 'axios';
 
 const address = "http://localhost:3000";
 
 export async function getCode(){
-  const response = await axios.post(`${API_BASE}/auth/checkin/issue`, {
+  const response = await axios.post(`${API_BASE}/auth/checkin/code`, {
       mode: "kiosk:0", // or "kiosk"
     });
     return response.data; // { code, expiresIn }
@@ -11,7 +11,7 @@ export async function getCode(){
 
 export async function verifyCode(code){
   try {
-    const response = await axios.post(`${API_BASE}/auth/checkin/verify`, {
+    const response = await axios.post(`${address}/auth/checkin/verify`, {
       code: code
     });
     return response.data;

@@ -1,4 +1,4 @@
-import { axios } from 'axios';
+import axios  from 'axios';
 import { userData } from '../test/userData';
 
 const address = "http://localhost:3000";
