@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { KeyRound } from 'lucide-react';
 
 export default function VerificationCodeInput() {
   const [code, setCode] = useState(['', '', '', '', '', '']);
@@ -89,6 +90,13 @@ export default function VerificationCodeInput() {
   return (
     <div className="fixed inset-0 bg-white flex items-center justify-center overflow-hidden">
       <div className="text-center">
+        <div className="mb-8">
+          <KeyRound className="w-12 h-12 text-blue-600 mx-auto mb-4" />
+          <p className="text-gray-700 text-lg">
+            키오스크에서 발급한 키를 입력하세요
+          </p>
+        </div>
+
         <div className="flex gap-3 mb-8">
           {code.map((digit, index) => (
             <input
@@ -101,7 +109,7 @@ export default function VerificationCodeInput() {
               onChange={(e) => handleChange(index, e.target.value)}
               onKeyDown={(e) => handleKeyDown(index, e)}
               onPaste={handlePaste}
-              className="w-12 h-16 text-center text-3xl font-medium text-blue-600 bg-transparent border-b-2 border-gray-300 focus:outline-none focus:border-blue-600"
+              className="w-12 h-16 text-center text-3xl font-semibold text-blue-600 bg-transparent border-b-2 border-gray-300 focus:outline-none focus:border-blue-600"
             />
           ))}
         </div>
