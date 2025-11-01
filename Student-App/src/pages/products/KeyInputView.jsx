@@ -1,15 +1,38 @@
 import { useState, useRef, useEffect } from 'react';
-import { KeyRound } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { KeyRound, X } from 'lucide-react';
+import { verifyCode } from '../../api/checkin';
 
-export default function VerificationCodeInput() {
+export default function KeyInput() {
   const [code, setCode] = useState(['', '', '', '', '', '']);
   const [isComplete, setIsComplete] = useState(false);
+  const [isError, setIsError] = useState(false);
   const inputRefs = useRef([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const allFilled = code.every((digit) => digit !== '');
     if (allFilled && !isComplete) {
       setIsComplete(true);
+      const verify = async () => {
+        try {
+          const res = await verifyCode(code.join(''));
+          const [issuerType, detail] = res.split(':');
+          if (issuerType === 'kiosk') {
+            // await axios.post(
+            //   `http://localhost:3000/users/20129/study/checkin/${detail}`
+            // );
+            navigate('/study');
+          }
+        } catch (err) {
+          console.error(err);
+          setIsError(true);
+          setCode(['', '', '', '', '', '']);
+          inputRefs.current[0]?.focus();
+          setIsComplete(false);
+        }
+      };
+      verify();
     }
   }, [code, isComplete]);
 
@@ -19,6 +42,11 @@ export default function VerificationCodeInput() {
   }, []);
 
   const handleChange = (index, value) => {
+    // 에러 상태면 다시 입력 시작할 때 에러 해제
+    if (isError) {
+      setIsError(false);
+    }
+
     const sanitized = value.toUpperCase().replace(/[^A-Z0-9]/g, '');
 
     if (sanitized.length === 0) {
@@ -109,13 +137,20 @@ export default function VerificationCodeInput() {
               onChange={(e) => handleChange(index, e.target.value)}
               onKeyDown={(e) => handleKeyDown(index, e)}
               onPaste={handlePaste}
-              className="w-12 h-16 text-center text-3xl font-semibold text-blue-600 bg-transparent border-b-2 border-gray-300 focus:outline-none focus:border-blue-600"
+              className={`w-12 h-16 text-center text-3xl font-semibold bg-transparent border-b-2 focus:outline-none ${
+                isError
+                  ? 'text-red-600 border-red-500 focus:border-red-500'
+                  : 'text-blue-600 border-gray-300 focus:border-blue-600'
+              }`}
             />
           ))}
         </div>
 
-        {isComplete && (
-          <div className="text-green-600 text-lg font-medium">인증 성공</div>
+        {isError && (
+          <div className="text-red-600 text-lg font-medium flex items-center justify-center gap-2">
+            <X className="w-5 h-5" />
+            유효하지 않은 코드입니다
+          </div>
         )}
       </div>
     </div>

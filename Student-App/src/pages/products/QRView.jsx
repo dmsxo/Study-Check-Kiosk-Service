@@ -1,16 +1,34 @@
 import { QRCodeSVG } from 'qrcode.react';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import TicketCutLine from '../../components/QRViewComponents/TicketCutLine';
 import { ScreenFrame } from '../../components/UIComponents';
+import { Link } from 'react-router-dom';
 
 function QRView({ code, getAuthCode }) {
   const [isStudy, setIsStudy] = useState(false);
+
+  const INTERVAL_SEC = 10; // 반복 주기 (초)
+  const [remain, setRemain] = useState(INTERVAL_SEC);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setRemain((prev) => {
+        if (prev <= 1) {
+          getAuthCode();
+          return INTERVAL_SEC; // 리셋
+        }
+        return prev - 1; // 1초씩 감소
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
 
   return (
     <ScreenFrame bgColor="bg-gradient-to-b from-gray-50 to-gray-200">
       <h1 className="font-black text-gray-900 text-xl mb-4">출석 체크</h1>
 
-      <div className="bg-white rounded-2xl flex flex-col min-w-3xs max-w-3x mx-auto">
+      <div className="bg-white rounded-2xl flex flex-col min-w-3xs mx-auto">
         {/* 상단 정보 */}
         <div className="px-6 py-4 mt-2">
           <div className="flex justify-between items-start mb-4">
@@ -22,7 +40,9 @@ function QRView({ code, getAuthCode }) {
             </div>
             <div className="flex items-center gap-2 bg-green-50 px-3 py-1.5 rounded-full">
               <div className="w-2 h-2 rounded-full bg-green-400"></div>
-              <span className="text-gray-900 text-sm font-medium">5초</span>
+              <span className="text-gray-900 text-sm font-medium">
+                {remain}초
+              </span>
             </div>
           </div>
 
@@ -37,7 +57,7 @@ function QRView({ code, getAuthCode }) {
               <p className="text-gray-900 font-semibold">황은태</p>
             </div>
             <div>
-              <p className="text-gray-500 text-xs mb-1">현재 시각</p>
+              <p className="text-gray-500 text-xs mb-1">체크인 시간</p>
               <p className="text-gray-900 font-semibold">PM 10:27</p>
             </div>
           </div>
@@ -47,10 +67,16 @@ function QRView({ code, getAuthCode }) {
         <TicketCutLine bgColor="bg-gray-100" />
 
         {/* QR */}
-        <div className="w-full aspect-square p-10 mb-8">
+        <div className="w-full aspect-square p-10 mb-2">
           <QRCodeSVG value={code} className="size-full" />
         </div>
       </div>
+
+      <Link to="key">
+        <div className="w-full flex items-center justify-center gap-2 bg-white rounded-2xl p-4 text-lg">
+          키오스크 발급 키로 출석하기
+        </div>
+      </Link>
     </ScreenFrame>
   );
 }

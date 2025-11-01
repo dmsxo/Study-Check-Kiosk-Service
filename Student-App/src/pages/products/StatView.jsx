@@ -11,10 +11,9 @@ import {
   StreakCalendar,
   RateChart,
 } from '../../components/StatViewComponents';
-import { getFullStatData } from '../../helpers/stats.helper';
 import { getColorClass } from '../../helpers/calendar.helper';
 
-function StatView() {
+function StatView({ statData }) {
   // 현재 보고 있는 카테고리
   const [studyType, setStudyType] = useState('night');
 
@@ -26,9 +25,8 @@ function StatView() {
   const [viewMode, setViewMode] = useState('month');
   const [curruntView, setCurruntView] = useState(new Date());
 
-  // 아침 독서, 야간 자율학습 출석 통계 객체
-  const { morning, night } = getFullStatData();
-  const activityData = studyType === 'night' ? night : morning; // 현재 통계
+  const activityData =
+    studyType === 'night' ? statData.night : statData.morning; // 현재 통계
 
   return (
     <ScreenFrame>
