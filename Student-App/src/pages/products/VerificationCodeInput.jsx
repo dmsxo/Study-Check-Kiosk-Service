@@ -12,6 +12,11 @@ export default function VerificationCodeInput() {
     }
   }, [code, isComplete]);
 
+  useEffect(() => {
+    // 첫 번째 입력칸에 자동 포커스
+    inputRefs.current[0]?.focus();
+  }, []);
+
   const handleChange = (index, value) => {
     const sanitized = value.toUpperCase().replace(/[^A-Z0-9]/g, '');
 
@@ -82,7 +87,7 @@ export default function VerificationCodeInput() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center">
+    <div className="fixed inset-0 bg-white flex items-center justify-center overflow-hidden">
       <div className="text-center">
         <div className="flex gap-3 mb-8">
           {code.map((digit, index) => (
@@ -100,6 +105,10 @@ export default function VerificationCodeInput() {
             />
           ))}
         </div>
+
+        {isComplete && (
+          <div className="text-green-600 text-lg font-medium">인증 성공</div>
+        )}
       </div>
     </div>
   );
