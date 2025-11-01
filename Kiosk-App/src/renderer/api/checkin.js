@@ -4,7 +4,8 @@ const address = "http://localhost:3000";
 
 export async function getCode(){
   const response = await axios.post(`${address}/auth/checkin/code`, {
-      mode: "kiosk:0", // or "kiosk"
+      issuer: "kiosk:night", // or "kiosk"
+      ttl: 15000
     });
     return response.data; // { code, expiresIn }
 }
