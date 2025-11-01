@@ -146,7 +146,6 @@ export function getRateByMonth(getRate, curruntDate){
   for(let i = 0; i < 12; i++){
     const startDate = dateToStr(curruntDate.getFullYear(), i, 1);
     const endDate = dateToStr(curruntDate.getFullYear(), i+1, 0);
-    console.log(startDate, endDate);
     curruntRates.push({ label:`${i+1}월`, rate: getRate(startDate, endDate)});
   }
   return curruntRates;
@@ -164,7 +163,6 @@ export function getRateByWeek(getRate, curruntDate){
   let weekCount = 1, startDate = 1, endDate = 7;
   
   while (endDate < lastDate + 7){
-    console.log(endDate, lastDate);
     const rate = getRate(dateToStr(year, month, startDate), dateToStr(year, month, Math.min(endDate, lastDate)));
     curruntRates.push({ label:`${weekCount}주차`, rate: rate});
     startDate += 7, endDate += 7; weekCount++;

@@ -1,45 +1,58 @@
-import { QRCodeSVG } from "qrcode.react";
-import { useState, useRef } from "react";
-import { User, Settings, Bell, Mail } from "lucide-react";
-import TicketBackground from "../../components/QRViewComponents/TicketUI";
+import { QRCodeSVG } from 'qrcode.react';
+import { useState, useRef } from 'react';
+import { User, Settings, Bell, Mail } from 'lucide-react';
+import TicketCutLine from '../../components/QRViewComponents/TicketCutLine';
+import { ScreenFrame } from '../../components/UIComponents';
 
 function QRView({ code, getAuthCode }) {
   const [isStudy, setIsStudy] = useState(false);
 
   return (
-    <div className="bg-gray-100 min-h-full h-fit">
-      <div className="flex flex-col min-h-full min-w-fit max-w-3xl p-4 space-y-3">
-        <h1 className="font-black text-gray-900 text-xl mb-4">출석 체크</h1>
+    <ScreenFrame bgColor="bg-green-50">
+      <h1 className="font-black text-gray-900 text-xl mb-4">출석 체크</h1>
 
-        <div className="bg-white rounded-2xl flex flex-col w-11/12 min-w-3xs max-w-lg mx-auto">
-          <div className="flex-1 p-6 gap-5">
-            <h3 className="text-gray-500 text-sm">20129 황은태</h3>
-            <h1 className="font-medium text-gray-900 text-2xl">
-              야간 자율학습 출석 티켓
-            </h1>
-            <h2 className="font-medium text-sm text-gray-700 mt-3">시간</h2>
-            <h3 className="font-medium text-gray-600">
-              2025-10-08 19:00 ~ 22:00
-            </h3>
+      <div className="bg-white rounded-2xl flex flex-col min-w-3xs max-w-3x mx-auto">
+        {/* 상단 정보 */}
+        <div className="px-6 py-4 mt-2">
+          <div className="flex justify-between items-start mb-4">
+            <div>
+              <h3 className="text-gray-900 font-bold text-lg mb-1">
+                QR 코드 인증
+              </h3>
+              <p className="text-gray-500 text-sm">키오스크에 스캔해주세요</p>
+            </div>
+            <div className="flex items-center gap-2 bg-green-50 px-3 py-1.5 rounded-full">
+              <div className="w-2 h-2 rounded-full bg-green-400"></div>
+              <span className="text-gray-900 text-sm font-medium">5초</span>
+            </div>
           </div>
-          <div className="w-full aspect-square p-10 mb-8">
-            <QRCodeSVG value={code} className="size-full" />
+
+          {/* 정보 그리드 */}
+          <div className="grid grid-cols-3 gap-4 bg-gray-50 rounded-xl p-4">
+            <div>
+              <p className="text-gray-500 text-xs mb-1">학번</p>
+              <p className="text-gray-900 font-semibold">20129</p>
+            </div>
+            <div>
+              <p className="text-gray-500 text-xs mb-1">이름</p>
+              <p className="text-gray-900 font-semibold">황은태</p>
+            </div>
+            <div>
+              <p className="text-gray-500 text-xs mb-1">현재 시각</p>
+              <p className="text-gray-900 font-semibold">PM 10:27</p>
+            </div>
           </div>
         </div>
-        <button
-          className="border border-slate-200 bg-white rounded-2xl w-11/12 p-2 mx-auto"
-          onClick={getAuthCode}
-        >
-          QR 새로 생성
-        </button>
-        {/* <button
-          className="border border-slate-200 bg-white rounded-2xl w-11/12 p-2 mx-auto"
-          onClick={getAuthCode}
-        >
-          키오스크 발급 키로 출석하기
-        </button> */}
+
+        {/* 컷라인 */}
+        <TicketCutLine bgColor="bg-green-50" />
+
+        {/* QR */}
+        <div className="w-full aspect-square p-10 mb-8">
+          <QRCodeSVG value={code} className="size-full" />
+        </div>
       </div>
-    </div>
+    </ScreenFrame>
   );
 }
 

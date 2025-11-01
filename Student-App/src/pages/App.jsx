@@ -1,18 +1,18 @@
-import { useState, useEffect } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import MainLayout from "./products/MainLayout";
-import Login from "./auth/Login";
-import QRView from "./products/QRView";
-import StatView from "./products/StatView";
-import MyView from "./products/MyView";
-import ProtectedRoute from "../routes/ProtectedRoute";
-import PublicRoute from "../routes/PublicRoute";
-import { userData } from "../test/userData";
-import { getCode } from "../api/checkin";
+import { useState, useEffect } from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import MainLayout from './products/MainLayout';
+import Login from './auth/Login';
+import QRView from './products/QRView';
+import StatView from './products/StatView';
+import MyView from './products/MyView';
+import ProtectedRoute from '../routes/ProtectedRoute';
+import PublicRoute from '../routes/PublicRoute';
+import { userData } from '../test/userData';
+import { getCode } from '../api/checkin';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [code, setCode] = useState("");
+  const [code, setCode] = useState('abcdefg');
   const user = userData;
 
   const getAuthCode = async () => {
