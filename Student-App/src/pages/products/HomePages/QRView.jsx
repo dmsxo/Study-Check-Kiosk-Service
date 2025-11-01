@@ -1,7 +1,7 @@
 import { QRCodeSVG } from 'qrcode.react';
 import { useState, useRef, useEffect } from 'react';
-import TicketCutLine from '../../components/QRViewComponents/TicketCutLine';
-import { ScreenFrame } from '../../components/UIComponents';
+import TicketCutLine from '../../../components/QRViewComponents/TicketCutLine';
+import { ScreenFrame } from '../../../components/UIComponents';
 import { Link } from 'react-router-dom';
 
 function QRView({ code, getAuthCode }) {

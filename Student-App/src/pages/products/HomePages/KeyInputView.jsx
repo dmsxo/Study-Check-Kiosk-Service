@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { KeyRound, X } from 'lucide-react';
-import { verifyCode } from '../../api/checkin';
+import { verifyCode } from '../../../api/checkin';
 
 export default function KeyInput() {
   const [code, setCode] = useState(['', '', '', '', '', '']);
