@@ -5,6 +5,7 @@ import Login from './auth/Login';
 import QRView from './products/QRView';
 import StatView from './products/StatView';
 import MyView from './products/MyView';
+import VerificationCodeInput from './products/VerificationCodeInput';
 import ProtectedRoute from '../routes/ProtectedRoute';
 import PublicRoute from '../routes/PublicRoute';
 import { userData } from '../test/userData';
@@ -46,7 +47,7 @@ function App() {
             index
             element={<QRView code={code} getAuthCode={getAuthCode} />}
           />
-          <Route path="stat" element={<StatView />} />
+          <Route path="stat" element={<VerificationCodeInput />} />
           <Route
             path="mypage"
             element={<MyView setIsLoggedIn={setIsLoggedIn} user={user} />}

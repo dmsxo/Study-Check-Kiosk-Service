@@ -1,6 +1,5 @@
 import { QRCodeSVG } from 'qrcode.react';
 import { useState, useRef } from 'react';
-import { User, Settings, Bell, Mail } from 'lucide-react';
 import TicketCutLine from '../../components/QRViewComponents/TicketCutLine';
 import { ScreenFrame } from '../../components/UIComponents';
 
@@ -8,7 +7,7 @@ function QRView({ code, getAuthCode }) {
   const [isStudy, setIsStudy] = useState(false);
 
   return (
-    <ScreenFrame bgColor="bg-green-50">
+    <ScreenFrame bgColor="bg-gradient-to-b from-gray-50 to-gray-200">
       <h1 className="font-black text-gray-900 text-xl mb-4">출석 체크</h1>
 
       <div className="bg-white rounded-2xl flex flex-col min-w-3xs max-w-3x mx-auto">
@@ -45,7 +44,7 @@ function QRView({ code, getAuthCode }) {
         </div>
 
         {/* 컷라인 */}
-        <TicketCutLine bgColor="bg-green-50" />
+        <TicketCutLine bgColor="bg-gray-100" />
 
         {/* QR */}
         <div className="w-full aspect-square p-10 mb-8">
