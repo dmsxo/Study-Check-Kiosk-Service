@@ -11,13 +11,12 @@ import * as redisStore from 'cache-manager-ioredis';
 /*
 src/
 ├─ auth/
-│  ├─ auth.controller.ts       // 로그인/로그아웃
-│  ├─ auth.service.ts
-│  └─ auth.module.ts
-├─ user/
-│  ├─ user.controller.ts       // 유저 CRUD
-│  ├─ user.service.ts
-│  └─ user.module.ts
+│  ├─ login
+│  ├─ logout
+│  ├─ checkin/code   (Post)
+│  └─ checkin/verify (Post)
+├─ users/            (Post, Get)
+│  └─ :id/
 ├─ attendance/
 │  ├─ controllers/
 │  │  ├─ user-attendance.controller.ts   // /users/:userId/attendances

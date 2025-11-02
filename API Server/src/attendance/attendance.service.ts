@@ -1,75 +1,149 @@
-// src/attendance/attendance.service.ts
-import { Injectable, NotFoundException } from '@nestjs/common';
+// src/attendance/services/attendance.service.ts
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, Between, Like } from 'typeorm';
 import { Attendance } from './entities/attendance.entity';
+import { UserService } from './../user/user.service';
+import { User } from './../user/entities/user.entity';
 import { CreateAttendanceDto } from './dto/create-attendance.dto';
 import { UpdateAttendanceDto } from './dto/update-attendance.dto';
-import { User } from '../user/entities/user.entity';
+import { QueryAttendanceDto } from './dto/query-attendance.dto';
 
 @Injectable()
 export class AttendanceService {
   constructor(
     @InjectRepository(Attendance)
-    private attendanceRepo: Repository<Attendance>,
-    @InjectRepository(User)
-    private userRepo: Repository<User>,
+    private readonly attendanceRepo: Repository<Attendance>,
+    private readonly userService: UserService,
   ) {}
 
+  /** ================= CRUD ================= */
+
   async create(dto: CreateAttendanceDto): Promise<Attendance> {
-    const user = await this.userRepo.findOne({
-      where: { student_id: +dto.student_id },
-    });
-    if (!user)
-      throw new NotFoundException(
-        `User with student_id ${dto.student_id} not found`,
-      );
-
+    const user: User = await this.userService.get_user(dto.student_id);
     const attendance = this.attendanceRepo.create({
-      type: dto.type,
-      date: dto.date,
-      check_in_time: dto.check_in_time,
-      check_out_time: dto.check_out_time,
-      description: dto.description,
+      ...dto,
       student_id: user,
+      check_in_time: dto.check_in_time
+        ? this.convertToTime(dto.check_in_time)
+        : undefined,
+      check_out_time: dto.check_out_time
+        ? this.convertToTime(dto.check_out_time)
+        : undefined,
     });
-
     return this.attendanceRepo.save(attendance);
   }
 
-  async findAll(): Promise<Attendance[]> {
-    return this.attendanceRepo.find({ relations: ['student_id'] });
+  async update(
+    attendanceId: number,
+    dto: UpdateAttendanceDto,
+  ): Promise<Attendance> {
+    const attendance = await this.findOneById(attendanceId);
+    if (dto.check_in_time)
+      attendance.check_in_time = this.convertToTime(dto.check_in_time);
+    if (dto.check_out_time)
+      attendance.check_out_time = this.convertToTime(dto.check_out_time);
+    Object.assign(attendance, { ...dto, student_id: undefined }); // student_id는 변경 금지
+    return this.attendanceRepo.save(attendance);
   }
 
-  async findOne(id: number): Promise<Attendance> {
+  async findOneById(attendanceId: number): Promise<Attendance> {
     const attendance = await this.attendanceRepo.findOne({
-      where: { id },
-      relations: ['student_id'],
+      where: { id: attendanceId },
     });
-    if (!attendance) throw new NotFoundException(`Attendance ${id} not found`);
+    if (!attendance) throw new NotFoundException('Attendance not found');
     return attendance;
   }
 
-  async update(id: number, dto: UpdateAttendanceDto): Promise<Attendance> {
-    const attendance = await this.findOne(id);
+  async remove(attendanceId: number): Promise<Attendance> {
+    const attendance = await this.findOneById(attendanceId);
+    return this.attendanceRepo.remove(attendance);
+  }
 
-    if (dto.student_id) {
-      const user = await this.userRepo.findOne({
-        where: { student_id: +dto.student_id },
-      });
-      if (!user)
-        throw new NotFoundException(
-          `User with student_id ${dto.student_id} not found`,
-        );
-      attendance.student_id = user;
-    }
+  /** ================= 체크인/체크아웃 ================= */
 
-    Object.assign(attendance, dto);
+  async checkIn(
+    student_id: number,
+    type: 'morning' | 'night',
+  ): Promise<Attendance> {
+    const user = await this.userService.get_user(student_id);
+
+    const existing = await this.attendanceRepo.findOne({
+      where: {
+        student_id: user,
+        type,
+        date: new Date().toISOString().slice(0, 10),
+      },
+    });
+    if (existing) throw new BadRequestException('Already checked in');
+
+    const attendance = this.attendanceRepo.create({
+      student_id: user,
+      type,
+      date: new Date().toISOString().slice(0, 10), // YYYY-MM-DD
+      check_in_time: new Date(), // 서버 현재 시간
+    });
+
     return this.attendanceRepo.save(attendance);
   }
 
-  async remove(id: number): Promise<Attendance> {
-    const attendance = await this.findOne(id);
-    return this.attendanceRepo.remove(attendance);
+  async checkOut(
+    student_id: number,
+    type: 'morning' | 'night',
+    description: string,
+  ): Promise<Attendance> {
+    const user = await this.userService.get_user(student_id);
+    const today = new Date().toISOString().slice(0, 10);
+
+    const attendance = await this.attendanceRepo.findOne({
+      where: { student_id: user, type, date: today },
+    });
+    if (!attendance)
+      throw new NotFoundException(
+        'Attendance not found. Please check in first.',
+      );
+
+    attendance.check_out_time = new Date(); // 서버 현재 시간
+    attendance.description = description;
+    return this.attendanceRepo.save(attendance);
+  }
+
+  /** ================= 조회 ================= */
+
+  async findAllByStudent(
+    student_id: number,
+    query?: QueryAttendanceDto,
+  ): Promise<Attendance[]> {
+    const user = await this.userService.get_user(student_id);
+    const where: any = { student_id: user };
+
+    if (query?.type) where.type = query.type;
+    if (query?.date_from && query?.date_to)
+      where.date = Between(query.date_from, query.date_to);
+
+    return this.attendanceRepo.find({ where, order: { date: 'DESC' } });
+  }
+
+  async findAll(query?: QueryAttendanceDto): Promise<Attendance[]> {
+    const where: any = {};
+    if (query?.type) where.type = query.type;
+    if (query?.date_from && query?.date_to)
+      where.date = Between(query.date_from, query.date_to);
+    if (query?.student_id_like) {
+      where.student_id = Like(`${query.student_id_like}%`);
+    }
+
+    return this.attendanceRepo.find({ where, order: { date: 'DESC' } });
+  }
+
+  /** ================= 유틸 ================= */
+
+  private convertToTime(timeString: string): Date {
+    // HH:MM:SS 문자열 → Date 객체 (1970-01-01 기준)
+    return new Date(`1970-01-01T${timeString}`);
   }
 }

@@ -1,17 +1,20 @@
 // src/attendance/dto/response-attendance.dto.ts
-import { User } from '../../user/entities/user.entity';
+import { Attendance } from '../entities/attendance.entity';
 
 export class ResponseAttendanceDto {
   id: number;
-  type: string;
+  type: 'morning' | 'night';
   date: string;
-  check_in_time: string;
-  check_out_time?: string;
+  check_in_time: Date;
+  check_out_time?: Date;
   description?: string;
-  student?: {
-    id: number;
-    name: string;
-    student_id: number;
-    email: string;
-  };
+
+  constructor(attendance: Attendance) {
+    this.id = attendance.id;
+    this.type = attendance.type as 'morning' | 'night';
+    this.date = attendance.date;
+    this.check_in_time = attendance.check_in_time;
+    this.check_out_time = attendance.check_out_time;
+    this.description = attendance.description;
+  }
 }

@@ -1,24 +1,28 @@
-// src/attendance/dto/create-attendance.dto.ts
-import { IsString, IsDateString, IsOptional } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsString,
+  IsOptional,
+  IsDateString,
+} from 'class-validator';
 
 export class CreateAttendanceDto {
+  @IsNotEmpty()
+  student_id: number;
+
+  @IsNotEmpty()
   @IsString()
   type: string; // morning, evening
 
+  @IsNotEmpty()
   @IsDateString()
   date: string; // YYYY-MM-DD
 
-  @IsDateString()
-  check_in_time: string; // HH:MM:SS
+  @IsOptional()
+  check_in_time?: string; // HH:MM:SS
 
   @IsOptional()
-  @IsDateString()
-  check_out_time?: string; // HH:MM:SS
+  check_out_time?: string;
 
   @IsOptional()
-  @IsString()
   description?: string;
-
-  @IsString()
-  student_id: string; // User student_id
 }
