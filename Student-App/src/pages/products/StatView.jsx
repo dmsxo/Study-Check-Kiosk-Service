@@ -113,7 +113,7 @@ function StatView({ statData }) {
       )}
 
       {/* 출석률 그래프 */}
-      <LayoutContaner addSytle="space-y-3">
+      <LayoutContaner className="space-y-3">
         <h3 className="font-semibold text-gray-900 mb-3 bg-eme">출석률 추이</h3>
         <div className="flex justify-center">
           <div className="flex-1 max-w-md min-w-3xs aspect-square">

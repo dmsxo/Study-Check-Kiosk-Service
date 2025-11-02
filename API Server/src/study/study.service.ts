@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Attendance } from 'src/entitys/attendance.entity';
+import { Attendance } from 'src/attendance/entities/attendance.entity';
 import { Repository } from 'typeorm';
 import { UserService } from 'src/user/user.service';
 import { formatDate } from 'src/utils/date.helper';

@@ -1,7 +1,7 @@
-function LayoutContaner({ children, addSytle = '' }) {
+function LayoutContaner({ children, className = '' }) {
   return (
     <div
-      className={`${addSytle} p-4 bg-white rounded-xl border border-slate-200`}
+      className={`${className} p-4 bg-white rounded-xl border border-slate-200`}
     >
       {children}
     </div>

@@ -5,7 +5,7 @@ import {
   ManyToOne,
   Unique,
 } from 'typeorm';
-import { User } from './user.entity';
+import { User } from '../../user/entities/user.entity';
 
 @Entity('attendances')
 @Unique(['student_id', 'date', 'type'])

@@ -49,7 +49,7 @@ function App() {
           />
           <Route path="key" element={<KeyInputView />} />
           <Route path="study" element={<StudyView statData={statData} />} />
-          <Route path="stat" element={<StatView statData={statData} />} />
+          <Route path="stat" element={<StudyView statData={statData} />} />
           <Route
             path="mypage"
             element={<MyView setIsLoggedIn={setIsLoggedIn} user={user} />}

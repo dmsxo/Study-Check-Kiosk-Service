@@ -1,6 +1,6 @@
 import { Controller, Param, Post, Query } from '@nestjs/common';
 import { StudyService } from './study.service';
-import { Attendance } from 'src/entitys/attendance.entity';
+import { Attendance } from 'src/attendance/entities/attendance.entity';
 
 @Controller('users/:id/study')
 export class StudyController {

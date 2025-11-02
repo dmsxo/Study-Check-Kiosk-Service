@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { ValidationPipe } from '@nestjs/common';
 /*
 School Self-Study Kiosk Project
 Author: Hwang euntea
@@ -35,6 +36,13 @@ async function bootstrap() {
     .build();
 
   app.enableCors();
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true, // DTO에 없는 필드는 제거
+      forbidNonWhitelisted: true, // DTO에 없는 필드 있으면 에러
+      transform: true, // 자동으로 타입 변환
+    }),
+  );
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api', app, document);
 

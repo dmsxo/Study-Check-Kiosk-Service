@@ -36,7 +36,7 @@ function MyView({ setIsLoggedIn, user }) {
     <ScreenFrame>
       <h1 className="font-semibold text-gray-900 text-xl mb-4">나의 정보</h1>
       {/* 기본 프로필 정보 */}
-      <LayoutContaner addSytle="flex items-start">
+      <LayoutContaner className="flex items-start">
         <UserRound className="shrink-0 size-12 text-gray-500" />
         <div className="flex-1 ml-4">
           <h2 className="font-semibold text-gray-900 mb-1">{name}</h2>

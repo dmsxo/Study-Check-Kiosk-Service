@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { StudyService } from './study.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Attendance } from '../entitys/attendance.entity';
-import { User } from '../entitys/user.entity';
+import { Attendance } from '../attendance/entities/attendance.entity';
+import { User } from '../user/entities/user.entity';
 import { StudyController } from './study.controller';
 
 @Module({
