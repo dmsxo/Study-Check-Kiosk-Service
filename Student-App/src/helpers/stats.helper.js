@@ -1,3 +1,4 @@
+import { getAttendances } from "../api/AttendanceAPI";
 import { attendances } from "../test/attendance_dummy";
 import { schoolDays } from "../test/school_days_dummy";
 import { getTimeDiff, compareDates } from "../utils/date.utils";
@@ -120,9 +121,9 @@ function getStats(attendance, schoolDaysRaw){
  * 아침 독서와 야간 자율학습 전부의 Stat을 반환
  * @returns 
  */
-export function getFullStatData(){
+export async function getFullStatData(){
   // 추후 API 호출할 raw datas (현 dummy)
-  const rawAttendances = attendances;
+  const rawAttendances = await getAttendances();
   const rawSchoolDays = schoolDays;
   // 1년치 출석 캘린더 생성
   const attendanceByType = groupByStudyType(rawAttendances);

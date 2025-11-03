@@ -16,6 +16,12 @@ import { QueryAttendanceDto } from './dto/query-attendance.dto';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { Attendance } from 'src/attendance/entities/attendance.entity';
 
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
 @Injectable()
 export class AttendanceService {
   constructor(
@@ -117,15 +123,14 @@ export class AttendanceService {
     const exists = await this.cacheManager.get(`study:${student_id}:${type}`);
     if (exists) throw new BadRequestException('Already checked in');
 
-    // 기존 create 메서드 활용
+    const now = dayjs().tz('Asia/Seoul');
     const attendanceDto: CreateAttendanceDto = {
       student_id,
       type,
-      date: new Date().toISOString().slice(0, 10),
-      check_in_time: new Date().toTimeString().slice(0, 8),
+      date: now.format('YYYY-MM-DD'),
+      check_in_time: now.format('HH:mm:ss'),
     };
     const attendance = await this.create(attendanceDto);
-    //
 
     // Redis에 attendance.id 저장
     await this.cacheManager.set(
@@ -157,14 +162,13 @@ export class AttendanceService {
       );
     }
 
-    // 기존 update 메서드 활용
+    const now = dayjs().tz('Asia/Seoul');
     const updateDto: UpdateAttendanceDto = {
-      check_out_time: new Date().toTimeString().slice(0, 8),
+      check_out_time: now.format('HH:mm:ss'),
       description,
     };
     const attendance = await this.update(status.attendance_id, updateDto);
 
-    // Redis에서 키 삭제
     await this.cacheManager.set(
       `study:${student_id}:${type}`,
       this.serialize(attendance.id, false),
@@ -229,7 +233,13 @@ export class AttendanceService {
   /** ================= 유틸 ================= */
 
   private convertToTime(timeString: string): Date {
-    // HH:MM:SS 문자열 → Date 객체 (1970-01-01 기준)
-    return new Date(`1970-01-01T${timeString}`);
+    const [h, m, s] = timeString.split(':').map(Number);
+    return dayjs()
+      .tz('Asia/Seoul')
+      .hour(h)
+      .minute(m)
+      .second(s)
+      .millisecond(0)
+      .toDate();
   }
 }

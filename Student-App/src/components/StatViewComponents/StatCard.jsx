@@ -1,6 +1,6 @@
-function StatCard({ Icon, color, title, value }) {
+function StatCard({ Icon, color, title, value, bgColor = 'bg-gray-50' }) {
   return (
-    <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
+    <div className={`border border-gray-200 rounded-lg p-3 ${bgColor}`}>
       <div className="flex items-center gap-1.5 mb-1.5">
         <Icon className={`w-3.5 h-3.5 ${color}`} />
         <div className="text-xs text-gray-600 font-medium">{title}</div>

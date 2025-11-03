@@ -1,9 +1,9 @@
-import { QRCodeSVG } from "qrcode.react";
-import { useState, useRef, useEffect } from "react";
-import TicketCutLine from "../../../components/QRViewComponents/TicketCutLine";
-import { ScreenFrame } from "../../../components/UIComponents";
-import { Link } from "react-router-dom";
-import { getStatus } from "../../../api/checkin";
+import { QRCodeSVG } from 'qrcode.react';
+import { useState, useRef, useEffect } from 'react';
+import TicketCutLine from '../../../components/QRViewComponents/TicketCutLine';
+import { ScreenFrame } from '../../../components/UIComponents';
+import { Link } from 'react-router-dom';
+import { getStatus } from '../../../api/AttendanceAPI';
 
 function QRView({ code, getAuthCode, setIsStudying }) {
   const INTERVAL_SEC = 10; // 반복 주기 (초)
@@ -11,7 +11,7 @@ function QRView({ code, getAuthCode, setIsStudying }) {
 
   useEffect(() => {
     const fetchStatus = async () => {
-      return await getStatus("night");
+      return await getStatus('night');
     };
 
     const timer = setInterval(() => {

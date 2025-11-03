@@ -40,3 +40,34 @@ export async function getStatus(type) {
     throw error;
   }
 }
+
+export async function getAttendanceId(type){
+  try {
+    const res = await axios.get(`${address}/attendances/status/${userData.studentID}?type=${type}`);
+    return res.data.attendance_id;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+export async function getCheckinTime(type) {
+  const id = await getAttendanceId(type)
+  try {
+    const res = await axios.get(`${address}/attendances/${id}`);
+    return res.data.check_in_time;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+export async function getAttendances() {
+  try {
+    const res = await axios.get(`${address}/users/${userData.studentID}/attendances`);
+    return res.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}

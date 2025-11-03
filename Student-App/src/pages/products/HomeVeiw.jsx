@@ -1,8 +1,8 @@
 // Home.jsx
-import { useState, useEffect } from "react";
-import QRView from "./HomePages/QRView";
-import StudyView from "./HomePages/StudyView";
-import { getStatus } from "../../api/checkin";
+import { useState, useEffect } from 'react';
+import QRView from './HomePages/QRView';
+import StudyView from './HomePages/StudyView';
+import { getStatus } from '../../api/AttendanceAPI';
 
 function Home({ getAuthCode, code, statData }) {
   const [isStudying, setIsStudying] = useState(false);
@@ -10,12 +10,11 @@ function Home({ getAuthCode, code, statData }) {
 
   useEffect(() => {
     const fetchStatus = async () => {
-      const status = await getStatus("night");
+      const status = await getStatus('night');
       setIsStudying(status);
       setLoading(false);
     };
     fetchStatus();
-    console.log(isStudying);
   }, []);
 
   if (loading) {
