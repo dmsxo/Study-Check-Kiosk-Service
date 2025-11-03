@@ -5,10 +5,50 @@ import { check_out, getCheckinTime } from '../../../api/AttendanceAPI';
 import { useEffect, useState, useRef } from 'react';
 import dayjs from 'dayjs';
 
+function getWeekTotalDay(data) {
+  return data.filter((item) => item.studytime > 0).length + 1;
+}
+
+function getWeekTotaTime(data, time) {
+  const pre = dayjs.duration(
+    data.reduce((sum, item) => sum + item.studytime, 0),
+    'second'
+  );
+  const total = pre.add(time);
+
+  return total;
+}
+
+function getWeekAverage(data, time) {
+  const today = dayjs();
+
+  const validData = data.filter((item) =>
+    dayjs(item.date).isSameOrBefore(today, 'day')
+  );
+
+  if (validData.length === 0) return 0; // 데이터 없으면 0 반환
+
+  const totalStudyTime = getWeekTotaTime(data, time);
+
+  const averageSeconds = totalStudyTime.asSeconds() / validData.length;
+
+  return dayjs.duration(averageSeconds, 'seconds'); // 다시 duration으로
+}
+
+function formatDuration(total) {
+  let messege = `${total.hours()}시간 ${total.minutes()}분`;
+  if (total.hours() === 0) {
+    messege = `${total.minutes()}분`;
+    if (total.minutes() === 0) messege = '기록 없음';
+  }
+  return messege;
+}
+
 function StudyView({ setIsStudying, statData }) {
   const checkInTime = useRef(null); // 오늘 기준 초
   const [time, setTime] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [weekData, setWeekData] = useState(statData.night.getThisWeekData());
 
   useEffect(() => {
     const fetchCheckinTime = async () => {
@@ -17,7 +57,7 @@ function StudyView({ setIsStudying, statData }) {
         if (timeStr) {
           checkInTime.current = dayjs.tz(timeStr, 'HH:mm:ss', 'Asia/Seoul');
           const now = dayjs().tz('Asia/Seoul');
-          setTime(dayjs.duration(now.diff(checkInTime.current)));
+          setTime(dayjs.duration(now.diff(checkInTime.current)), 'second');
         }
       } catch (err) {
         console.error(err);
@@ -51,7 +91,10 @@ function StudyView({ setIsStudying, statData }) {
             </div>
           </div>
           <div className="flex flex-col justify-center items-center">
-            <h2 className="font-bold text-2xl mb-2">{formatTime(time)}</h2>
+            <h2 className="font-bold text-2xl mb-2">
+              {time.hours() != 0 && `${time.hours()}시간`} {time.minutes()}분{' '}
+              {time.seconds()}초
+            </h2>
             <div className="flex items-center gap-2">
               <p className="text-sm">공부중</p>
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
@@ -63,28 +106,28 @@ function StudyView({ setIsStudying, statData }) {
             title={'연속 출석일'}
             Icon={Flame}
             color={'text-orange-500'}
-            value={10}
+            value={statData.night.streak + 1}
             bgColor={'bg-white'}
           />
           <StatCard
             title={'이번주 총 출석일'}
             Icon={Calendar}
             color={'text-emerald-500'}
-            value={3}
+            value={getWeekTotalDay(weekData)}
             bgColor={'bg-white'}
           />
           <StatCard
             title={'이번주 순공시간'}
             Icon={AlarmClock}
             color={'text-purple-500'}
-            value={3}
+            value={formatDuration(getWeekTotaTime(weekData, time))}
             bgColor={'bg-white'}
           />
           <StatCard
             title={'일 평균'}
             Icon={TrendingUp}
             color={'text-blue-500'}
-            value={3}
+            value={formatDuration(getWeekAverage(weekData, time))}
             bgColor={'bg-white'}
           />
         </div>

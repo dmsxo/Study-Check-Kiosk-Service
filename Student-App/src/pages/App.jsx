@@ -19,16 +19,13 @@ function App() {
   const [code, setCode] = useState('');
   // 아침 독서, 야간 자율학습 출석 통계 객체
   const [statData, setStatData] = useState();
+  const [isLoading, setIsLoading] = useState(false);
   const user = userData;
 
   const getAuthCode = async () => {
     const code = await getCode();
     setCode(code);
   };
-
-  useEffect(() => {
-    getFullStatData().then((res) => setStatData(res));
-  }, []);
 
   return (
     <BrowserRouter>
@@ -51,7 +48,12 @@ function App() {
           <Route
             index
             element={
-              <Home code={code} getAuthCode={getAuthCode} statData={statData} />
+              <Home
+                code={code}
+                getAuthCode={getAuthCode}
+                statData={statData}
+                setStatData={setStatData}
+              />
             }
           />
           <Route path="/key" element={<KeyInputView />} />

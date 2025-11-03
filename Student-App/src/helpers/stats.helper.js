@@ -50,7 +50,7 @@ function buildAttendanceCalendar(attendance, schoolDaysRaw){
 
   if(attendance){
     attendance.forEach(e => {
-      if(calendar[e.date]){
+      if(calendar[e.date] && e.check_in_time && e.check_out_time){
         calendar[e.date].studytime = getTimeDiff(e.check_in_time, e.check_out_time);
         calendar[e.date].description = e.description;
       }
@@ -117,12 +117,26 @@ function getStats(attendance, schoolDaysRaw){
     return days === 0 ? 0 : Math.round((count / days) * 10000) / 100;
   }
 
+  function getThisWeekData() {
+  const today = dayjs();
+  const monday = today.startOf('week').add(1, 'day'); // 일요일 기준 startOf('week') + 1 = 월요일
+  const sunday = monday.add(6, 'day');
+
+  const result = Object.values(calendar).filter(item => {
+    const itemDate = dayjs(item.date);
+    return itemDate.isSameOrAfter(monday, 'day') && itemDate.isSameOrBefore(sunday, 'day');
+  });
+
+  return result;
+}
+
   return {
     total,
     calendar,
     streak,
     longest_streak,
-    getRate
+    getRate,
+    getThisWeekData
   }
 }
 /**

@@ -62,8 +62,8 @@ function QRCheckinView() {
           <div className="flex flex-col items-center gap-16">
             <QrCode size={140} className="text-gray-900" strokeWidth={1.5} />
             <div className="text-center space-y-4">
-              <h1 className="text-5xl font-bold text-gray-900">QR �ڵ带</h1>
-              <h1 className="text-5xl font-bold text-gray-900">��ĵ���ּ���</h1>
+              <h1 className="text-5xl font-bold text-gray-900">QR 코드를</h1>
+              <h1 className="text-5xl font-bold text-gray-900">스캔해주세요</h1>
             </div>
             <div className="flex gap-3">
               <div className="w-4 h-4 bg-gray-900 rounded-full animate-bounce"></div>
@@ -88,7 +88,7 @@ function QRCheckinView() {
               style={{ animationDuration: '2s' }}
             />
             <div className="text-center space-y-4">
-              <h1 className="text-5xl font-bold text-gray-900">���� ��</h1>
+              <h1 className="text-5xl font-bold text-gray-900">인증 중</h1>
             </div>
           </div>
         );

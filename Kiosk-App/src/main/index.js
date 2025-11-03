@@ -6,6 +6,7 @@ import { SerialPort } from 'serialport'
 
 let mainWindow;
 let portCheckInterval;
+let port;
 
 async function getPort(){
   const ports = await SerialPort.list();
@@ -38,7 +39,7 @@ async function connectSerial() {
 
     mainWindow.webContents.send('port-status', 'connected');
 
-    const port = new SerialPort({ path, baudRate: 9600});
+    port = new SerialPort({ path, baudRate: 9600});
 
     port.on('data', (chunk) => {
       const line = chunk.toString().trim();
