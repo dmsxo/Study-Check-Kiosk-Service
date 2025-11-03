@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { KeyRound, X } from "lucide-react";
-import { verifyCode } from "../../api/checkin";
+import { check_in, verifyCode } from "../../api/checkin";
 import axios from "axios";
 
 export default function KeyInput() {
@@ -21,9 +21,9 @@ export default function KeyInput() {
           const [issuerType, detail] = res.split(":");
           console.log(issuerType, detail);
           if (issuerType === "kiosk") {
-            
+            await check_in(detail);
+            navigate("/");
           }
-          navigate("/");
         } catch (err) {
           console.error(err);
           setIsError(true);

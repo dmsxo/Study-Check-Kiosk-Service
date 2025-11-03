@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getCode } from '../../api/checkin';
+import { getCode, getStatus } from '../../api/AttendanceAPI';
 import { Clock } from 'lucide-react';
 
 function KeyChekinView() {
@@ -22,6 +22,8 @@ function KeyChekinView() {
             setState('timeout');
           } else return prev - 1;
         });
+
+        const status = getStatus(); // SSE.... 아마도... 엉엉
       }, 1000);
 
       return () => clearInterval(timer);
@@ -57,7 +59,7 @@ function KeyChekinView() {
       case 'success':
         return (
           <div className="flex flex-col items-center gap-16">
-            {/* <CheckCircle size={160} className="text-gray-900" strokeWidth={1.5} />
+            <CheckCircle size={160} className="text-gray-900" strokeWidth={1.5} />
             <div className="text-center space-y-8">
               <h1 className="text-6xl font-bold text-gray-900">체크인 완료</h1>
               <div className="space-y-6 pt-8">
@@ -73,7 +75,7 @@ function KeyChekinView() {
                   <p className="text-2xl text-gray-600">자율학습 체크인</p>
                 </div>
               </div>
-            </div> */}
+            </div>
           </div>
         );
       case 'timeout':

@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { QrCode, CheckCircle, XCircle, LoaderCircle, Home } from 'lucide-react';
-import { verifyCode } from '../../api/checkin';
-import axios from 'axios';
+import { check_in, verifyCode, getUser } from '../../api/AttendanceAPI';
 
 function QRCheckinView() {
   const [qrValue, setQrValue] = useState('');
@@ -38,11 +37,9 @@ function QRCheckinView() {
           const res = await verifyCode(qrValue);
           const [issuerType, detail] = res.split(':');
           if (issuerType === 'student') {
-            const user = await axios.get(`http://localhost:3000/users/${detail}`);
-            setIssuer(user.data.name);
-            await axios.post(
-              `http://localhost:3000/users/${detail}/attendances/check-in?type=night`
-            );
+            const user = await getUser(detail);
+            setIssuer(user.name);
+            check_in(user.student_id);
             setState('success');
           }
         } catch (err) {
