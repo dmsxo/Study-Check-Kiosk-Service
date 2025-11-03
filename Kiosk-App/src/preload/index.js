@@ -11,7 +11,12 @@ const serialAPI = {
 
     // cleanup용 반환 함수
     return () => ipcRenderer.removeListener('serial-data', wrapper);
-  }
+  },
+
+  onPortStatus: (callback) => {
+    ipcRenderer.on('port-status', (_event, status) => callback(status));
+    return () => ipcRenderer.removeListener('port-status', callback);
+  },
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

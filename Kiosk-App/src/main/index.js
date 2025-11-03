@@ -5,11 +5,70 @@ import icon from '../../resources/icon.png?asset'
 import { SerialPort } from 'serialport'
 
 let mainWindow;
+let portCheckInterval;
 
-const PORT_PATH = 'COM9'; 
-const BAUD_RATE = 115200;
+async function getPort(){
+  const ports = await SerialPort.list();
+  const targetPort = ports.find(port => port.vendorId === '1B4F' && port.productId === '9206');
 
-let port = new SerialPort({ path: PORT_PATH, baudRate: BAUD_RATE, autoOpen: true });
+  return targetPort.path;
+}
+
+function startPortCheck() {
+  if (portCheckInterval) return; // 이미 돌아가면 중복 X
+  portCheckInterval = setInterval(connectSerial, 2000); // 2초 간격
+}
+
+// 재탐색 중지
+function stopPortCheck() {
+  if (portCheckInterval) {
+    clearInterval(portCheckInterval);
+    portCheckInterval = null;
+  }
+}
+
+async function connectSerial() {
+  try {
+    const path = await getPort();
+
+    if (!path) {
+      mainWindow.webContents.send('port-status', 'disconnected');
+      return;
+    }
+
+    mainWindow.webContents.send('port-status', 'connected');
+
+    const port = new SerialPort({ path, baudRate: 9600});
+
+    port.on('data', (chunk) => {
+      const line = chunk.toString().trim();
+      if (line && mainWindow) {
+        mainWindow.webContents.send('serial-data', line);
+      }
+    });
+
+    port.on('open', () => {
+      console.log(`Serial port opened on ${path}`);
+      mainWindow.webContents.send('port-status', 'connected');
+    });
+
+    port.on('close', () => {
+      mainWindow.webContents.send('port-status', 'disconnected');
+      startPortCheck();
+    });
+
+    port.on('error', () => {
+      mainWindow.webContents.send('port-status', 'disconnected');
+      startPortCheck();
+    });
+
+    stopPortCheck(); // 연결되면 재탐색 중지
+  } catch (err) {
+    console.error('connectSerial error:', err);
+    mainWindow.webContents.send('port-status', 'disconnected');
+    startPortCheck();
+  }
+}
 
 function createWindow() {
   // Create the browser window.
@@ -73,6 +132,8 @@ app.whenReady().then(() => {
 
   createWindow()
 
+  connectSerial()
+
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
@@ -90,12 +151,6 @@ app.on('window-all-closed', () => {
 })
 
 // 시리얼 데이터 들어오면 바로 Renderer로 전송
-port.on('data', (chunk) => {
-  const line = chunk.toString().trim();
-  if (line && mainWindow) {
-    mainWindow.webContents.send('serial-data', line);
-  }
-});
 
 ipcMain.on('scan-qr', () => {
   if (!port || !port.isOpen) {

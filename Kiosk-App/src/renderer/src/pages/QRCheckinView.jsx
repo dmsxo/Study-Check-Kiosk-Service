@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react';
-import { QrCode, CheckCircle, XCircle, LoaderCircle, Home } from 'lucide-react';
+import { QrCode, LoaderCircle } from 'lucide-react';
 import { check_in, verifyCode, getUser } from '../../api/AttendanceAPI';
+import CheckinComplete from '../components/ResultsScreens/CheckInComplete';
+import TimeOut from '../components/ResultsScreens/TimeOut';
+import VerificationFailed from '../components/ResultsScreens/VerificationFailed';
+import HomeButton from '../components/UI/HomeButton';
 
 function QRCheckinView() {
   const [qrValue, setQrValue] = useState('');
@@ -51,15 +55,6 @@ function QRCheckinView() {
     }
   }, [state, qrValue]);
 
-  const RetryButton = () => (
-    <button
-      className="px-12 py-5 bg-black text-white text-xl font-bold rounded-3xl hover:bg-gray-800 transition-all duration-200 active:scale-95"
-      onClick={() => setState('waiting')}
-    >
-      다시 시도
-    </button>
-  );
-
   const renderContent = () => {
     switch (state) {
       case 'waiting':
@@ -67,8 +62,8 @@ function QRCheckinView() {
           <div className="flex flex-col items-center gap-16">
             <QrCode size={140} className="text-gray-900" strokeWidth={1.5} />
             <div className="text-center space-y-4">
-              <h1 className="text-5xl font-bold text-gray-900">QR 코드를</h1>
-              <h1 className="text-5xl font-bold text-gray-900">스캔해주세요</h1>
+              <h1 className="text-5xl font-bold text-gray-900">QR �ڵ带</h1>
+              <h1 className="text-5xl font-bold text-gray-900">��ĵ���ּ���</h1>
             </div>
             <div className="flex gap-3">
               <div className="w-4 h-4 bg-gray-900 rounded-full animate-bounce"></div>
@@ -93,54 +88,16 @@ function QRCheckinView() {
               style={{ animationDuration: '2s' }}
             />
             <div className="text-center space-y-4">
-              <h1 className="text-5xl font-bold text-gray-900">인증 중</h1>
+              <h1 className="text-5xl font-bold text-gray-900">���� ��</h1>
             </div>
           </div>
         );
       case 'success':
-        return (
-          <div className="flex flex-col items-center gap-16">
-            <CheckCircle size={160} className="text-gray-900" strokeWidth={1.5} />
-            <div className="text-center space-y-8">
-              <h1 className="text-6xl font-bold text-gray-900">체크인 완료</h1>
-              <div className="space-y-6 pt-8">
-                <p className="text-4xl font-bold text-gray-900">{issuer}님</p>
-                <div className="space-y-2">
-                  <p className="text-2xl text-gray-600">
-                    {new Date().toLocaleDateString('ko-KR', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric'
-                    })}
-                  </p>
-                  <p className="text-2xl text-gray-600">자율학습 체크인</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
+        return <CheckinComplete issuer={issuer} />;
       case 'timeout':
-        return (
-          <div className="flex flex-col items-center gap-16">
-            <Clock size={140} className="text-gray-900" strokeWidth={1.5} />
-            <div className="text-center space-y-6">
-              <h1 className="text-5xl font-bold text-gray-900">시간 초과</h1>
-              <p className="text-2xl text-gray-600">다시 시도해주세요</p>
-            </div>
-            <RetryButton />
-          </div>
-        );
+        return <TimeOut onClick={() => setState('waiting')} />;
       case 'fail':
-        return (
-          <div className="flex flex-col items-center gap-16">
-            <XCircle size={140} className="text-gray-900" strokeWidth={1.5} />
-            <div className="text-center space-y-6">
-              <h1 className="text-5xl font-bold text-gray-900">인증 실패</h1>
-              <p className="text-2xl text-gray-600">유효하지 않은 코드입니다</p>
-            </div>
-            <RetryButton />
-          </div>
-        );
+        return <VerificationFailed onClick={() => setState('waiting')} />;
       default:
         return null;
     }
@@ -150,12 +107,7 @@ function QRCheckinView() {
     <div className="min-h-screen flex flex-col justify-between items-center bg-white p-8">
       <div className="flex-1 flex items-center justify-center w-full">{renderContent()}</div>
 
-      <button
-        onClick={() => (window.location.href = '/')}
-        className="absolute bottom-0 w-full max-w-md px-12 py-5 bg-gray-100 text-gray-900 text-xl font-bold rounded-3xl hover:bg-gray-200 transition-all duration-200 active:scale-95 mb-8"
-      >
-        홈으로
-      </button>
+      <HomeButton />
     </div>
   );
 }
