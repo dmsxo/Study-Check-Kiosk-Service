@@ -3,10 +3,11 @@ import { StatCard } from '../../../components/StatViewComponents';
 import { LayoutContaner, ScreenFrame } from '../../../components/UIComponents';
 import { check_out, getCheckinTime } from '../../../api/AttendanceAPI';
 import { useEffect, useState, useRef } from 'react';
+import dayjs from 'dayjs';
 
 function StudyView({ setIsStudying, statData }) {
   const checkInTime = useRef(null); // 오늘 기준 초
-  const [seconds, setSeconds] = useState(0);
+  const [time, setTime] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -14,11 +15,9 @@ function StudyView({ setIsStudying, statData }) {
       try {
         const timeStr = await getCheckinTime('night'); // "HH:MM:SS"
         if (timeStr) {
-          checkInTime.current = hhmmssToSeconds(timeStr);
-          const now = new Date();
-          const nowSeconds =
-            now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
-          setSeconds(nowSeconds - checkInTime.current);
+          checkInTime.current = dayjs.tz(timeStr, 'HH:mm:ss', 'Asia/Seoul');
+          const now = dayjs().tz('Asia/Seoul');
+          setTime(dayjs.duration(now.diff(checkInTime.current)));
         }
       } catch (err) {
         console.error(err);
@@ -33,28 +32,12 @@ function StudyView({ setIsStudying, statData }) {
     if (checkInTime.current === null) return;
 
     const interval = setInterval(() => {
-      const now = new Date();
-      const nowSeconds =
-        now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
-      setSeconds(nowSeconds - checkInTime.current);
+      const now = dayjs().tz('Asia/Seoul');
+      setTime(dayjs.duration(now.diff(checkInTime.current)));
     }, 1000);
 
     return () => clearInterval(interval);
   }, [checkInTime.current]);
-
-  function hhmmssToSeconds(hhmmss) {
-    const [h, m, s] = hhmmss.split(':').map(Number);
-    return h * 3600 + m * 60 + s;
-  }
-
-  const formatTime = (s) => {
-    const h = Math.floor(s / 3600);
-    const m = Math.floor((s % 3600) / 60);
-    const sec = s % 60;
-    return `${h.toString().padStart(2, '0')}:${m
-      .toString()
-      .padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
-  };
 
   if (loading) return <></>;
   else
@@ -68,7 +51,7 @@ function StudyView({ setIsStudying, statData }) {
             </div>
           </div>
           <div className="flex flex-col justify-center items-center">
-            <h2 className="font-bold text-2xl mb-2">{formatTime(seconds)}</h2>
+            <h2 className="font-bold text-2xl mb-2">{formatTime(time)}</h2>
             <div className="flex items-center gap-2">
               <p className="text-sm">공부중</p>
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />

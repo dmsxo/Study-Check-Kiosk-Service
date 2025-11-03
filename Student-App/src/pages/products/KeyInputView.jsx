@@ -18,7 +18,7 @@ export default function KeyInput() {
         try {
           const res = await verifyCode(code.join(''));
           const [issuerType, detail] = res.split(':');
-          console.log(issuerType, detail);
+          // console.log(issuerType, detail);
           if (issuerType === 'kiosk') {
             await check_in(detail);
             navigate('/');

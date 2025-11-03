@@ -3,6 +3,7 @@ import { attendances } from "../test/attendance_dummy";
 import { schoolDays } from "../test/school_days_dummy";
 import { getTimeDiff, compareDates } from "../utils/date.utils";
 import { dateToStr } from "../utils/date.utils";
+import dayjs from 'dayjs';
 
 /*
 출석 raw data --------┯--> 1년 출석 캘린더 (휴일 스트릭 유지 가능)
@@ -14,6 +15,8 @@ returns *
 연속 출석일, 최장 연속 출석일 : 1년치 출석 캘린더 순회로 처리
 기간별 출석일 : 1년 출석 캘린더에서 특정기간 안에 있는 0이 아닌 날들을 기준으로 weighted 혹은 no weighted 출석률 구하기 가능
 */
+
+const KST = 'Asia/Seoul';
 
 /**
  * 출석 raw data를 받아서 아침자율학습과,야간 자율학습으로 그룹화후 반환
@@ -36,7 +39,6 @@ function groupByStudyType(raw){
  */
 function buildAttendanceCalendar(attendance, schoolDaysRaw){
   const calendar = {};
-  // 등교 가능 날짜 체크
   schoolDaysRaw.forEach(e => {
     if(!e.grade2) return;
     calendar[e.date] = {
@@ -46,12 +48,11 @@ function buildAttendanceCalendar(attendance, schoolDaysRaw){
     }
   });
 
-  // 출석 raw 데이터 적용
   if(attendance){
     attendance.forEach(e => {
       if(calendar[e.date]){
-        calendar[e.date].studytime = getTimeDiff(e.check_in_time, e.check_out_time); // 그날 총 공부 시간
-        calendar[e.date].description = e.description; // 자율학습 디스크립션?
+        calendar[e.date].studytime = getTimeDiff(e.check_in_time, e.check_out_time);
+        calendar[e.date].description = e.description;
       }
     });
   }
@@ -73,7 +74,6 @@ function getStreakData(calendar){
     } 
     else streak = 0;
   });
-
   return {streak, longest_streak};
 }
 
@@ -84,9 +84,9 @@ function getStreakData(calendar){
  * @returns 
  */
 function getStats(attendance, schoolDaysRaw){
-  const total = attendance.length; // 총 출석일
-  const calendar = buildAttendanceCalendar(attendance, schoolDaysRaw); // 출석 가능 일자 기준 1년치 출석 데이터
-  const {streak, longest_streak} = getStreakData(calendar); // 스트릭과 최장 스트릭
+  const total = attendance.length;
+  const calendar = buildAttendanceCalendar(attendance, schoolDaysRaw);
+  const {streak, longest_streak} = getStreakData(calendar);
 
   /**
    * 두 YYYY-MM-DD 형식 날짜 사이의 기간 출석률을 반환
@@ -95,17 +95,26 @@ function getStats(attendance, schoolDaysRaw){
    * @returns 
    */
   function getRate(startDate, endDate){
+    // // 방어: calendar가 없거나 비어있으면 0 반환
+    // if (!calendar || Object.keys(calendar).length === 0) return 0;
+
+    const start = dayjs(startDate).tz(KST);
+    const end = dayjs(endDate).tz(KST);
+
     const { days, count } = Object.values(calendar).reduce((acc, cur) => {
-      if(compareDates(startDate, cur.date) && compareDates(cur.date, endDate)){
+      // cur이 undefined일 가능성도 방어
+      // if (!cur || !cur.date) return acc;
+
+      const curDate = dayjs(cur.date);
+
+      if (curDate.isSameOrAfter(start, 'day') && curDate.isSameOrBefore(end, 'day')) {
         acc.days++;
-        if(cur.studytime > 0) acc.count++;
+        if (cur.studytime > 0) acc.count++;
       }
       return acc;
-    },
-    { days:0, count:0 });
-    
-    if(days === 0) return 0;
-    else return Math.round(count / days * 10000) / 100;
+    }, { days: 0, count: 0 });
+
+    return days === 0 ? 0 : Math.round((count / days) * 10000) / 100;
   }
 
   return {
@@ -116,18 +125,16 @@ function getStats(attendance, schoolDaysRaw){
     getRate
   }
 }
-
 /**
  * 아침 독서와 야간 자율학습 전부의 Stat을 반환
  * @returns 
  */
 export async function getFullStatData(){
-  // 추후 API 호출할 raw datas (현 dummy)
   const rawAttendances = await getAttendances();
   const rawSchoolDays = schoolDays;
-  // 1년치 출석 캘린더 생성
+
   const attendanceByType = groupByStudyType(rawAttendances);
-  // 아침 독서, 야간 자율 학습 별 통계 객체 생성
+
   const morningStats = getStats(attendanceByType.morning, rawSchoolDays);
   const nightStats = getStats(attendanceByType.night, rawSchoolDays);
 
@@ -141,12 +148,12 @@ export async function getFullStatData(){
  * @param {*} attendanceCalendar 
  * @param {string} curruntDate 
  */
-export function getRateByMonth(getRate, curruntDate){
+export function getRateByMonth(getRate, currentDate){
   let curruntRates = [];
   
   for(let i = 0; i < 12; i++){
-    const startDate = dateToStr(curruntDate.getFullYear(), i, 1);
-    const endDate = dateToStr(curruntDate.getFullYear(), i+1, 0);
+    const startDate = dayjs(currentDate).month(i).date(1).format('YYYY-MM-DD');
+    const endDate = dayjs(currentDate).month(i).endOf('month').format('YYYY-MM-DD');
     curruntRates.push({ label:`${i+1}월`, rate: getRate(startDate, endDate)});
   }
   return curruntRates;
@@ -156,18 +163,28 @@ export function getRateByMonth(getRate, curruntDate){
  * @param {*} attendanceCalendar 
  * @param {string} curruntDate 
  */
-export function getRateByWeek(getRate, curruntDate){
-  let curruntRates = [];
-
-  const year = curruntDate.getFullYear(), month = curruntDate.getMonth();
-  const lastDate = new Date(year, month + 1, 0).getDate();
-  let weekCount = 1, startDate = 1, endDate = 7;
+export function getRateByWeek(getRate, currentDate){
+  const weekRates = [];
   
-  while (endDate < lastDate + 7){
-    const rate = getRate(dateToStr(year, month, startDate), dateToStr(year, month, Math.min(endDate, lastDate)));
-    curruntRates.push({ label:`${weekCount}주차`, rate: rate});
-    startDate += 7, endDate += 7; weekCount++;
+  const monthStart = currentDate.startOf('month');
+  const monthEnd = currentDate.endOf('month');
+  const lastDate = monthEnd.date();
+
+  let weekCount = 1;
+  let startDate = 1;
+  let endDate = 7;
+
+  while (startDate <= lastDate) {
+    const start = monthStart.date(startDate).format('YYYY-MM-DD');
+    const end = monthStart.date(Math.min(endDate, lastDate)).format('YYYY-MM-DD');
+
+    weekRates.push({ label: `${weekCount}주차`, rate: getRate(start, end) });
+
+    // 다음 주로 이동
+    startDate += 7;
+    endDate += 7;
+    weekCount++;
   }
 
-  return curruntRates
+  return weekRates;
 }

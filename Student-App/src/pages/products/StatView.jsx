@@ -12,18 +12,19 @@ import {
   RateChart,
 } from '../../components/StatViewComponents';
 import { getColorClass } from '../../helpers/calendar.helper';
+import dayjs from 'dayjs';
 
 function StatView({ statData }) {
   // 현재 보고 있는 카테고리
   const [studyType, setStudyType] = useState('night');
 
   // 달력 상태
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const [currentDate, setCurrentDate] = useState(dayjs().tz('Asia/Seoul'));
   const [selectedDate, setSelectedDate] = useState(null);
 
   // 출석률 그래프 상태
   const [viewMode, setViewMode] = useState('month');
-  const [curruntView, setCurruntView] = useState(new Date());
+  const [curruntView, setCurruntView] = useState(dayjs().tz('Asia/Seoul'));
 
   const activityData =
     studyType === 'night' ? statData.night : statData.morning; // 현재 통계
@@ -79,7 +80,7 @@ function StatView({ statData }) {
             {/* 달력 헤더 */}
             <StreakCalendar
               attendanceCalendar={activityData.calendar}
-              currentDate={currentDate}
+              current={currentDate}
               setCurrentDate={setCurrentDate}
               setSelectedDate={setSelectedDate}
             />

@@ -20,10 +20,10 @@ function Home({ getAuthCode, code, statData }) {
   if (loading) {
     return <></>;
   } else if (isStudying) {
-    console.log(isStudying);
+    // console.log(isStudying);
     return <StudyView setIsStudying={setIsStudying} />;
   } else {
-    console.log(isStudying);
+    // console.log(isStudying);
     return <QRView code={code} getAuthCode={getAuthCode} />;
   }
 }
