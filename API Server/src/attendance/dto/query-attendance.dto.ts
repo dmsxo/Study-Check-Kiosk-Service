@@ -12,7 +12,7 @@ export class QueryAttendanceDto {
 
   @IsOptional()
   @IsString()
-  type: 'morning' | 'night';
+  type?: 'morning' | 'night';
 
   @IsOptional()
   @IsString()

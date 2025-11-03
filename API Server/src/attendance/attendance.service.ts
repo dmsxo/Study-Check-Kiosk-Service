@@ -119,25 +119,49 @@ export class AttendanceService {
     query?: QueryAttendanceDto,
   ): Promise<Attendance[]> {
     const user = await this.userService.get_user(student_id);
-    const where: any = { student_id: user };
 
-    if (query?.type) where.type = query.type;
-    if (query?.date_from && query?.date_to)
-      where.date = Between(query.date_from, query.date_to);
+    const qb = this.attendanceRepo
+      .createQueryBuilder('attendance')
+      .where('attendance.student_id = :student_id', {
+        student_id: user.id,
+      });
 
-    return this.attendanceRepo.find({ where, order: { date: 'DESC' } });
+    if (query?.type) {
+      qb.andWhere('attendance.type = :type', { type: query.type });
+    }
+
+    if (query?.date_from && query?.date_to) {
+      qb.andWhere('attendance.date BETWEEN :from AND :to', {
+        from: query.date_from,
+        to: query.date_to,
+      });
+    }
+
+    return qb.orderBy('attendance.date', 'DESC').getMany();
   }
 
   async findAll(query?: QueryAttendanceDto): Promise<Attendance[]> {
-    const where: any = {};
-    if (query?.type) where.type = query.type;
-    if (query?.date_from && query?.date_to)
-      where.date = Between(query.date_from, query.date_to);
-    if (query?.student_id_like) {
-      where.student_id = Like(`${query.student_id_like}%`);
+    const qb = this.attendanceRepo
+      .createQueryBuilder('attendance')
+      .leftJoinAndSelect('attendance.student_id', 'student');
+
+    if (query?.type) {
+      qb.andWhere('attendance.type = :type', { type: query.type });
     }
 
-    return this.attendanceRepo.find({ where, order: { date: 'DESC' } });
+    if (query?.date_from && query?.date_to) {
+      qb.andWhere('attendance.date BETWEEN :from AND :to', {
+        from: query.date_from,
+        to: query.date_to,
+      });
+    }
+
+    if (query?.student_id_like)
+      qb.andWhere(`CAST(student.student_id AS TEXT) LIKE :id_like`, {
+        id_like: `${query.student_id_like}%`,
+      });
+
+    return qb.orderBy('attendance.date', 'DESC').getMany();
   }
 
   /** ================= 유틸 ================= */

@@ -1,20 +1,25 @@
-// src/attendance/dto/response-attendance.dto.ts
-import { Attendance } from '../entities/attendance.entity';
+import { Expose, Transform } from 'class-transformer';
 
 export class ResponseAttendanceDto {
+  @Expose()
   id: number;
-  type: 'morning' | 'night';
+
+  @Expose()
+  type: string;
+
+  @Expose()
   date: string;
-  check_in_time: Date;
-  check_out_time?: Date;
+
+  @Expose()
+  check_in_time?: string;
+
+  @Expose()
+  check_out_time?: string;
+
+  @Expose()
   description?: string;
 
-  constructor(attendance: Attendance) {
-    this.id = attendance.id;
-    this.type = attendance.type as 'morning' | 'night';
-    this.date = attendance.date;
-    this.check_in_time = attendance.check_in_time;
-    this.check_out_time = attendance.check_out_time;
-    this.description = attendance.description;
-  }
+  @Expose()
+  @Transform(({ obj }) => obj.student_id?.id)
+  student_id: number;
 }
