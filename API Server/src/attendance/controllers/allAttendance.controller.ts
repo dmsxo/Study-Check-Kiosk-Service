@@ -8,6 +8,7 @@ import {
   Delete,
   Patch,
   Body,
+  BadRequestException,
 } from '@nestjs/common';
 import { AttendanceService } from '../attendance.service';
 import { QueryAttendanceDto } from '../dto/query-attendance.dto';
@@ -18,6 +19,38 @@ import { UpdateAttendanceDto } from '../dto/update-attendance.dto';
 @Controller('attendances')
 export class AllAttendanceController {
   constructor(private readonly attendanceService: AttendanceService) {}
+
+  @Get('status/:studentId')
+  async getCurrentStudyStatus(
+    @Param('studentId') studentId: number,
+    @Query('type') type: 'morning' | 'night',
+  ) {
+    if (!['morning', 'night'].includes(type))
+      throw new BadRequestException('Invalid type');
+    const status = await this.attendanceService.getCurrentStudyStatus(
+      studentId,
+      type,
+    );
+    return status;
+  }
+
+  @Get('status/:studentId/studying')
+  async getIsStudy(
+    @Param('studentId') studentId: number,
+    @Query('type') type: 'morning' | 'night',
+  ) {
+    if (!['morning', 'night'].includes(type))
+      throw new BadRequestException('Invalid type');
+    try {
+      const status = await this.attendanceService.getCurrentStudyStatus(
+        studentId,
+        type,
+      );
+      return status.isStudy;
+    } catch {
+      return false;
+    }
+  }
 
   @Get()
   async getAll(@Query() query: QueryAttendanceDto) {

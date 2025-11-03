@@ -40,7 +40,9 @@ function QRCheckinView() {
           if (issuerType === 'student') {
             const user = await axios.get(`http://localhost:3000/users/${detail}`);
             setIssuer(user.data.name);
-            await axios.post(`http://localhost:3000/users/${detail}/study/checkin/night`);
+            await axios.post(
+              `http://localhost:3000/users/${detail}/attendances/check-in?type=night`
+            );
             setState('success');
           }
         } catch (err) {

@@ -6,7 +6,7 @@ import { SerialPort } from 'serialport'
 
 let mainWindow;
 
-const PORT_PATH = 'COM8'; 
+const PORT_PATH = 'COM9'; 
 const BAUD_RATE = 115200;
 
 let port = new SerialPort({ path: PORT_PATH, baudRate: BAUD_RATE, autoOpen: true });

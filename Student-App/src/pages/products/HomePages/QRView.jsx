@@ -1,16 +1,19 @@
-import { QRCodeSVG } from 'qrcode.react';
-import { useState, useRef, useEffect } from 'react';
-import TicketCutLine from '../../../components/QRViewComponents/TicketCutLine';
-import { ScreenFrame } from '../../../components/UIComponents';
-import { Link } from 'react-router-dom';
+import { QRCodeSVG } from "qrcode.react";
+import { useState, useRef, useEffect } from "react";
+import TicketCutLine from "../../../components/QRViewComponents/TicketCutLine";
+import { ScreenFrame } from "../../../components/UIComponents";
+import { Link } from "react-router-dom";
+import { getStatus } from "../../../api/checkin";
 
-function QRView({ code, getAuthCode }) {
-  const [isStudy, setIsStudy] = useState(false);
-
+function QRView({ code, getAuthCode, setIsStudying }) {
   const INTERVAL_SEC = 10; // 반복 주기 (초)
   const [remain, setRemain] = useState(INTERVAL_SEC);
 
   useEffect(() => {
+    const fetchStatus = async () => {
+      return await getStatus("night");
+    };
+
     const timer = setInterval(() => {
       setRemain((prev) => {
         if (prev <= 1) {
@@ -19,6 +22,11 @@ function QRView({ code, getAuthCode }) {
         }
         return prev - 1; // 1초씩 감소
       });
+      fetchStatus()
+        .then((status) => {
+          if (status === true) setIsStudying(status);
+        })
+        .catch(console.error);
     }, 1000);
 
     return () => clearInterval(timer);
@@ -72,7 +80,7 @@ function QRView({ code, getAuthCode }) {
         </div>
       </div>
 
-      <Link to="key">
+      <Link to="/key">
         <div className="w-full flex items-center justify-center gap-2 bg-white rounded-2xl p-4 text-lg">
           키오스크 발급 키로 출석하기
         </div>

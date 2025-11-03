@@ -3,15 +3,18 @@ import {
   Injectable,
   NotFoundException,
   BadRequestException,
+  Inject,
+  ConflictException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Between, Like } from 'typeorm';
-import { Attendance } from './entities/attendance.entity';
 import { UserService } from './../user/user.service';
 import { User } from './../user/entities/user.entity';
 import { CreateAttendanceDto } from './dto/create-attendance.dto';
 import { UpdateAttendanceDto } from './dto/update-attendance.dto';
 import { QueryAttendanceDto } from './dto/query-attendance.dto';
+import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
+import { Attendance } from 'src/attendance/entities/attendance.entity';
 
 @Injectable()
 export class AttendanceService {
@@ -19,6 +22,7 @@ export class AttendanceService {
     @InjectRepository(Attendance)
     private readonly attendanceRepo: Repository<Attendance>,
     private readonly userService: UserService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   /** ================= CRUD ================= */
@@ -66,29 +70,71 @@ export class AttendanceService {
 
   /** ================= 체크인/체크아웃 ================= */
 
+  /**
+   * 출석 데이터를 JSON 문자열로 직렬화
+   * @param {number|string} attendance_id
+   * @param {string} isStudy
+   * @param {string} type
+   * @returns {string} JSON 문자열
+   */
+  serialize(attendance_id, isStudy) {
+    const data = { attendance_id, isStudy };
+    try {
+      return JSON.stringify(data);
+    } catch (err) {
+      console.error('직렬화 실패:', err);
+      return null;
+    }
+  }
+
+  // -----------------------------
+  // JSON 역직렬화 함수
+  // -----------------------------
+  /**
+   * JSON 문자열을 출석 데이터 객체로 변환
+   * @param {string} jsonStr
+   * @returns {{attendance_id: number|string, isStudy: boolean, type: string}|null}
+   */
+  deserialize(jsonStr) {
+    try {
+      return JSON.parse(jsonStr);
+    } catch (err) {
+      console.error('역직렬화 실패:', err);
+      return null;
+    }
+  }
+
+  async getCurrentStudyStatus(student_id: number, type: 'morning' | 'night') {
+    const res = await this.cacheManager.get(`study:${student_id}:${type}`);
+    if (!res) throw new NotFoundException('key does not exist ');
+    return this.deserialize(res);
+  }
+
   async checkIn(
     student_id: number,
     type: 'morning' | 'night',
   ): Promise<Attendance> {
-    const user = await this.userService.get_user(student_id);
+    const exists = await this.cacheManager.get(`study:${student_id}:${type}`);
+    if (exists) throw new BadRequestException('Already checked in');
 
-    const existing = await this.attendanceRepo.findOne({
-      where: {
-        student_id: user,
-        type,
-        date: new Date().toISOString().slice(0, 10),
-      },
-    });
-    if (existing) throw new BadRequestException('Already checked in');
-
-    const attendance = this.attendanceRepo.create({
-      student_id: user,
+    // 기존 create 메서드 활용
+    const attendanceDto: CreateAttendanceDto = {
+      student_id,
       type,
-      date: new Date().toISOString().slice(0, 10), // YYYY-MM-DD
-      check_in_time: new Date(), // 서버 현재 시간
-    });
+      date: new Date().toISOString().slice(0, 10),
+      check_in_time: new Date().toTimeString().slice(0, 8),
+    };
+    const attendance = await this.create(attendanceDto);
+    //
 
-    return this.attendanceRepo.save(attendance);
+    // Redis에 attendance.id 저장
+    await this.cacheManager.set(
+      `study:${student_id}:${type}`,
+      this.serialize(attendance.id, true),
+      6 * 60 * 60 * 1000,
+    );
+
+    return attendance;
   }
 
   async checkOut(
@@ -96,20 +142,36 @@ export class AttendanceService {
     type: 'morning' | 'night',
     description: string,
   ): Promise<Attendance> {
-    const user = await this.userService.get_user(student_id);
-    const today = new Date().toISOString().slice(0, 10);
-
-    const attendance = await this.attendanceRepo.findOne({
-      where: { student_id: user, type, date: today },
-    });
-    if (!attendance)
+    // Redis에서 attendance PK 가져오기
+    const status = this.deserialize(
+      await this.cacheManager.get<string>(`study:${student_id}:${type}`),
+    );
+    if (!status) {
       throw new NotFoundException(
         'Attendance not found. Please check in first.',
       );
+    }
+    if (status.isStudy == false) {
+      throw new ConflictException(
+        `Attendance check for the current study type has been completed today.`,
+      );
+    }
 
-    attendance.check_out_time = new Date(); // 서버 현재 시간
-    attendance.description = description;
-    return this.attendanceRepo.save(attendance);
+    // 기존 update 메서드 활용
+    const updateDto: UpdateAttendanceDto = {
+      check_out_time: new Date().toTimeString().slice(0, 8),
+      description,
+    };
+    const attendance = await this.update(status.attendance_id, updateDto);
+
+    // Redis에서 키 삭제
+    await this.cacheManager.set(
+      `study:${student_id}:${type}`,
+      this.serialize(attendance.id, false),
+      12 * 60 * 60 * 1000,
+    );
+
+    return attendance;
   }
 
   /** ================= 조회 ================= */

@@ -1,33 +1,33 @@
-import { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { KeyRound, X } from 'lucide-react';
-import { verifyCode } from '../../../api/checkin';
+import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { KeyRound, X } from "lucide-react";
+import { verifyCode } from "../../api/checkin";
+import axios from "axios";
 
 export default function KeyInput() {
-  const [code, setCode] = useState(['', '', '', '', '', '']);
+  const [code, setCode] = useState(["", "", "", "", "", ""]);
   const [isComplete, setIsComplete] = useState(false);
   const [isError, setIsError] = useState(false);
   const inputRefs = useRef([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const allFilled = code.every((digit) => digit !== '');
+    const allFilled = code.every((digit) => digit !== "");
     if (allFilled && !isComplete) {
       setIsComplete(true);
       const verify = async () => {
         try {
-          const res = await verifyCode(code.join(''));
-          const [issuerType, detail] = res.split(':');
-          if (issuerType === 'kiosk') {
-            // await axios.post(
-            //   `http://localhost:3000/users/20129/study/checkin/${detail}`
-            // );
-            navigate('/study');
+          const res = await verifyCode(code.join(""));
+          const [issuerType, detail] = res.split(":");
+          console.log(issuerType, detail);
+          if (issuerType === "kiosk") {
+            
           }
+          navigate("/");
         } catch (err) {
           console.error(err);
           setIsError(true);
-          setCode(['', '', '', '', '', '']);
+          setCode(["", "", "", "", "", ""]);
           inputRefs.current[0]?.focus();
           setIsComplete(false);
         }
@@ -47,11 +47,11 @@ export default function KeyInput() {
       setIsError(false);
     }
 
-    const sanitized = value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    const sanitized = value.toUpperCase().replace(/[^A-Z0-9]/g, "");
 
     if (sanitized.length === 0) {
       const newCode = [...code];
-      newCode[index] = '';
+      newCode[index] = "";
       setCode(newCode);
       return;
     }
@@ -78,21 +78,21 @@ export default function KeyInput() {
   };
 
   const handleKeyDown = (index, e) => {
-    if (e.key === 'Backspace') {
-      if (code[index] === '' && index > 0) {
+    if (e.key === "Backspace") {
+      if (code[index] === "" && index > 0) {
         inputRefs.current[index - 1]?.focus();
       } else {
         const newCode = [...code];
-        newCode[index] = '';
+        newCode[index] = "";
         setCode(newCode);
       }
     }
 
-    if (e.key === 'ArrowLeft' && index > 0) {
+    if (e.key === "ArrowLeft" && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
 
-    if (e.key === 'ArrowRight' && index < 5) {
+    if (e.key === "ArrowRight" && index < 5) {
       inputRefs.current[index + 1]?.focus();
     }
   };
@@ -100,9 +100,9 @@ export default function KeyInput() {
   const handlePaste = (e) => {
     e.preventDefault();
     const pastedData = e.clipboardData
-      .getData('text')
+      .getData("text")
       .toUpperCase()
-      .replace(/[^A-Z0-9]/g, '');
+      .replace(/[^A-Z0-9]/g, "");
     const newCode = [...code];
 
     for (let i = 0; i < Math.min(pastedData.length, 6); i++) {
@@ -139,8 +139,8 @@ export default function KeyInput() {
               onPaste={handlePaste}
               className={`w-12 h-16 text-center text-3xl font-semibold bg-transparent border-b-2 focus:outline-none ${
                 isError
-                  ? 'text-red-600 border-red-500 focus:border-red-500'
-                  : 'text-blue-600 border-gray-300 focus:border-blue-600'
+                  ? "text-red-600 border-red-500 focus:border-red-500"
+                  : "text-blue-600 border-gray-300 focus:border-blue-600"
               }`}
             />
           ))}

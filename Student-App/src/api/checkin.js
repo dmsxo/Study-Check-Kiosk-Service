@@ -22,3 +22,21 @@ export async function verifyCode(code) {
     throw error;
   }
 }
+
+export async function check_in(type){
+  await axios.post(`http://localhost:3000/users/20129/attendances/check-in?type=${type}`);
+}
+
+export async function check_out(type){
+  await axios.post(`http://localhost:3000/users/20129/attendances/check-out?type=${type}`);
+}
+
+export async function getStatus(type) {
+  try {
+    const res = await axios.get(`${address}/attendances/status/${userData.studentID}/studying?type=${type}`);
+    return res.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}

@@ -1,9 +1,11 @@
-import { Flame, Calendar, AlarmClock, TrendingUp, Clock } from 'lucide-react';
-import { StatCard } from '../../../components/StatViewComponents';
-import { LayoutContaner, ScreenFrame } from '../../../components/UIComponents';
-import { Link } from 'react-router-dom';
+import { Flame, Calendar, AlarmClock, TrendingUp, Clock } from "lucide-react";
+import { StatCard } from "../../../components/StatViewComponents";
+import { LayoutContaner, ScreenFrame } from "../../../components/UIComponents";
+import { Link } from "react-router-dom";
+import { check_out } from "../../../api/checkin";
 
-function StudyView({ statData }) {
+function StudyView({ setIsStudying, statData }) {
+  // const [isStudying, setIsStuding] = useLocalStorage("isStudying", false);
   return (
     <ScreenFrame>
       <LayoutContaner>
@@ -23,33 +25,38 @@ function StudyView({ statData }) {
       </LayoutContaner>
       <div className="grid grid-cols-2 gap-2">
         <StatCard
-          title={'연속 출석일'}
+          title={"연속 출석일"}
           Icon={Flame}
-          color={'text-orange-500'}
+          color={"text-orange-500"}
           value={10}
         />
         <StatCard
-          title={'이번주 총 출석일'}
+          title={"이번주 총 출석일"}
           Icon={Calendar}
-          color={'text-emerald-500'}
+          color={"text-emerald-500"}
           value={3}
         />
         <StatCard
-          title={'이번주 순공시간'}
+          title={"이번주 순공시간"}
           Icon={AlarmClock}
-          color={'text-purple-500'}
+          color={"text-purple-500"}
           value={3}
         />
         <StatCard
-          title={'일 평균'}
+          title={"일 평균"}
           Icon={TrendingUp}
-          color={'text-blue-500'}
+          color={"text-blue-500"}
           value={3}
         />
       </div>
-      <Link to="/">
+      <button
+        onClick={() => {
+          setIsStudying(false);
+          check_out("night");
+        }}
+      >
         <LayoutContaner className="text-center">체크아웃 하기</LayoutContaner>
-      </Link>
+      </button>
     </ScreenFrame>
   );
 }
