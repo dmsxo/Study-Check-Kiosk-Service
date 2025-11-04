@@ -7,11 +7,15 @@ import {
   Patch,
   Post,
   ParseIntPipe,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ResponseUserDto } from './dto/response-user.dto';
+import type { Request } from 'express';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('users')
 export class UserController {
@@ -36,6 +40,13 @@ export class UserController {
     @Param('id', ParseIntPipe) id: number,
   ): Promise<ResponseUserDto> {
     return this.userService.get_user(id);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('me')
+  async get_me(@Req() req: Request): Promise<ResponseUserDto> {
+    const userId: number = req.session.user!.id;
+    return this.userService.get_user(userId);
   }
 
   @Patch(':id')

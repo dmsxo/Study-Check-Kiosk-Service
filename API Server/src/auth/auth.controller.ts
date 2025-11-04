@@ -10,43 +10,43 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
-import { Response, Request } from 'express';
+import type { Response, Request } from 'express';
+import { AuthGuard } from './auth.guard';
+import { UserRole } from 'src/user/user-role.enum';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  // @Post('login')
-  // async login(
-  //   @Body() loginDto: LoginDto,
-  //   @Req() req: Request,
-  //   @Res() res: Response,
-  // ) {
-  //   const user = await this.authService.validateUser(loginDto);
+  @Post('login')
+  async login(
+    @Body() loginDto: LoginDto,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    const user = await this.authService.validateUser(loginDto);
 
-  //   // ✅ 세션에 사용자 정보 저장
-  //   req.session.user = {
-  //     id: user.id,
-  //     email: user.email,
-  //     role: user.role,
-  //   };
+    req.session.user = {
+      id: user.student_id,
+      role: UserRole.STUDENT,
+    };
 
-  //   res.send({ message: 'Login success', user: req.session.user });
-  // }
+    res.send({ message: 'Login success', user: req.session.user });
+  }
 
-  // @Get('me')
-  // @UseGuards(AuthGuard)
-  // getMe(@Req() req: Request) {
-  //   return req.session.user;
-  // }
+  @Get('me')
+  @UseGuards(AuthGuard)
+  getMe(@Req() req: Request) {
+    return req.session.user;
+  }
 
-  // @Post('logout')
-  // logout(@Req() req: Request, @Res() res: Response) {
-  //   req.session.destroy(() => {
-  //     res.clearCookie('connect.sid');
-  //     res.send({ message: 'Logged out' });
-  //   });
-  // }
+  @Post('logout')
+  logout(@Req() req: Request, @Res() res: Response) {
+    req.session.destroy(() => {
+      res.clearCookie('connect.sid');
+      res.send({ message: 'Logged out' });
+    });
+  }
 
   @Post('checkin/code')
   generate_code(
