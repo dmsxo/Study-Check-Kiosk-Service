@@ -2,6 +2,10 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import { createClient } from 'redis';
+import * as session from 'express-session';
+import * as connectRedis from 'connect-redis';
+import Redis from 'ioredis';
 /*
 School Self-Study Kiosk Project
 Author: Hwang euntea
@@ -35,7 +39,10 @@ async function bootstrap() {
     .setVersion('1.0')
     .build();
 
-  app.enableCors();
+  // const RedisStore = connectRedis(session);
+  const redisClient = new Redis({ host: 'localhost', port: 3679 });
+
+  app.enableCors({ credentials: true });
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true, // DTO에 없는 필드는 제거
@@ -43,6 +50,7 @@ async function bootstrap() {
       transform: true, // 자동으로 타입 변환
     }),
   );
+
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api', app, document);
 

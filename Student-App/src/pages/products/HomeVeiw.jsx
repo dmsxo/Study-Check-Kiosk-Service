@@ -1,9 +1,9 @@
 // Home.jsx
-import { useState, useEffect } from 'react';
-import QRView from './HomePages/QRView';
-import StudyView from './HomePages/StudyView';
-import { getStatus } from '../../api/AttendanceAPI';
-import { getFullStatData } from '../../helpers/stats.helper';
+import { useState, useEffect } from "react";
+import QRView from "./HomePages/QRView";
+import StudyView from "./HomePages/StudyView";
+import { getStatus } from "../../api/AttendanceAPI";
+import { getFullStatData } from "../../helpers/stats.helper";
 
 function Home({ getAuthCode, code, statData, setStatData }) {
   const [isStudying, setIsStudying] = useState(false);
@@ -11,7 +11,7 @@ function Home({ getAuthCode, code, statData, setStatData }) {
 
   useEffect(() => {
     const fetchStatus = async () => {
-      const status = await getStatus('night');
+      const status = await getStatus("night");
       setIsStudying(status);
     };
     fetchStatus();
@@ -19,7 +19,6 @@ function Home({ getAuthCode, code, statData, setStatData }) {
 
   useEffect(() => {
     getFullStatData().then((res) => {
-      console.log('Update!');
       setStatData(res);
       setLoading(false);
     });
@@ -32,6 +31,7 @@ function Home({ getAuthCode, code, statData, setStatData }) {
     return <StudyView setIsStudying={setIsStudying} statData={statData} />;
   } else {
     // console.log(isStudying);
+    // return <CheckoutModal />;
     return <QRView code={code} getAuthCode={getAuthCode} />;
   }
 }

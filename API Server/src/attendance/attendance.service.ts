@@ -135,7 +135,7 @@ export class AttendanceService {
     // Redis에 attendance.id 저장
     await this.cacheManager.set(
       `study:${student_id}:${type}`,
-      this.serialize(attendance.id, true),
+      { attendance_id: attendance.id, isStudy: true },
       6 * 60 * 60 * 1000,
     );
 
@@ -171,7 +171,7 @@ export class AttendanceService {
 
     await this.cacheManager.set(
       `study:${student_id}:${type}`,
-      this.serialize(attendance.id, false),
+      { attendance_id: attendance.id, isStudy: false },
       12 * 60 * 60 * 1000,
     );
 

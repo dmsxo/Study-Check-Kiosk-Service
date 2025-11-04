@@ -1,14 +1,33 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { randomInt } from 'crypto';
+import { LoginDto } from './dto/login.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from 'src/user/entities/user.entity';
 
 @Injectable()
 export class AuthService {
-  constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {}
+  constructor(
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    @InjectRepository(User)
+    private userRepo: Repository<User>,
+  ) {}
 
-  login() {}
+  async validateUser(loginDto: LoginDto) {
+    const { email } = loginDto;
 
-  logout() {}
+    const user = await this.userRepo.findOne({ where: { email } });
+
+    if (!user) throw new UnauthorizedException('User not found');
+
+    return user;
+  }
 
   async generate_code(issuer: string, ttl: number): Promise<string> {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890123456789';

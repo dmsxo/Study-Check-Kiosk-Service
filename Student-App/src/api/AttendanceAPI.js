@@ -27,8 +27,8 @@ export async function check_in(type){
   await axios.post(`http://localhost:3000/users/20129/attendances/check-in?type=${type}`);
 }
 
-export async function check_out(type){
-  await axios.post(`http://localhost:3000/users/20129/attendances/check-out?type=${type}`);
+export async function check_out(type, description){
+  await axios.post(`http://localhost:3000/users/20129/attendances/check-out?type=${type}&description=${description}`);
 }
 
 export async function getStatus(type) {
