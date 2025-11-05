@@ -12,7 +12,7 @@ import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import type { Response, Request } from 'express';
 import { AuthGuard } from './auth.guard';
-import { UserRole } from 'src/user/user-role.enum';
+import { UserRole } from '../user/user-role.enum';
 
 @Controller('auth')
 export class AuthController {

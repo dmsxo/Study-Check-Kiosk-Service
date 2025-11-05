@@ -8,13 +8,13 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Between, Like } from 'typeorm';
-import { UserService } from './../user/user.service';
-import { User } from './../user/entities/user.entity';
+import { UserService } from '../user/user.service';
+import { User } from '../user/entities/user.entity';
 import { CreateAttendanceDto } from './dto/create-attendance.dto';
 import { UpdateAttendanceDto } from './dto/update-attendance.dto';
 import { QueryAttendanceDto } from './dto/query-attendance.dto';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
-import { Attendance } from 'src/attendance/entities/attendance.entity';
+import { Attendance } from 'src/Modules/attendance/entities/attendance.entity';
 import { StudyCacheStatus } from './interface/study-cache-status.interface';
 
 import dayjs from 'dayjs';

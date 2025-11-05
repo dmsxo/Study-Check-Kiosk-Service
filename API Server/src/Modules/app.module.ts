@@ -3,7 +3,7 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { AnalysisModule } from './analysis/analysis.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { typeORMConfig } from './configs/typeorm.config';
+import { typeORMConfig } from '../configs/typeorm.config';
 import { CacheModule } from '@nestjs/cache-manager';
 import { AttendanceModule } from './attendance/attendance.module';
 import { MeModule } from './me/me.module';
