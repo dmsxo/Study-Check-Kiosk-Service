@@ -1,32 +1,25 @@
-import { useState, useEffect } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import MainLayout from "./products/MainLayout";
-import Login from "./auth/Login";
-import QRView from "./products/HomePages/QRView";
-import StatView from "./products/StatView";
-import MyView from "./products/MyView";
-import KeyInputView from "./products/KeyInputView";
-import ProtectedRoute from "../routes/ProtectedRoute";
-import PublicRoute from "../routes/PublicRoute";
-import { userData } from "../test/userData";
-import { getAttendances, getCode } from "../api/AttendanceAPI";
-import StudyView from "./products/HomePages/StudyView";
-import { getFullStatData } from "../helpers/stats.helper";
-import Home from "./products/HomeVeiw";
-import CheckoutModal from "../components/HomeComponenets/CheckoutModal";
+import { useState, useEffect } from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import MainLayout from './products/MainLayout';
+import Login from './auth/Login';
+import QRView from './products/HomePages/QRView';
+import StatView from './products/StatView';
+import MyView from './products/MyView';
+import KeyInputView from './products/KeyInputView';
+import ProtectedRoute from '../routes/ProtectedRoute';
+import PublicRoute from '../routes/PublicRoute';
+import { userData } from '../test/userData';
+import { getAttendances, getCode } from '../api/AttendanceAPI';
+import StudyView from './products/HomePages/StudyView';
+import { getFullStatData } from '../helpers/stats.helper';
+import Home from './products/HomeVeiw';
+import CheckoutModal from '../components/HomeComponenets/CheckoutModal';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [code, setCode] = useState("");
   // 아침 독서, 야간 자율학습 출석 통계 객체
   const [statData, setStatData] = useState();
-  const [isLoading, setIsLoading] = useState(false);
   const user = userData;
-
-  const getAuthCode = async () => {
-    const code = await getCode();
-    setCode(code);
-  };
 
   return (
     <BrowserRouter>
@@ -48,14 +41,7 @@ function App() {
         >
           <Route
             index
-            element={
-              <Home
-                code={code}
-                getAuthCode={getAuthCode}
-                statData={statData}
-                setStatData={setStatData}
-              />
-            }
+            element={<Home statData={statData} setStatData={setStatData} />}
           />
           <Route path="/key" element={<KeyInputView />} />
           <Route path="/checkout" element={<CheckoutModal />} />

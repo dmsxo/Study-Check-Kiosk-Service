@@ -42,7 +42,7 @@ function QRView({ code, getAuthCode, setIsStudying }) {
       });
       fetchStatus()
         .then((status) => {
-          if (status === true) setIsStudying(status);
+          if (!status) setIsStudying(true);
         })
         .catch(console.error);
     }, 1000);
