@@ -1,13 +1,7 @@
 // src/attendance/services/attendance.service.ts
-import {
-  Injectable,
-  NotFoundException,
-  BadRequestException,
-  Inject,
-  ConflictException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Between, Like } from 'typeorm';
+import { Repository } from 'typeorm';
 import { UserService } from '../user/user.service';
 import { User } from '../user/entities/user.entity';
 import { CreateAttendanceDto } from './dto/create-attendance.dto';
@@ -15,11 +9,12 @@ import { UpdateAttendanceDto } from './dto/update-attendance.dto';
 import { QueryAttendanceDto } from './dto/query-attendance.dto';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { Attendance } from 'src/Modules/attendance/entities/attendance.entity';
-import { StudyCacheStatus } from './interface/study-cache-status.interface';
 
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
+import { plainToInstance } from 'class-transformer';
+import { ResponseAttendanceDto } from './dto/response-attendance.dto';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
@@ -75,82 +70,12 @@ export class AttendanceService {
     return this.attendanceRepo.remove(attendance);
   }
 
-  /** ================= 체크인/체크아웃 ================= */
-
-  async getCurrentStudyStatus(student_id: number, type: 'morning' | 'night') {
-    const res = await this.cacheManager.get(`study:${student_id}:${type}`);
-    if (!res) throw new NotFoundException('key does not exist ');
-    return res;
-  }
-
-  async checkIn(
-    student_id: number,
-    type: 'morning' | 'night',
-  ): Promise<Attendance> {
-    const exists = await this.cacheManager.get(`study:${student_id}:${type}`);
-    if (exists) throw new BadRequestException('Already checked in');
-
-    const now = dayjs().tz('Asia/Seoul');
-    const attendanceDto: CreateAttendanceDto = {
-      student_id,
-      type,
-      date: now.format('YYYY-MM-DD'),
-      check_in_time: now.format('HH:mm:ss'),
-    };
-    const attendance = await this.create(attendanceDto);
-
-    // Redis에 attendance.id 저장
-    await this.cacheManager.set(
-      `study:${student_id}:${type}`,
-      { attendance_id: attendance.id, isStudy: true },
-      6 * 60 * 60 * 1000,
-    );
-
-    return attendance;
-  }
-
-  async checkOut(
-    student_id: number,
-    type: 'morning' | 'night',
-    description: string,
-  ): Promise<Attendance> {
-    // Redis에서 attendance PK 가져오기
-    const status = await this.cacheManager.get<StudyCacheStatus>(
-      `study:${student_id}:${type}`,
-    );
-    if (!status) {
-      throw new NotFoundException(
-        'Attendance not found. Please check in first.',
-      );
-    }
-    if (status.isStudy == false) {
-      throw new ConflictException(
-        `Attendance check for the current study type has been completed today.`,
-      );
-    }
-
-    const now = dayjs().tz('Asia/Seoul');
-    const updateDto: UpdateAttendanceDto = {
-      check_out_time: now.format('HH:mm:ss'),
-      description,
-    };
-    const attendance = await this.update(status.attendance_id, updateDto);
-
-    await this.cacheManager.set(
-      `study:${student_id}:${type}`,
-      { attendance_id: attendance.id, isStudy: false },
-      12 * 60 * 60 * 1000,
-    );
-
-    return attendance;
-  }
-
   /** ================= 조회 ================= */
 
   async findAllByStudent(
     student_id: number,
     query?: QueryAttendanceDto,
-  ): Promise<Attendance[]> {
+  ): Promise<ResponseAttendanceDto[]> {
     const user = await this.userService.get_user(student_id);
 
     const qb = this.attendanceRepo
@@ -170,10 +95,13 @@ export class AttendanceService {
       });
     }
 
-    return qb.orderBy('attendance.date', 'DESC').getMany();
+    const attendances = await qb.orderBy('attendance.date', 'DESC').getMany();
+    return plainToInstance(ResponseAttendanceDto, attendances, {
+      excludeExtraneousValues: true,
+    });
   }
 
-  async findAll(query?: QueryAttendanceDto): Promise<Attendance[]> {
+  async findAll(query?: QueryAttendanceDto): Promise<ResponseAttendanceDto[]> {
     const qb = this.attendanceRepo
       .createQueryBuilder('attendance')
       .leftJoinAndSelect('attendance.student_id', 'student');
@@ -194,7 +122,10 @@ export class AttendanceService {
         id_like: `${query.student_id_like}%`,
       });
 
-    return qb.orderBy('attendance.date', 'DESC').getMany();
+    const attendances = await qb.orderBy('attendance.date', 'DESC').getMany();
+    return plainToInstance(ResponseAttendanceDto, attendances, {
+      excludeExtraneousValues: true,
+    });
   }
 
   /** ================= 유틸 ================= */

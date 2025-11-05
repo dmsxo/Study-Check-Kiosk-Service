@@ -8,41 +8,30 @@ import {
   Delete,
   Patch,
   Body,
+  Post,
   BadRequestException,
 } from '@nestjs/common';
-import { AttendanceService } from '../attendance.service';
-import { QueryAttendanceDto } from '../dto/query-attendance.dto';
+import { AttendanceService } from './attendance.service';
+import { QueryAttendanceDto } from './dto/query-attendance.dto';
 import { plainToInstance } from 'class-transformer';
-import { ResponseAttendanceDto } from '../dto/response-attendance.dto';
-import { UpdateAttendanceDto } from '../dto/update-attendance.dto';
-import { StudyCacheStatus } from '../interface/study-cache-status.interface';
+import { ResponseAttendanceDto } from './dto/response-attendance.dto';
+import { UpdateAttendanceDto } from './dto/update-attendance.dto';
+import { CreateAttendanceDto } from './dto/create-attendance.dto';
 
 @Controller('attendances')
-export class AllAttendanceController {
+export class AttendanceController {
   constructor(private readonly attendanceService: AttendanceService) {}
 
-  @Get('status/:studentId')
-  async getCurrentStudyStatus(
-    @Param('studentId') studentId: number,
-    @Query('type') type: 'morning' | 'night',
+  @Post()
+  async create(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Body() dto: CreateAttendanceDto,
   ) {
-    if (!['morning', 'night'].includes(type))
-      throw new BadRequestException('Invalid type');
-    try {
-      const status = (await this.attendanceService.getCurrentStudyStatus(
-        studentId,
-        type,
-      )) as StudyCacheStatus;
-      if (status.isStudy) {
-        const currunt = await this.attendanceService.findOneById(
-          status.attendance_id,
-        );
-        return currunt;
-      }
-      return false;
-    } catch {
-      return false;
-    }
+    dto.student_id = userId;
+    const attendance = await this.attendanceService.create(dto);
+    return plainToInstance(ResponseAttendanceDto, attendance, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Get()

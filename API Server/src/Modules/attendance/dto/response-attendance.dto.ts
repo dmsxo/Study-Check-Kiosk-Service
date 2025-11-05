@@ -1,9 +1,6 @@
-import { Expose, Transform } from 'class-transformer';
+import { Expose } from 'class-transformer';
 
 export class ResponseAttendanceDto {
-  @Expose()
-  id: number;
-
   @Expose()
   type: string;
 
@@ -18,8 +15,4 @@ export class ResponseAttendanceDto {
 
   @Expose()
   description?: string;
-
-  @Expose()
-  @Transform(({ obj }) => obj.student_id?.id)
-  student_id: number;
 }

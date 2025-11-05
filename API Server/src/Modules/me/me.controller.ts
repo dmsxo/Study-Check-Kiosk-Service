@@ -1,30 +1,65 @@
 import { Controller, Get } from '@nestjs/common';
 import { MeService } from './me.service';
-import { Req, UseGuards } from '@nestjs/common';
-import { UserService } from '../user/user.service';
+import { Req, UseGuards, Query, BadRequestException } from '@nestjs/common';
 import type { Request } from 'express';
 import { AuthGuard } from 'src/Modules/auth/auth.guard';
+import { ResponseAttendanceDto } from '../attendance/dto/response-attendance.dto';
+import { Post } from '@nestjs/common';
 
 @Controller('me')
 @UseGuards(AuthGuard)
 export class MeController {
-  constructor(
-    private readonly meService: MeService,
-    private readonly userService: UserService,
-  ) {}
+  constructor(private readonly meService: MeService) {}
 
   @Get()
   async get_me(@Req() req: Request) {
-    const userId: number = req.session.user!.id;
-    return this.userService.get_user(userId);
+    return await this.meService.getMyProfile(req.session.user!.id);
   }
 
   @Get('attendances')
-  getMyAttendances() {}
+  async getMyAttendances(
+    @Req() req: Request,
+  ): Promise<ResponseAttendanceDto[] | null> {
+    return await this.meService.getMyAttendances(req.session.user!.id);
+  }
 
-  @Get('attendances/status')
-  getMyCurrentStudyStatus() {}
+  @Get('attendances/current')
+  async getCurrentStudyStatus(
+    @Req() req: Request,
+    @Query('type') type: 'morning' | 'night',
+  ): Promise<ResponseAttendanceDto | null> {
+    if (!['morning', 'night'].includes(type))
+      throw new BadRequestException('Invalid type');
+    return await this.meService.getCurrentStudyStatus(
+      req.session.user!.id,
+      type,
+    );
+  }
 
-  @Get('current-study')
-  getMyIsStudy() {}
+  // 체크인
+  @Post('check-in')
+  async checkIn(
+    @Req() req: Request,
+    @Query('type') type: 'morning' | 'night',
+  ): Promise<ResponseAttendanceDto | null> {
+    if (!['morning', 'night'].includes(type))
+      throw new BadRequestException('Invalid type');
+    return await this.meService.checkIn(req.session.user!.id, type);
+  }
+
+  // 체크아웃
+  @Post('check-out')
+  async checkOut(
+    @Req() req: Request,
+    @Query('type') type: 'morning' | 'night',
+    @Query('description') description?: string,
+  ): Promise<ResponseAttendanceDto | null> {
+    if (!['morning', 'night'].includes(type))
+      throw new BadRequestException('Invalid type');
+    return await this.meService.checkOut(
+      req.session.user!.id,
+      type,
+      description ?? '',
+    );
+  }
 }
