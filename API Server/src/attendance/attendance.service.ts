@@ -15,6 +15,7 @@ import { UpdateAttendanceDto } from './dto/update-attendance.dto';
 import { QueryAttendanceDto } from './dto/query-attendance.dto';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { Attendance } from 'src/attendance/entities/attendance.entity';
+import { StudyCacheStatus } from './interface/study-cache-status.interface';
 
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
@@ -76,44 +77,10 @@ export class AttendanceService {
 
   /** ================= 체크인/체크아웃 ================= */
 
-  /**
-   * 출석 데이터를 JSON 문자열로 직렬화
-   * @param {number|string} attendance_id
-   * @param {string} isStudy
-   * @param {string} type
-   * @returns {string} JSON 문자열
-   */
-  serialize(attendance_id, isStudy) {
-    const data = { attendance_id, isStudy };
-    try {
-      return JSON.stringify(data);
-    } catch (err) {
-      console.error('직렬화 실패:', err);
-      return null;
-    }
-  }
-
-  // -----------------------------
-  // JSON 역직렬화 함수
-  // -----------------------------
-  /**
-   * JSON 문자열을 출석 데이터 객체로 변환
-   * @param {string} jsonStr
-   * @returns {{attendance_id: number|string, isStudy: boolean, type: string}|null}
-   */
-  deserialize(jsonStr) {
-    try {
-      return JSON.parse(jsonStr);
-    } catch (err) {
-      console.error('역직렬화 실패:', err);
-      return null;
-    }
-  }
-
   async getCurrentStudyStatus(student_id: number, type: 'morning' | 'night') {
     const res = await this.cacheManager.get(`study:${student_id}:${type}`);
     if (!res) throw new NotFoundException('key does not exist ');
-    return this.deserialize(res);
+    return res;
   }
 
   async checkIn(
@@ -148,8 +115,8 @@ export class AttendanceService {
     description: string,
   ): Promise<Attendance> {
     // Redis에서 attendance PK 가져오기
-    const status = this.deserialize(
-      await this.cacheManager.get<string>(`study:${student_id}:${type}`),
+    const status = await this.cacheManager.get<StudyCacheStatus>(
+      `study:${student_id}:${type}`,
     );
     if (!status) {
       throw new NotFoundException(

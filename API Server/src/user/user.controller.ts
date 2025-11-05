@@ -42,13 +42,6 @@ export class UserController {
     return this.userService.get_user(id);
   }
 
-  @UseGuards(AuthGuard)
-  @Get('me')
-  async get_me(@Req() req: Request): Promise<ResponseUserDto> {
-    const userId: number = req.session.user!.id;
-    return this.userService.get_user(userId);
-  }
-
   @Patch(':id')
   async update_user(
     @Param('id', ParseIntPipe) id: number,

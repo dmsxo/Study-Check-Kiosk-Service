@@ -28,7 +28,6 @@ export class UserService {
   async get_user(student_id: number): Promise<User> {
     const student = await this.userRepo.findOne({
       where: { student_id },
-      relations: ['attendances'],
     });
     if (!student) {
       throw new NotFoundException(

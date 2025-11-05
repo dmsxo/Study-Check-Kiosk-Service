@@ -15,6 +15,7 @@ import { QueryAttendanceDto } from '../dto/query-attendance.dto';
 import { plainToInstance } from 'class-transformer';
 import { ResponseAttendanceDto } from '../dto/response-attendance.dto';
 import { UpdateAttendanceDto } from '../dto/update-attendance.dto';
+import { StudyCacheStatus } from '../interface/study-cache-status.interface';
 
 @Controller('attendances')
 export class AllAttendanceController {
@@ -27,26 +28,18 @@ export class AllAttendanceController {
   ) {
     if (!['morning', 'night'].includes(type))
       throw new BadRequestException('Invalid type');
-    const status = await this.attendanceService.getCurrentStudyStatus(
-      studentId,
-      type,
-    );
-    return status;
-  }
-
-  @Get('status/:studentId/studying')
-  async getIsStudy(
-    @Param('studentId') studentId: number,
-    @Query('type') type: 'morning' | 'night',
-  ) {
-    if (!['morning', 'night'].includes(type))
-      throw new BadRequestException('Invalid type');
     try {
-      const status = await this.attendanceService.getCurrentStudyStatus(
+      const status = (await this.attendanceService.getCurrentStudyStatus(
         studentId,
         type,
-      );
-      return status.isStudy;
+      )) as StudyCacheStatus;
+      if (status.isStudy) {
+        const currunt = await this.attendanceService.findOneById(
+          status.attendance_id,
+        );
+        return currunt;
+      }
+      return false;
     } catch {
       return false;
     }
@@ -68,9 +61,9 @@ export class AllAttendanceController {
     });
   }
 
-  @Patch(':attendanceId')
+  @Patch(':id')
   async update(
-    @Param('attendanceId', ParseIntPipe) attendanceId: number,
+    @Param('id', ParseIntPipe) attendanceId: number,
     @Body() dto: UpdateAttendanceDto,
   ) {
     const attendance = await this.attendanceService.update(attendanceId, dto);
@@ -79,8 +72,8 @@ export class AllAttendanceController {
     });
   }
 
-  @Delete(':attendanceId')
-  async remove(@Param('attendanceId', ParseIntPipe) attendanceId: number) {
+  @Delete(':id')
+  async remove(@Param('id', ParseIntPipe) attendanceId: number) {
     const attendance = await this.attendanceService.remove(attendanceId);
     return plainToInstance(ResponseAttendanceDto, attendance, {
       excludeExtraneousValues: true,

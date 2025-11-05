@@ -6,7 +6,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeORMConfig } from './configs/typeorm.config';
 import { CacheModule } from '@nestjs/cache-manager';
 import { AttendanceModule } from './attendance/attendance.module';
-import * as redisStore from 'cache-manager-ioredis';
+import { MeModule } from './me/me.module';
+import { redisStore } from 'cache-manager-ioredis-yet';
 /*
 src/
 ├─ auth/
@@ -36,17 +37,21 @@ src/
     AnalysisModule,
 
     TypeOrmModule.forRoot(typeORMConfig),
-    CacheModule.register({
+
+    CacheModule.registerAsync({
       isGlobal: true,
-      store: redisStore,
-      host: 'localhost',
-      port: 6379,
-      db: 0,
-      prefix: '',
+      useFactory: async () => ({
+        store: await redisStore({
+          host: 'localhost',
+          port: 6379,
+          db: 0,
+          keyPrefix: '',
+        }),
+      }),
     }),
+
     AttendanceModule,
+    MeModule,
   ],
-  controllers: [],
-  providers: [],
 })
 export class AppModule {}
