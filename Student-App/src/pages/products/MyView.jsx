@@ -1,12 +1,12 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { UserRound, SquarePen, LogOut, SunMoon, Bell } from "lucide-react";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { UserRound, SquarePen, LogOut, SunMoon, Bell } from 'lucide-react';
 import {
   LayoutContaner,
   ScreenFrame,
   Toggle,
-} from "../../components/UIComponents";
-import { useAuth } from "../../context/AuthContext";
+} from '../../components/UIComponents';
+import { useAuth } from '../../contexts/AuthContext';
 
 function parseStudentID(studentID) {
   let info = studentID;
@@ -19,13 +19,14 @@ function parseStudentID(studentID) {
   return { grade, classNum, num };
 }
 
-function MyView({ setIsLoggedIn, user }) {
+function MyView({ setIsLoggedIn }) {
   const [notificationsOn, setNotificationsOn] = useState(false);
   const [isDark, setIsDark] = useState(false);
 
+  const user = useAuth().user;
   const { logout } = useAuth();
-  const { name, studentID, description, gmail } = user; // api로 대체
-  const { grade, classNum, num } = parseStudentID(studentID);
+  const { name, student_id, description, email } = user; // api로 대체
+  const { grade, classNum, num } = parseStudentID(student_id);
 
   return (
     <ScreenFrame>
@@ -36,7 +37,7 @@ function MyView({ setIsLoggedIn, user }) {
         <div className="flex-1 ml-4">
           <h2 className="font-semibold text-gray-900 mb-1">{name}</h2>
           <h3 className="text-gray-500 text-sm">{`${grade}학년 ${classNum}반 ${num}번`}</h3>
-          <h3 className="text-gray-500 text-sm mb-1"> {gmail}</h3>
+          <h3 className="text-gray-500 text-sm mb-1"> {email}</h3>
           <em className="font-serif text-gray-900 bg-amber-50 rounded-lg">
             {description}
           </em>

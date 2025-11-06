@@ -56,6 +56,7 @@ export async function logout_session(){
 
 export async function checkSession(){
   return api.get(`/me`).then((response) => {
+    console.log(response)
     return response.data;
   }).catch((error) => {
     console.error("Session check failed", error);

@@ -1,5 +1,5 @@
-import React, { useRef } from "react";
-import { useAuth } from "../../context/AuthContext";
+import React, { useRef } from 'react';
+import { useAuth } from '../../contexts/AuthContext';
 
 function Login() {
   const text = useRef();
@@ -15,7 +15,7 @@ function Login() {
       />
       <button
         onClick={() => {
-          console.log("Logging in with email:", text.current.value);
+          console.log('Logging in with email:', text.current.value);
           login(text.current.value);
         }}
         className="p-4 rounded-2xl bg-gray-800 text-white"
