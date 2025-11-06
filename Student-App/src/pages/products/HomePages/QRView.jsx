@@ -4,12 +4,16 @@ import TicketCutLine from "../../../components/QRViewComponents/TicketCutLine";
 import { ScreenFrame } from "../../../components/UIComponents";
 import { Link } from "react-router-dom";
 import { getStatus } from "../../../api/AttendanceAPI";
+import { useAuth } from "../../../context/AuthContext";
 import dayjs from "dayjs";
 
 function QRView({ code, getAuthCode, setIsStudying }) {
   const INTERVAL_SEC = 10; // 반복 주기 (초)
   const [remain, setRemain] = useState(INTERVAL_SEC);
   const [now, setNow] = useState(dayjs().tz("Asia/Seoul").startOf("minute"));
+  const { user } = useAuth();
+
+  console.log(user);
 
   useEffect(() => {
     const updateTime = () => setNow(dayjs().tz("Asia/Seoul").startOf("minute"));
@@ -76,11 +80,11 @@ function QRView({ code, getAuthCode, setIsStudying }) {
           <div className="grid grid-cols-3 gap-4 bg-gray-50 rounded-xl p-4">
             <div>
               <p className="text-gray-500 text-xs mb-1">학번</p>
-              <p className="text-gray-900 font-semibold">20129</p>
+              <p className="text-gray-900 font-semibold">{user.student_id}</p>
             </div>
             <div>
               <p className="text-gray-500 text-xs mb-1">이름</p>
-              <p className="text-gray-900 font-semibold">황은태</p>
+              <p className="text-gray-900 font-semibold">{user.name}</p>
             </div>
             <div>
               <p className="text-gray-500 text-xs mb-1">체크인 시간</p>
