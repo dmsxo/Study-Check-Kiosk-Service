@@ -70,7 +70,10 @@ async function bootstrap() {
   );
 
   // CORS
-  app.enableCors({ credentials: true });
+  app.enableCors({
+    origin: ['http://localhost:5173', 'http://localhost:4000'],
+    credentials: true,
+  });
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true, // DTO에 없는 필드는 제거

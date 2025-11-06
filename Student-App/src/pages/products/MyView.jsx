@@ -1,11 +1,12 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { UserRound, SquarePen, LogOut, SunMoon, Bell } from 'lucide-react';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { UserRound, SquarePen, LogOut, SunMoon, Bell } from "lucide-react";
 import {
   LayoutContaner,
   ScreenFrame,
   Toggle,
-} from '../../components/UIComponents';
+} from "../../components/UIComponents";
+import { useAuth } from "../../context/AuthContext";
 
 function parseStudentID(studentID) {
   let info = studentID;
@@ -22,13 +23,7 @@ function MyView({ setIsLoggedIn, user }) {
   const [notificationsOn, setNotificationsOn] = useState(false);
   const [isDark, setIsDark] = useState(false);
 
-  let navigate = useNavigate();
-
-  function Logout() {
-    setIsLoggedIn(false);
-    navigate('/login');
-  }
-
+  const { logout } = useAuth();
   const { name, studentID, description, gmail } = user; // api로 대체
   const { grade, classNum, num } = parseStudentID(studentID);
 
@@ -101,7 +96,7 @@ function MyView({ setIsLoggedIn, user }) {
       {/* 로그아웃 버튼 */}
       <LayoutContaner>
         <button
-          onClick={Logout}
+          onClick={logout}
           className="w-full flex items-center justify-center gap-2 text-red-600"
         >
           <LogOut size={18} />

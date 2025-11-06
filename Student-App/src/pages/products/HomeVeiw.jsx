@@ -1,12 +1,12 @@
 // Home.jsx
-import { useState, useEffect } from 'react';
-import QRView from './HomePages/QRView';
-import StudyView from './HomePages/StudyView';
-import { getStatus } from '../../api/AttendanceAPI';
-import { getFullStatData } from '../../helpers/stats.helper';
+import { useState, useEffect } from "react";
+import QRView from "./HomePages/QRView";
+import StudyView from "./HomePages/StudyView";
+import { getStatus, getCode } from "../../api/AttendanceAPI";
+import { getFullStatData } from "../../helpers/stats.helper";
 
 function Home({ statData, setStatData }) {
-  const [code, setCode] = useState('');
+  const [code, setCode] = useState("");
   const [isStudying, setIsStudying] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -17,8 +17,8 @@ function Home({ statData, setStatData }) {
 
   useEffect(() => {
     const fetchStatus = async () => {
-      const status = await getStatus('night');
-      setIsStudying(status);
+      const status = await getStatus("night");
+      setIsStudying(!!status);
     };
     fetchStatus();
   }, []);

@@ -1,18 +1,18 @@
-import { QRCodeSVG } from 'qrcode.react';
-import { useState, useRef, useEffect } from 'react';
-import TicketCutLine from '../../../components/QRViewComponents/TicketCutLine';
-import { ScreenFrame } from '../../../components/UIComponents';
-import { Link } from 'react-router-dom';
-import { getStatus } from '../../../api/AttendanceAPI';
-import dayjs from 'dayjs';
+import { QRCodeSVG } from "qrcode.react";
+import { useState, useRef, useEffect } from "react";
+import TicketCutLine from "../../../components/QRViewComponents/TicketCutLine";
+import { ScreenFrame } from "../../../components/UIComponents";
+import { Link } from "react-router-dom";
+import { getStatus } from "../../../api/AttendanceAPI";
+import dayjs from "dayjs";
 
 function QRView({ code, getAuthCode, setIsStudying }) {
   const INTERVAL_SEC = 10; // 반복 주기 (초)
   const [remain, setRemain] = useState(INTERVAL_SEC);
-  const [now, setNow] = useState(dayjs().tz('Asia/Seoul').startOf('minute'));
+  const [now, setNow] = useState(dayjs().tz("Asia/Seoul").startOf("minute"));
 
   useEffect(() => {
-    const updateTime = () => setNow(dayjs().tz('Asia/Seoul').startOf('minute'));
+    const updateTime = () => setNow(dayjs().tz("Asia/Seoul").startOf("minute"));
 
     // 현재 분 끝까지 남은 시간 계산
     const delay = 60000 - (dayjs().second() * 1000 + dayjs().millisecond());
@@ -29,7 +29,7 @@ function QRView({ code, getAuthCode, setIsStudying }) {
 
   useEffect(() => {
     const fetchStatus = async () => {
-      return await getStatus('night');
+      return await getStatus("night");
     };
 
     const timer = setInterval(() => {
@@ -42,7 +42,7 @@ function QRView({ code, getAuthCode, setIsStudying }) {
       });
       fetchStatus()
         .then((status) => {
-          if (!status) setIsStudying(true);
+          if (!!status) setIsStudying(true);
         })
         .catch(console.error);
     }, 1000);
@@ -85,7 +85,7 @@ function QRView({ code, getAuthCode, setIsStudying }) {
             <div>
               <p className="text-gray-500 text-xs mb-1">체크인 시간</p>
               <p className="text-gray-900 font-semibold">
-                {now.format('A HH:mm')}
+                {now.format("A HH:mm")}
               </p>
             </div>
           </div>

@@ -8,11 +8,12 @@ const api = axios.create({
   },
   timeout: 5000,
   withCredentials: true,
+
 });
 
 
 export async function getCode() {
-  await api.post(`${address}/auth/checkin/code`, {
+  return await api.post(`/auth/checkin/code`, {
     issuer: `student:${userData.studentID}`,
     ttl:10000
   }). then((response) => {
@@ -24,7 +25,7 @@ export async function getCode() {
 }
 
 export async function verifyCode(code) {
-  await api.post(`/auth/checkin/verify`, {
+  return await api.post(`/auth/checkin/verify`, {
     code: code
   }). then((response) => {
     return response.data;
@@ -34,8 +35,8 @@ export async function verifyCode(code) {
   });
 }
 
-export async function login(email){
-  api.post(`/auth/login`, {
+export async function login_session(email){
+  return api.post(`/auth/login`, {
     email: email
   }). then((response) => {
     return response.data;
@@ -44,8 +45,8 @@ export async function login(email){
   });
 }
 
-export async function logout(){
-  api.post(`/auth/logout`).then((response) => { 
+export async function logout_session(){
+  return api.post(`/auth/logout`).then((response) => { 
     return response.data;
   }).catch((error) => {
     console.error("Logout failed", error);
@@ -53,16 +54,25 @@ export async function logout(){
   });
 }
 
+export async function checkSession(){
+  return api.get(`/me`).then((response) => {
+    return response.data;
+  }).catch((error) => {
+    console.error("Session check failed", error);
+    throw error;
+  });
+}
+
 export async function check_in(type){
-  await api.post(`me/attendances/check-in?type=${type}`);
+  return await api.post(`/me/attendances/check-in?type=${type}`);
 }
 
 export async function check_out(type, description){
-  await api.post(`/me/attendances/check-out?type=${type}&description=${description}`);
+  return await api.post(`/me/attendances/check-out?type=${type}&description=${description}`);
 }
 
 export async function getStatus(type) {
-  api.get(`/me/attendances/current?type=${type}`).then((response) => {
+  return api.get(`/me/attendances/current?type=${type}`).then((response) => {
     return response.data;
   }).catch((error) => {
     console.error(error);
@@ -71,7 +81,7 @@ export async function getStatus(type) {
 }
 
 export async function getAttendances() {
-  api.get(`/me/attendances`).then((response) => {
+  return api.get(`/me/attendances`).then((response) => {
     return response.data;
   }).catch((error) => {
     console.error(error);

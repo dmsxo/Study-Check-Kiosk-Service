@@ -37,7 +37,7 @@ export class MeController {
   }
 
   // 체크인
-  @Post('check-in')
+  @Post('attendances/check-in')
   async checkIn(
     @Req() req: Request,
     @Query('type') type: 'morning' | 'night',
@@ -48,7 +48,7 @@ export class MeController {
   }
 
   // 체크아웃
-  @Post('check-out')
+  @Post('attendances/check-out')
   async checkOut(
     @Req() req: Request,
     @Query('type') type: 'morning' | 'night',
