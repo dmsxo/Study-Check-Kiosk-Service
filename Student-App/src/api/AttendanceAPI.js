@@ -55,7 +55,7 @@ export async function logout_session(){
 }
 
 export async function checkSession(){
-  return api.get(`/me`).then((response) => {
+  return await api.get(`/me`).then((response) => {
     console.log(response)
     return response.data;
   }).catch((error) => {
@@ -73,7 +73,7 @@ export async function check_out(type, description){
 }
 
 export async function getStatus(type) {
-  return api.get(`/me/attendances/current?type=${type}`).then((response) => {
+  return await api.get(`/me/attendances/current?type=${type}`).then((response) => {
     return response.data;
   }).catch((error) => {
     console.error(error);
@@ -82,7 +82,7 @@ export async function getStatus(type) {
 }
 
 export async function getAttendances() {
-  return api.get(`/me/attendances`).then((response) => {
+  return await api.get(`/me/attendances`).then((response) => {
     return response.data;
   }).catch((error) => {
     console.error(error);

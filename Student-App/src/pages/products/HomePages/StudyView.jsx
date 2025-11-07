@@ -1,10 +1,11 @@
 import { Flame, Calendar, AlarmClock, TrendingUp, Clock } from "lucide-react";
 import { StatCard } from "../../../components/StatViewComponents";
 import { LayoutContaner, ScreenFrame } from "../../../components/UIComponents";
-import { check_out, getStatus } from "../../../api/AttendanceAPI";
+import { getStatus } from "../../../api/AttendanceAPI";
 import { useEffect, useState, useRef } from "react";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
+import { useAttendance } from "../../../hooks/useAttendance";
 
 function getWeekTotalDay(data) {
   return data.filter((item) => item.studytime > 0).length + 1;
@@ -45,11 +46,11 @@ function formatDuration(total) {
   return messege;
 }
 
-function StudyView({ setIsStudying, statData }) {
+function StudyView() {
   const checkInTime = useRef(null); // 오늘 기준 초
   const [time, setTime] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [weekData] = useState(statData.night.getThisWeekData());
+  const { data, isPending } = useAttendance();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -82,6 +83,10 @@ function StudyView({ setIsStudying, statData }) {
     return () => clearInterval(interval);
   }, [checkInTime.current]);
 
+  if (isPending) return <></>;
+  const statData = data.attendances_night;
+  const weekData = statData.getThisWeekData();
+
   if (loading) return <></>;
   else
     return (
@@ -109,7 +114,7 @@ function StudyView({ setIsStudying, statData }) {
             title={"연속 출석일"}
             Icon={Flame}
             color={"text-orange-500"}
-            value={statData.night.streak + 1}
+            value={statData.streak + 1}
             bgColor={"bg-white"}
           />
           <StatCard

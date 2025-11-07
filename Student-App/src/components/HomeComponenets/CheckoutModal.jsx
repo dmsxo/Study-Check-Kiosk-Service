@@ -3,12 +3,15 @@ import { ArrowLeft } from "lucide-react";
 import FinalPopupModal from "./FinalPopupModal";
 import { useNavigate } from "react-router-dom";
 import { check_out } from "../../api/AttendanceAPI";
+import { useAttendance } from "../../hooks/useAttendance";
 
 export default function CheckoutModal() {
   const [showConfirm, setShowConfirm] = useState(false);
   const [message, setMessage] = useState("");
   const [isCheckedOut, setIsCheckedOut] = useState(false);
   const navigate = useNavigate();
+
+  const { refresh } = useAttendance();
 
   const handleSubmit = () => {
     setShowConfirm(true);
@@ -21,7 +24,9 @@ export default function CheckoutModal() {
 
     setTimeout(() => {
       check_out("night", message).then(() => {
-        navigate("/");
+        refresh().then(() => {
+          navigate("/");
+        });
       });
     }, 3000);
   };

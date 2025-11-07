@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { act, useEffect } from "react";
 import { useState } from "react";
 import { Calendar, Flame, TrendingUp, Percent } from "lucide-react";
 import {
@@ -13,8 +13,9 @@ import {
 } from "../../components/StatViewComponents";
 import { getColorClass } from "../../helpers/calendar.helper";
 import dayjs from "dayjs";
+import { useAttendance } from "../../hooks/useAttendance";
 
-function StatView({ statData }) {
+function StatView() {
   // 현재 보고 있는 카테고리
   const [studyType, setStudyType] = useState("night");
 
@@ -30,9 +31,13 @@ function StatView({ statData }) {
   // 출석률 그래프 상태
   const [viewMode, setViewMode] = useState("month");
   const [curruntView, setCurruntView] = useState(dayjs().tz("Asia/Seoul"));
+  const { data, isPending } = useAttendance();
+
+  if (isPending) return <></>;
 
   const activityData =
-    studyType === "night" ? statData.night : statData.morning; // 현재 통계
+    studyType === "night" ? data.attendances_night : data.attendances_morning;
+  console.log("activityData:", data);
 
   return (
     <ScreenFrame>

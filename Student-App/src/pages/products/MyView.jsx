@@ -1,12 +1,11 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { UserRound, SquarePen, LogOut, SunMoon, Bell } from 'lucide-react';
+import { useState } from "react";
+import { UserRound, SquarePen, LogOut, SunMoon, Bell } from "lucide-react";
 import {
   LayoutContaner,
   ScreenFrame,
   Toggle,
-} from '../../components/UIComponents';
-import { useAuth } from '../../contexts/AuthContext';
+} from "../../components/UIComponents";
+import { useAuth } from "../../contexts/AuthContext";
 
 function parseStudentID(studentID) {
   let info = studentID;
@@ -19,7 +18,7 @@ function parseStudentID(studentID) {
   return { grade, classNum, num };
 }
 
-function MyView({ setIsLoggedIn }) {
+function MyView() {
   const [notificationsOn, setNotificationsOn] = useState(false);
   const [isDark, setIsDark] = useState(false);
 

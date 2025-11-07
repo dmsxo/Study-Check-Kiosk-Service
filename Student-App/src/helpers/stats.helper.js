@@ -143,8 +143,7 @@ function getStats(attendance, schoolDaysRaw){
  * 아침 독서와 야간 자율학습 전부의 Stat을 반환
  * @returns 
  */
-export async function getFullStatData(){
-  const rawAttendances = await getAttendances();
+export function getFullStatData(rawAttendances){
   const rawSchoolDays = schoolDays;
 
   const attendanceByType = groupByStudyType(rawAttendances);
