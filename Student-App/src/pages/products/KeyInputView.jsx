@@ -25,7 +25,7 @@ export default function KeyInput() {
           if (issuerType === 'kiosk') {
             await check_in(type);
             await pong(detail, user.student_id);
-            navigate('/');
+            navigate('/', { replace: true });
           }
         } catch (err) {
           console.error(err);
