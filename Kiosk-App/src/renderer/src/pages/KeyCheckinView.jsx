@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getCode } from '../../api/AttendanceAPI';
+import { getCode, getUser, ping } from '../../api/AttendanceAPI';
 import { Clock } from 'lucide-react';
 import CheckinComplete from '../components/ResultsScreens/CheckInComplete';
 import TimeOut from '../components/ResultsScreens/TimeOut';
@@ -8,7 +8,7 @@ import HomeButton from '../components/UI/HomeButton';
 function KeyChekinView() {
   const [key, setKey] = useState('');
   const [state, setState] = useState('waiting');
-  const [remain, setRemain] = useState(15);
+  const [remain, setRemain] = useState();
   const [issuer, setIssuer] = useState('');
 
   useEffect(() => {
@@ -20,6 +20,7 @@ function KeyChekinView() {
       };
       run();
       //타이머 시작
+      setRemain(15);
       const timer = setInterval(() => {
         setRemain((prev) => {
           if (prev === 0) {
@@ -27,7 +28,16 @@ function KeyChekinView() {
           } else return prev - 1;
         });
 
-        const status = getStatus(); // SSE.... 아마도... 엉엉
+        ping().then((res) => {
+          console.log(res);
+          if (res) {
+            getUser(res).then((user) => {
+              console.log(user);
+              setIssuer(user.name);
+              setState('success');
+            });
+          }
+        });
       }, 1000);
 
       return () => clearInterval(timer);
@@ -51,7 +61,7 @@ function KeyChekinView() {
       case 'success':
         return <CheckinComplete issuer={issuer} />;
       case 'timeout':
-        return <TimeOut />;
+        return <TimeOut onClick={() => setState('waiting')} />;
 
       default:
         return null;

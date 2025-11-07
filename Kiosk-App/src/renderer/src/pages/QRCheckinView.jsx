@@ -53,7 +53,7 @@ function QRCheckinView() {
       };
       verify();
     }
-  }, [state, qrValue]);
+  }, [state]); // qr vlaue 필요한가? 나중에 테스트 ㄱ
 
   const renderContent = () => {
     switch (state) {

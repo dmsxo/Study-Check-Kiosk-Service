@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { KeyRound, X } from 'lucide-react';
-import { check_in, verifyCode } from '../../api/AttendanceAPI';
+import { check_in, pong, verifyCode } from '../../api/AttendanceAPI';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function KeyInput() {
   const [code, setCode] = useState(['', '', '', '', '', '']);
@@ -9,6 +10,7 @@ export default function KeyInput() {
   const [isError, setIsError] = useState(false);
   const inputRefs = useRef([]);
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   useEffect(() => {
     const allFilled = code.every((digit) => digit !== '');
@@ -18,9 +20,11 @@ export default function KeyInput() {
         try {
           const res = await verifyCode(code.join(''));
           const [issuerType, detail] = res.split(':');
+          const [type] = detail.split('-');
           // console.log(issuerType, detail);
           if (issuerType === 'kiosk') {
-            await check_in(detail);
+            await check_in(type);
+            await pong(detail, user.student_id);
             navigate('/');
           }
         } catch (err) {

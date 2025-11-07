@@ -24,7 +24,6 @@ export class AttendanceService {
     @InjectRepository(Attendance)
     private readonly attendanceRepo: Repository<Attendance>,
     private readonly userService: UserService,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   /** ================= CRUD ================= */

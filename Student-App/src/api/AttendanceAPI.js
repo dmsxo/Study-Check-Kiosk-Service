@@ -68,6 +68,10 @@ export async function check_in(type){
   return await api.post(`/me/attendances/check-in?type=${type}`);
 }
 
+export async function pong(kioskId, studentId){
+  return await api.post(`/kiosk/pong?kioskId=${kioskId}&studentId=${studentId}`);
+}
+
 export async function check_out(type, description){
   return await api.post(`/me/attendances/check-out?type=${type}&description=${description}`);
 }

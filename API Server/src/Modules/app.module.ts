@@ -8,6 +8,7 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { AttendanceModule } from './attendance/attendance.module';
 import { StudentModule } from './student/student.module';
 import { redisStore } from 'cache-manager-ioredis-yet';
+import { KioskModule } from './kiosk/kiosk.module';
 /*
 src/
 ├─ auth/
@@ -52,6 +53,7 @@ src/
 
     AttendanceModule,
     StudentModule,
+    KioskModule,
   ],
 })
 export class AppModule {}
