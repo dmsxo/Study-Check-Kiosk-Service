@@ -16,14 +16,20 @@ import {
 } from '../../helpers/calendar.helper';
 import { CalendarHeader } from '../UIComponents';
 import { getRateByMonth, getRateByWeek } from '../../helpers/stats.helper';
+import dayjs from 'dayjs';
 
 function displayText(viewMode, curruntView) {
-  const year = curruntView.getFullYear();
-  const month = curruntView.getMonth() + 1;
+  const date = dayjs(curruntView);
+
+  const year = date.year();
+  const month = date.month() + 1;
+
   if (viewMode === 'month') {
     return `${year}년`;
   } else if (viewMode === 'week') {
     return `${year}년 ${month}월`;
+  } else {
+    return '';
   }
 }
 
@@ -52,7 +58,7 @@ function getRateData(stats, viewMode, curruntView) {
 }
 
 function goToday(setCurruntView) {
-  setCurruntView(new Date());
+  setCurruntView(dayjs().tz('Asia/Seoul'));
 }
 
 function zoomIn(setViewMode) {

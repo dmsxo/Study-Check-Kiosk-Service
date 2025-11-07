@@ -1,34 +1,43 @@
-import React from 'react';
-import { useState } from 'react';
-import { Calendar, Flame, TrendingUp, Percent } from 'lucide-react';
+import React, { act, useEffect } from "react";
+import { useState } from "react";
+import { Calendar, Flame, TrendingUp, Percent } from "lucide-react";
 import {
   LayoutContaner,
   ScreenFrame,
   ToggleTabs,
-} from '../../components/UIComponents';
+} from "../../components/UIComponents";
 import {
   StatCard,
   StreakCalendar,
   RateChart,
-} from '../../components/StatViewComponents';
-import { getFullStatData } from '../../helpers/stats.helper';
-import { getColorClass } from '../../helpers/calendar.helper';
+} from "../../components/StatViewComponents";
+import { getColorClass } from "../../helpers/calendar.helper";
+import dayjs from "dayjs";
+import { useAttendance } from "../../hooks/useAttendance";
 
 function StatView() {
   // 현재 보고 있는 카테고리
-  const [studyType, setStudyType] = useState('night');
+  const [studyType, setStudyType] = useState("night");
 
   // 달력 상태
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const [currentDate, setCurrentDate] = useState(dayjs().tz("Asia/Seoul"));
   const [selectedDate, setSelectedDate] = useState(null);
 
-  // 출석률 그래프 상태
-  const [viewMode, setViewMode] = useState('month');
-  const [curruntView, setCurruntView] = useState(new Date());
+  // selectedDate 초기화
+  useEffect(() => {
+    setSelectedDate(null);
+  }, [studyType]);
 
-  // 아침 독서, 야간 자율학습 출석 통계 객체
-  const { morning, night } = getFullStatData();
-  const activityData = studyType === 'night' ? night : morning; // 현재 통계
+  // 출석률 그래프 상태
+  const [viewMode, setViewMode] = useState("month");
+  const [curruntView, setCurruntView] = useState(dayjs().tz("Asia/Seoul"));
+  const { data, isPending } = useAttendance();
+
+  if (isPending) return <></>;
+
+  const activityData =
+    studyType === "night" ? data.attendances_night : data.attendances_morning;
+  console.log("activityData:", data);
 
   return (
     <ScreenFrame>
@@ -36,8 +45,8 @@ function StatView() {
 
       {/* 카테고리 선택 탭 */}
       <ToggleTabs
-        categories={['morning', 'night']}
-        buttonNames={['아침 독서', '야간 자율학습']}
+        categories={["morning", "night"]}
+        buttonNames={["아침 독서", "야간 자율학습"]}
         value={studyType}
         onChange={(cat) => setStudyType(cat)}
       />
@@ -48,27 +57,27 @@ function StatView() {
         <div className="grid grid-cols-2 gap-2 mb-4">
           <StatCard
             Icon={Flame}
-            color={'text-orange-500'}
-            title={'연속 출석일'}
+            color={"text-orange-500"}
+            title={"연속 출석일"}
             value={activityData.streak}
           />
           <StatCard
             Icon={TrendingUp}
-            color={'text-purple-500'}
-            title={'최장 연속 출석일'}
+            color={"text-purple-500"}
+            title={"최장 연속 출석일"}
             value={activityData.longest_streak}
           />
           <StatCard
             Icon={Calendar}
-            color={'text-emerald-500'}
-            title={'총 출석일'}
+            color={"text-emerald-500"}
+            title={"총 출석일"}
             value={activityData.total}
           />
           <StatCard
             Icon={Percent}
-            color={'text-blue-500'}
-            title={'출석률'}
-            value={`${activityData.getRate('2025-01-01', '2025-12-31')}%`}
+            color={"text-blue-500"}
+            title={"출석률"}
+            value={`${activityData.getRate("2025-01-01", "2025-12-31")}%`}
           />
         </div>
       </LayoutContaner>
@@ -81,7 +90,7 @@ function StatView() {
             {/* 달력 헤더 */}
             <StreakCalendar
               attendanceCalendar={activityData.calendar}
-              currentDate={currentDate}
+              current={currentDate}
               setCurrentDate={setCurrentDate}
               setSelectedDate={setSelectedDate}
             />
@@ -94,17 +103,23 @@ function StatView() {
           <div className="text-xs font-medium text-gray-500 mb-1">
             {selectedDate.date}
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col justify-center gap-2">
             {selectedDate.studytime > 0 ? (
               <>
-                <span
-                  className={`w-3 h-3 rounded border ${getColorClass(
-                    selectedDate.studytime
-                  )}`}
-                ></span>
-                <span className="text-sm text-gray-900 font-medium">
-                  {Math.floor(selectedDate.studytime / 3600)}시간{' '}
-                  {Math.round((selectedDate.studytime % 3600) / 60)}분 공부함
+                <div className="flex items-center gap-2">
+                  <span
+                    className={`w-3 h-3 rounded border ${getColorClass(
+                      selectedDate.studytime
+                    )}`}
+                  ></span>
+                  <span className="text-sm text-gray-900 font-medium">
+                    {Math.floor(selectedDate.studytime / 3600)}시간{" "}
+                    {Math.round((selectedDate.studytime % 3600) / 60)}분 공부함
+                  </span>
+                </div>
+
+                <span className="text-sm text-gray-600 font-medium">
+                  {selectedDate.description}
                 </span>
               </>
             ) : (
@@ -115,7 +130,7 @@ function StatView() {
       )}
 
       {/* 출석률 그래프 */}
-      <LayoutContaner addSytle="space-y-3">
+      <LayoutContaner className="space-y-3">
         <h3 className="font-semibold text-gray-900 mb-3 bg-eme">출석률 추이</h3>
         <div className="flex justify-center">
           <div className="flex-1 max-w-md min-w-3xs aspect-square">

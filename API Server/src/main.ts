@@ -1,6 +1,11 @@
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { AppModule } from './app.module';
+import { AppModule } from './Modules/app.module';
+import { ValidationPipe } from '@nestjs/common';
+import session from 'express-session';
+import { createClient } from 'redis';
+import { RedisStore } from 'connect-redis';
+
 /*
 School Self-Study Kiosk Project
 Author: Hwang euntea
@@ -34,7 +39,49 @@ async function bootstrap() {
     .setVersion('1.0')
     .build();
 
-  app.enableCors();
+  // Redis Session 사용
+  const redisClient = createClient({
+    socket: {
+      host: 'localhost',
+      port: 6379,
+    },
+  });
+  await redisClient.connect();
+
+  const redisStore: any = new RedisStore({
+    client: redisClient,
+    prefix: 'session:', // 세션 키 prefix (옵션)
+    ttl: 60 * 60 * 24 * 2,
+  });
+
+  app.use(
+    session({
+      store: redisStore,
+      secret: process.env.SESSION_SECRET || 'keyboard cat',
+      resave: false,
+      saveUninitialized: false,
+      rolling: true,
+      cookie: {
+        httpOnly: true,
+        secure: false, // https 쓸 땐 true
+        maxAge: 1000 * 60 * 60 * 24 * 2, // 2일
+      },
+    }),
+  );
+
+  // CORS
+  app.enableCors({
+    origin: ['http://localhost:5173', 'http://localhost:4000'],
+    credentials: true,
+  });
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true, // DTO에 없는 필드는 제거
+      forbidNonWhitelisted: true, // DTO에 없는 필드 있으면 에러
+      transform: true, // 자동으로 타입 변환
+    }),
+  );
+
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api', app, document);
 

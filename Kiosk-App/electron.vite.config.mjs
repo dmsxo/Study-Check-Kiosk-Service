@@ -18,7 +18,11 @@ export default defineConfig({
     },
     plugins: [
       tailwindcss(), 
-      react()
-    ]
+      react(),
+    ],
+    server: {
+      port: 4000, // 원하는 포트로 바꾸기
+      strictPort: true, // 포트 이미 사용 중이면 바로 에러
+    },
   }
 })

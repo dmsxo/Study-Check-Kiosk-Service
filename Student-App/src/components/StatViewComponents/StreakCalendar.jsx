@@ -8,7 +8,7 @@ import {
 import { CalendarHeader } from '../UIComponents';
 
 function StreakCalendar({
-  currentDate,
+  current,
   setCurrentDate,
   setSelectedDate,
   attendanceCalendar,
@@ -17,14 +17,14 @@ function StreakCalendar({
   const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
 
   // 월별 달력 생성
-  const calendar = generateMonthCalendar(attendanceCalendar, currentDate);
+  const calendar = generateMonthCalendar(attendanceCalendar, current);
 
   return (
     <>
       <CalendarHeader
         prev={() => prevMonth(setCurrentDate)}
         next={() => nextMonth(setCurrentDate)}
-        text={`${currentDate.getFullYear()}년 ${currentDate.getMonth() + 1}월`}
+        text={`${current.year()}년 ${current.month() + 1}월`}
       />
 
       {/* 요일 헤더 */}

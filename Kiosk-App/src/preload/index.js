@@ -1,8 +1,23 @@
-import { contextBridge } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 
 // Custom APIs for renderer
-const api = {}
+const serialAPI = {
+  scan: () => ipcRenderer.send('scan-qr'),
+
+  onData: (callback) => {
+    const wrapper = (_e, data) => callback(data);
+    ipcRenderer.on('serial-data', wrapper);
+
+    // cleanup용 반환 함수
+    return () => ipcRenderer.removeListener('serial-data', wrapper);
+  },
+
+  onPortStatus: (callback) => {
+    ipcRenderer.on('port-status', (_event, status) => callback(status));
+    return () => ipcRenderer.removeListener('port-status', callback);
+  },
+}
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise
@@ -10,11 +25,11 @@ const api = {}
 if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld('electron', electronAPI)
-    contextBridge.exposeInMainWorld('api', api)
+    contextBridge.exposeInMainWorld('serialAPI', serialAPI);
   } catch (error) {
     console.error(error)
   }
 } else {
   window.electron = electronAPI
-  window.api = api
+  window.serialAPI = serialAPI;
 }

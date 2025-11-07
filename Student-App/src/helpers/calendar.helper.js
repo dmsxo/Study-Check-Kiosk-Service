@@ -1,34 +1,41 @@
-import { dateToStr } from "../utils/date.utils";
+import dayjs from 'dayjs';
 
-export function generateMonthCalendar(attendanceCalendar, currentDate) {
-  const year = currentDate.getFullYear();
-  const month = currentDate.getMonth();
+const KST = 'Asia/Seoul';
 
-  const firstDay = new Date(year, month, 1);
-  const lastDay = new Date(year, month + 1, 0);
-  const startDay = firstDay.getDay();
-  const daysInMonth = lastDay.getDate();
+export function generateMonthCalendar(attendanceCalendar, current) {
+  const year = current.year();
+  const month = current.month(); // 0 ~ 11
+
+  const firstDay = dayjs.tz(`${year}-${month + 1}-01`, KST);
+  const lastDay = firstDay.add(1, 'month').subtract(1, 'day');
+
+  const startDay = firstDay.day(); // 0 = Sunday
+  const daysInMonth = lastDay.date();
 
   const calendar = [];
-  // 이전 달의 빈 칸
+
   for (let i = 0; i < startDay; i++) {
     calendar.push(null);
   }
-  // 현재 달의 날짜들
-  for (let day = 1; day <= daysInMonth; day++) {
-    const dateStr = dateToStr(year, month, day)
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const date = firstDay.date(d);
+    const dateStr = date.format('YYYY-MM-DD');
+
     calendar.push({
       date: dateStr,
-      studytime: attendanceCalendar[dateStr]?.studytime || null,
-      description: attendanceCalendar[dateStr]?.description || null,
-      isToday: dateStr === new Date().toISOString().split('T')[0],
+      studytime: attendanceCalendar[dateStr]?.studytime || 0,
+      description: attendanceCalendar[dateStr]?.description || '',
+      isToday:
+        dateStr === dayjs().tz(KST).format('YYYY-MM-DD'),
     });
   }
+
   return calendar;
 }
 
 export function getColorClass(studytime) {
-  if (studytime === null) return 'bg-gray-100 border-gray-200';
+  if (studytime === 0) return 'bg-gray-100 border-gray-200';
   if (studytime <= 3600) return 'bg-emerald-200 border-emerald-300';
   if (studytime <= 7200) return 'bg-emerald-400 border-emerald-500';
   if (studytime <= 10800) return 'bg-emerald-600 border-emerald-700';
@@ -41,25 +48,17 @@ export function getTextColor (studytime) {
 }
 
 export function prevYear(setCurrentDate) {
-  setCurrentDate(
-    cur => new Date(cur.getFullYear()-1, 0, 1)
-  );
+  setCurrentDate(cur => dayjs(cur).subtract(1, 'year').startOf('year'));
 }
 
 export function nextYear(setCurrentDate) {
-  setCurrentDate(
-    cur => new Date(cur.getFullYear()+1, 0, 1)
-  );
+  setCurrentDate(cur => dayjs(cur).add(1, 'year').startOf('year'));
 }
 
 export function prevMonth(setCurrentDate) {
-  setCurrentDate(
-    cur => new Date(cur.getFullYear(), cur.getMonth() - 1, 1)
-  );
+  setCurrentDate(cur => dayjs(cur).subtract(1, 'month').startOf('month'));
 }
 
 export function nextMonth(setCurrentDate) {
-  setCurrentDate(
-    cur => new Date(cur.getFullYear(), cur.getMonth() + 1, 1)
-  );
+  setCurrentDate(cur => dayjs(cur).add(1, 'month').startOf('month'));
 }

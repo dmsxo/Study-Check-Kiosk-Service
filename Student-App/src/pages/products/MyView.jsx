@@ -1,11 +1,11 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { UserRound, SquarePen, LogOut, SunMoon, Bell } from 'lucide-react';
+import { useState } from "react";
+import { UserRound, SquarePen, LogOut, SunMoon, Bell } from "lucide-react";
 import {
   LayoutContaner,
   ScreenFrame,
   Toggle,
-} from '../../components/UIComponents';
+} from "../../components/UIComponents";
+import { useAuth } from "../../contexts/AuthContext";
 
 function parseStudentID(studentID) {
   let info = studentID;
@@ -18,30 +18,25 @@ function parseStudentID(studentID) {
   return { grade, classNum, num };
 }
 
-function MyView({ setIsLoggedIn, user }) {
+function MyView() {
   const [notificationsOn, setNotificationsOn] = useState(false);
   const [isDark, setIsDark] = useState(false);
 
-  let navigate = useNavigate();
-
-  function Logout() {
-    setIsLoggedIn(false);
-    navigate('/login');
-  }
-
-  const { name, studentID, description, gmail } = user; // api로 대체
-  const { grade, classNum, num } = parseStudentID(studentID);
+  const user = useAuth().user;
+  const { logout } = useAuth();
+  const { name, student_id, description, email } = user; // api로 대체
+  const { grade, classNum, num } = parseStudentID(student_id);
 
   return (
     <ScreenFrame>
       <h1 className="font-semibold text-gray-900 text-xl mb-4">나의 정보</h1>
       {/* 기본 프로필 정보 */}
-      <LayoutContaner addSytle="flex items-start">
+      <LayoutContaner className="flex items-start">
         <UserRound className="shrink-0 size-12 text-gray-500" />
         <div className="flex-1 ml-4">
           <h2 className="font-semibold text-gray-900 mb-1">{name}</h2>
           <h3 className="text-gray-500 text-sm">{`${grade}학년 ${classNum}반 ${num}번`}</h3>
-          <h3 className="text-gray-500 text-sm mb-1"> {gmail}</h3>
+          <h3 className="text-gray-500 text-sm mb-1"> {email}</h3>
           <em className="font-serif text-gray-900 bg-amber-50 rounded-lg">
             {description}
           </em>
@@ -101,7 +96,7 @@ function MyView({ setIsLoggedIn, user }) {
       {/* 로그아웃 버튼 */}
       <LayoutContaner>
         <button
-          onClick={Logout}
+          onClick={logout}
           className="w-full flex items-center justify-center gap-2 text-red-600"
         >
           <LogOut size={18} />
