@@ -20,7 +20,7 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 
 @Injectable()
-export class MeService {
+export class StudentService {
   constructor(
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private readonly userService: UserService,

@@ -1,26 +1,26 @@
 import { Controller, Get } from '@nestjs/common';
-import { MeService } from './me.service';
+import { StudentService } from '../student.service';
 import { Req, UseGuards, Query, BadRequestException } from '@nestjs/common';
 import type { Request } from 'express';
 import { AuthGuard } from 'src/Modules/auth/auth.guard';
-import { ResponseAttendanceDto } from '../attendance/dto/response-attendance.dto';
+import { ResponseAttendanceDto } from '../../attendance/dto/response-attendance.dto';
 import { Post } from '@nestjs/common';
 
 @Controller('me')
 @UseGuards(AuthGuard)
-export class MeController {
-  constructor(private readonly meService: MeService) {}
+export class StudentController {
+  constructor(private readonly studentService: StudentService) {}
 
   @Get()
   async get_me(@Req() req: Request) {
-    return await this.meService.getMyProfile(req.session.user!.id);
+    return await this.studentService.getMyProfile(req.session.user!.id);
   }
 
   @Get('attendances')
   async getMyAttendances(
     @Req() req: Request,
   ): Promise<ResponseAttendanceDto[] | null> {
-    return await this.meService.getMyAttendances(req.session.user!.id);
+    return await this.studentService.getMyAttendances(req.session.user!.id);
   }
 
   @Get('attendances/current')
@@ -30,7 +30,7 @@ export class MeController {
   ): Promise<ResponseAttendanceDto | null> {
     if (!['morning', 'night'].includes(type))
       throw new BadRequestException('Invalid type');
-    return await this.meService.getCurrentStudyStatus(
+    return await this.studentService.getCurrentStudyStatus(
       req.session.user!.id,
       type,
     );
@@ -44,7 +44,7 @@ export class MeController {
   ): Promise<ResponseAttendanceDto | null> {
     if (!['morning', 'night'].includes(type))
       throw new BadRequestException('Invalid type');
-    return await this.meService.checkIn(req.session.user!.id, type);
+    return await this.studentService.checkIn(req.session.user!.id, type);
   }
 
   // 체크아웃
@@ -56,7 +56,7 @@ export class MeController {
   ): Promise<ResponseAttendanceDto | null> {
     if (!['morning', 'night'].includes(type))
       throw new BadRequestException('Invalid type');
-    return await this.meService.checkOut(
+    return await this.studentService.checkOut(
       req.session.user!.id,
       type,
       description ?? '',

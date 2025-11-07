@@ -6,7 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeORMConfig } from '../configs/typeorm.config';
 import { CacheModule } from '@nestjs/cache-manager';
 import { AttendanceModule } from './attendance/attendance.module';
-import { MeModule } from './me/me.module';
+import { StudentModule } from './student/student.module';
 import { redisStore } from 'cache-manager-ioredis-yet';
 /*
 src/
@@ -51,7 +51,7 @@ src/
     }),
 
     AttendanceModule,
-    MeModule,
+    StudentModule,
   ],
 })
 export class AppModule {}
