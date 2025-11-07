@@ -8,7 +8,7 @@ import { Post } from '@nestjs/common';
 
 @Controller('me')
 @UseGuards(AuthGuard)
-export class StudentController {
+export class AuthStudentController {
   constructor(private readonly studentService: StudentService) {}
 
   @Get()
