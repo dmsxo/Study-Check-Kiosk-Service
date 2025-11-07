@@ -162,5 +162,14 @@ ipcMain.on('scan-qr', () => {
   port.write('s'); // QR 스캔 시작 신호 전송
 });
 
+ipcMain.on('stop-scan-qr', () => {
+  if (!port || !port.isOpen) {
+    console.warn('[ipc] 포트 미연결 상태에서 stop-scan-qr 요청');
+    if (mainWindow) mainWindow.webContents.send('serial-error', '포트 미연결');
+    return;
+  }
+  port.write('c'); // QR 스캔 시작 신호 전송
+});
+
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.

@@ -5,6 +5,8 @@ import { electronAPI } from '@electron-toolkit/preload'
 const serialAPI = {
   scan: () => ipcRenderer.send('scan-qr'),
 
+  stopScan: () => ipcRenderer.send('stop-scan-qr'),
+
   onData: (callback) => {
     const wrapper = (_e, data) => callback(data);
     ipcRenderer.on('serial-data', wrapper);
