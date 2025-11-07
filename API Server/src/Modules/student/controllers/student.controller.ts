@@ -10,12 +10,12 @@ import { Post } from '@nestjs/common';
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
 
-  // @Get('attendances')
-  // async getMyAttendances(
-  //   @Param('id') id: number,
-  // ): Promise<ResponseAttendanceDto[] | null> {
-  //   return await this.studentService.getMyAttendances(id);
-  // }
+  @Get('attendances')
+  async getMyAttendances(
+    @Param('id') id: number,
+  ): Promise<ResponseAttendanceDto[] | null> {
+    return await this.studentService.getMyAttendances(id);
+  }
 
   // @Get('attendances/current')
   // async getCurrentStudyStatus(

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getCode, getStatus } from '../../api/AttendanceAPI';
+import { getCode } from '../../api/AttendanceAPI';
 import { Clock } from 'lucide-react';
 import CheckinComplete from '../components/ResultsScreens/CheckInComplete';
 import TimeOut from '../components/ResultsScreens/TimeOut';

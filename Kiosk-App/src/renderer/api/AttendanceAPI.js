@@ -26,21 +26,22 @@ export async function check_in(student_id, type){
   await axios.post(`${address}/users/${student_id}/attendances/check-in?type=${type}`);
 }
 
-export async function getStatus(student_id, type) {
-  try {
-    const res = await axios.get(`${address}/attendances/status/${student_id}/studying?type=${type}`);
-    return res.data;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-}
+// export async function getStatus(student_id, type) {
+//   try {
+//     const res = await axios.get(`${address}/attendances/status/${student_id}/studying?type=${type}`);
+//     return res.data;
+//   } catch (error) {
+//     console.error(error);
+//     throw error;
+//   }
+// }
 
 export async function getUser(student_id) {
   try{
     const res = await axios.get(`${address}/users/${student_id}`)
     return res.data;
   }catch{
-
+    console.error(error);
+    throw error;
   }
 }
