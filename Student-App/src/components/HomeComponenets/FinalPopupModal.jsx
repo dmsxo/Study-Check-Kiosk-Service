@@ -1,8 +1,8 @@
-import { AlertCircle } from "lucide-react";
+import { AlertCircle } from 'lucide-react';
 
 export default function FinalPopupModal({ handleCancel, handleFinalCheckout }) {
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 animate-fadeIn">
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 animate-fadeIn">
       <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 animate-scaleIn">
         <div className="flex items-center justify-center mb-6">
           <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center">

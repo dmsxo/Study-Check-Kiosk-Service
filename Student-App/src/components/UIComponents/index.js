@@ -1,5 +1,5 @@
 export { default as CalendarHeader } from './CalendarHeader'
-export { default as LayoutContaner } from './LayoutContaner'
+export { default as LayoutContainer } from './LayoutContainer'
 export { default as  ScreenFrame} from './ScreenFrame'
 export { default as  Toggle} from './Toggle'
 export { default as  ToggleTabs} from './ToggleTabs'

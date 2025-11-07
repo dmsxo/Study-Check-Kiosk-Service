@@ -1,11 +1,12 @@
-import { useState } from "react";
-import { UserRound, SquarePen, LogOut, SunMoon, Bell } from "lucide-react";
+import { useState } from 'react';
+import { UserRound, SquarePen, LogOut, SunMoon, Bell } from 'lucide-react';
 import {
-  LayoutContaner,
+  LayoutContainer,
   ScreenFrame,
   Toggle,
-} from "../../components/UIComponents";
-import { useAuth } from "../../contexts/AuthContext";
+} from '../../components/UIComponents';
+import { useAuth } from '../../contexts/AuthContext';
+import ProfileEditModal from '../../components/MyViewComponents/ProfileEditModal';
 
 function parseStudentID(studentID) {
   let info = studentID;
@@ -21,6 +22,7 @@ function parseStudentID(studentID) {
 function MyView() {
   const [notificationsOn, setNotificationsOn] = useState(false);
   const [isDark, setIsDark] = useState(false);
+  const [isEditProfile, setIsEditProfile] = useState(false);
 
   const user = useAuth().user;
   const { logout } = useAuth();
@@ -31,23 +33,31 @@ function MyView() {
     <ScreenFrame>
       <h1 className="font-semibold text-gray-900 text-xl mb-4">나의 정보</h1>
       {/* 기본 프로필 정보 */}
-      <LayoutContaner className="flex items-start">
+      <LayoutContainer className="flex items-start gap-4 p-4">
         <UserRound className="shrink-0 size-12 text-gray-500" />
-        <div className="flex-1 ml-4">
-          <h2 className="font-semibold text-gray-900 mb-1">{name}</h2>
-          <h3 className="text-gray-500 text-sm">{`${grade}학년 ${classNum}반 ${num}번`}</h3>
-          <h3 className="text-gray-500 text-sm mb-1"> {email}</h3>
-          <em className="font-serif text-gray-900 bg-amber-50 rounded-lg">
+
+        <div className="flex-1 min-w-0">
+          <h2 className="font-semibold text-gray-900 mb-1 truncate">{name}</h2>
+          <p className="text-gray-500 text-sm">{`${grade}학년 ${classNum}반 ${num}번`}</p>
+          <p className="text-gray-500 text-sm mb-2">{email}</p>
+          <p className="font-serif text-gray-900 bg-amber-50 rounded-lg px-3 py-2 text-sm">
             {description}
-          </em>
+          </p>
         </div>
-        <button className="size-6 ml-auto">
+
+        <button
+          className="shrink-0 size-6"
+          aria-label="프로필 수정"
+          onClick={() => {
+            setIsEditProfile(true);
+          }}
+        >
           <SquarePen className="text-gray-500" />
         </button>
-      </LayoutContaner>
+      </LayoutContainer>
 
       {/* 설정 요소 */}
-      <LayoutContaner>
+      <LayoutContainer>
         <h3 className="font-semibold text-gray-900 mb-2">설정</h3>
         <div className="space-y-2">
           <div className="flex items-center ml-2">
@@ -65,10 +75,10 @@ function MyView() {
             <Toggle checked={isDark} onChange={() => setIsDark(!isDark)} />
           </div>
         </div>
-      </LayoutContaner>
+      </LayoutContainer>
 
       {/* 앱정보 */}
-      <LayoutContaner>
+      <LayoutContainer>
         <h3 className="font-semibold text-gray-900 mb-3">앱 정보</h3>
         <div className="space-y-2 ml-2">
           <div className="flex justify-between items-center">
@@ -91,10 +101,10 @@ function MyView() {
             <h4 className="text-gray-600">hwangeuntea@gmail.com</h4>
           </div>
         </div>
-      </LayoutContaner>
+      </LayoutContainer>
 
       {/* 로그아웃 버튼 */}
-      <LayoutContaner>
+      <LayoutContainer>
         <button
           onClick={logout}
           className="w-full flex items-center justify-center gap-2 text-red-600"
@@ -102,7 +112,13 @@ function MyView() {
           <LogOut size={18} />
           <h3 className="text-sm align-middle">로그아웃</h3>
         </button>
-      </LayoutContaner>
+      </LayoutContainer>
+      <ProfileEditModal
+        isOpen={isEditProfile}
+        onClose={() => setIsEditProfile(false)}
+        initialData={user}
+        onSave={() => console.log('change!')}
+      />
     </ScreenFrame>
   );
 }

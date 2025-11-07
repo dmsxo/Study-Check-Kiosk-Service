@@ -1,4 +1,4 @@
-function LayoutContaner({ children, className = '' }) {
+function LayoutContainer({ children, className = '' }) {
   return (
     <div
       className={`${className} p-4 bg-white rounded-xl border border-slate-200`}
@@ -8,4 +8,4 @@ function LayoutContaner({ children, className = '' }) {
   );
 }
 
-export default LayoutContaner;
+export default LayoutContainer;
