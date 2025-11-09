@@ -4,12 +4,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ImagesService } from '../images/images.service';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepo: Repository<User>,
+    private imageService: ImagesService,
   ) {}
 
   async create_user(createUserDto: CreateUserDto): Promise<User> {
@@ -40,14 +42,22 @@ export class UserService {
   async update_user(
     student_id: number,
     updateUserDto: UpdateUserDto,
+    file?: Express.Multer.File,
   ): Promise<User> {
     const student = await this.get_user(student_id);
+    if (file) {
+      const filename = student.profileImageFilename;
+      const newFilename = await this.imageService.uploadImage(file, filename);
+      student.profileImageFilename = newFilename;
+    }
     Object.assign(student, updateUserDto);
     return this.userRepo.save(student);
   }
 
   async delete_user(student_id: number): Promise<User> {
     const student = await this.get_user(student_id);
+    const profile = student.profileImageFilename;
+    if (profile) await this.imageService.deleteImage(profile);
     return this.userRepo.remove(student);
   }
 }

@@ -22,9 +22,12 @@ export class User {
   @Column({ unique: true })
   email: string;
 
-  @Column()
-  description: string;
+  @Column({ nullable: true })
+  description?: string;
+
+  @Column({ nullable: true })
+  profileImageFilename?: string;
 
   @OneToMany(() => Attendance, (attendance) => attendance.student_id)
-  attendances: Attendance[];
+  attendances?: Attendance[];
 }

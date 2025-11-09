@@ -9,14 +9,15 @@ import {
   ParseIntPipe,
   Req,
   UseGuards,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ResponseUserDto } from './dto/response-user.dto';
-import type { Request } from 'express';
-import { AuthGuard } from 'src/Modules/auth/auth.guard';
 import { plainToInstance } from 'class-transformer';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('users')
 export class UserController {
@@ -51,11 +52,17 @@ export class UserController {
   }
 
   @Patch(':id')
+  @UseInterceptors(FileInterceptor('image'))
   async update_user(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateUserDto: UpdateUserDto,
+    @UploadedFile() file?: Express.Multer.File,
   ): Promise<ResponseUserDto> {
-    const updatedUser = await this.userService.update_user(id, updateUserDto);
+    const updatedUser = await this.userService.update_user(
+      id,
+      updateUserDto,
+      file,
+    );
     return plainToInstance(ResponseUserDto, updatedUser, {
       excludeExtraneousValues: true,
     });

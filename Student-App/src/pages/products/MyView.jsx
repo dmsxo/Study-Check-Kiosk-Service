@@ -56,6 +56,13 @@ function MyView() {
         </button>
       </LayoutContainer>
 
+      <ProfileEditModal
+        isOpen={isEditProfile}
+        onClose={() => setIsEditProfile(false)}
+        initialData={user}
+        onSave={() => console.log('change!')}
+      />
+
       {/* 설정 요소 */}
       <LayoutContainer>
         <h3 className="font-semibold text-gray-900 mb-2">설정</h3>
@@ -113,12 +120,6 @@ function MyView() {
           <h3 className="text-sm align-middle">로그아웃</h3>
         </button>
       </LayoutContainer>
-      <ProfileEditModal
-        isOpen={isEditProfile}
-        onClose={() => setIsEditProfile(false)}
-        initialData={user}
-        onSave={() => console.log('change!')}
-      />
     </ScreenFrame>
   );
 }

@@ -54,6 +54,11 @@ function QRView({ code, getAuthCode, setIsStudying }) {
 
   return (
     <ScreenFrame bgColor="bg-gradient-to-b from-gray-50 to-gray-200">
+      <img
+        src={
+          'http://localhost:9001/api/v1/download-shared-object/aHR0cDovLzEyNy4wLjAuMTo5MDAwL2ltYWdlcy8yMDEyOT9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPTNJTzREMENQQ0VCR1IwT01DOE9VJTJGMjAyNTExMDklMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjUxMTA5VDEwNDczN1omWC1BbXotRXhwaXJlcz00MzIwMCZYLUFtei1TZWN1cml0eS1Ub2tlbj1leUpoYkdjaU9pSklVelV4TWlJc0luUjVjQ0k2SWtwWFZDSjkuZXlKaFkyTmxjM05MWlhraU9pSXpTVTgwUkRCRFVFTkZRa2RTTUU5TlF6aFBWU0lzSW1WNGNDSTZNVGMyTWpZNU1UQXdNeXdpY0dGeVpXNTBJam9pWVdSdGFXNGlmUS5YRmlVTVVhbVJ4V3RKcVh1d2RfNmxHejJOcVFLUmpSelhoX3h5a3VuSTh0YzhCT0xzNVhzU2Y4UVFZb2h4bndmVXlwTGJJT0RQTXNqcDhmMXNPNGY3ZyZYLUFtei1TaWduZWRIZWFkZXJzPWhvc3QmdmVyc2lvbklkPW51bGwmWC1BbXotU2lnbmF0dXJlPWM5ODFhNjIxZDBkOTVmZjA2OTUxZDk3YTY4NjIxMDE2YTk1MDQzNThiOGMzYmIzN2VmMWQ2YzgzNGE3MjRlYWE'
+        }
+      ></img>
       <h1 className="font-black text-gray-900 text-xl mb-4">출석 체크</h1>
 
       <div className="bg-white rounded-2xl flex flex-col min-w-3xs mx-auto">

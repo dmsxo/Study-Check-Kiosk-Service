@@ -16,6 +16,15 @@ export class ResponseUserDto {
   @IsString()
   @IsEmail()
   email: string;
+
+  @Expose()
+  @IsString()
+  description?: string;
+
+  @Expose()
+  @IsString()
+  profileImageFilename?: string;
+
   @Exclude()
   attendances?: Attendance[];
 }
