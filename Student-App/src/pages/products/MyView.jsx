@@ -25,7 +25,7 @@ function MyView() {
   const [isEditProfile, setIsEditProfile] = useState(false);
 
   const user = useAuth().user;
-  const { logout } = useAuth();
+  const { logout, profileURL } = useAuth();
   const { name, student_id, description, email } = user; // api로 대체
   const { grade, classNum, num } = parseStudentID(student_id);
 
@@ -34,7 +34,11 @@ function MyView() {
       <h1 className="font-semibold text-gray-900 text-xl mb-4">나의 정보</h1>
       {/* 기본 프로필 정보 */}
       <LayoutContainer className="flex items-start gap-4 p-4">
-        <UserRound className="shrink-0 size-12 text-gray-500" />
+        {profileURL ? (
+          <img src={profileURL} className="size-14 rounded-2xl" />
+        ) : (
+          <UserRound className="shrink-0 size-14 text-gray-500" />
+        )}
 
         <div className="flex-1 min-w-0">
           <h2 className="font-semibold text-gray-900 mb-1 truncate">{name}</h2>

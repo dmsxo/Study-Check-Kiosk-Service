@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import {
+import api, {
   checkSession,
   logout_session,
   login_session,
@@ -11,16 +11,23 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
   const [isLoggedIn, setIsLoggedIn] = useState(null);
   const [user, setUser] = useState(null);
+  const [profileURL, setProfileURL] = useState(null);
   const navigate = useNavigate();
 
   const refetchUser = async () => {
     try {
       const res = await checkSession();
       setUser(res);
+      const profile = res.profileImageFilename;
+      if (profile) {
+        const preSignedURL = await api.get(`/images/presigned/${profile}`);
+        setProfileURL(preSignedURL.data.url);
+      }
       setIsLoggedIn(true);
       return res;
     } catch (e) {
       setUser(null);
+      // setProfileURL(null);
       setIsLoggedIn(false);
       return null;
     }
@@ -52,6 +59,7 @@ export function AuthProvider({ children }) {
       value={{
         isLoggedIn,
         user,
+        profileURL,
         login,
         logout,
         refetchUser,
