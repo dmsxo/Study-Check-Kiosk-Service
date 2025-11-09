@@ -35,7 +35,7 @@ function MyView() {
       {/* 기본 프로필 정보 */}
       <LayoutContainer className="flex items-start gap-4 p-4">
         {profileURL ? (
-          <img src={profileURL} className="size-14 rounded-2xl" />
+          <img src={profileURL} className="size-14 rounded-2xl object-cover" />
         ) : (
           <UserRound className="shrink-0 size-14 text-gray-500" />
         )}
@@ -63,8 +63,10 @@ function MyView() {
       <ProfileEditModal
         isOpen={isEditProfile}
         onClose={() => setIsEditProfile(false)}
-        initialData={user}
-        onSave={() => console.log('change!')}
+        initialData={{
+          description: user.description,
+          profileURL: profileURL || null,
+        }}
       />
 
       {/* 설정 요소 */}

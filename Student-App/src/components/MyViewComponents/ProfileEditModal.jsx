@@ -1,14 +1,19 @@
 import { useState } from 'react';
-import { X, Camera, UserRound } from 'lucide-react';
+import { X, Camera, UserRound, Loader2 } from 'lucide-react';
+import api from '../../api/AttendanceAPI';
+import { useAuth } from '../../contexts/AuthContext';
 
-const ProfileEditModal = ({ isOpen, onClose, initialData, onSave }) => {
+const ProfileEditModal = ({ isOpen, onClose, initialData }) => {
+  const { user, refetchUser } = useAuth();
   const [formData, setFormData] = useState({
     description: initialData?.description || '',
-    profileImage: initialData?.profileImage || null,
+    profileURL: initialData?.profileURL || null,
   });
+  const [selectedFile, setSelectedFile] = useState(null);
   const [previewImage, setPreviewImage] = useState(
-    initialData?.profileImage || null
+    initialData?.profileURL || null
   );
+  const [isUploading, setIsUploading] = useState(false);
 
   if (!isOpen) return null;
 
@@ -16,71 +21,71 @@ const ProfileEditModal = ({ isOpen, onClose, initialData, onSave }) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // 1. 파일 형식 체크
+    // 파일 형식 체크
     const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
     if (!validTypes.includes(file.type)) {
       alert('JPG, PNG, WebP 형식만 업로드 가능합니다.');
       return;
     }
 
-    // 2. 파일 크기 체크 (5MB = 5 * 1024 * 1024 bytes)
-    const maxSize = 5 * 1024 * 1024; // 5MB
+    // 파일 크기 체크 (5MB)
+    const maxSize = 5 * 1024 * 1024;
     if (file.size > maxSize) {
       alert('파일 크기는 5MB 이하여야 합니다.');
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const img = new Image();
-      img.onload = () => {
-        // Canvas로 리사이징
-        const canvas = document.createElement('canvas');
-        const maxWidth = 500;
-        const maxHeight = 500;
+    if (previewImage && previewImage.startsWith('blob:')) {
+      URL.revokeObjectURL(previewImage);
+    }
 
-        let width = img.width;
-        let height = img.height;
-
-        if (width > height) {
-          if (width > maxWidth) {
-            height *= maxWidth / width;
-            width = maxWidth;
-          }
-        } else {
-          if (height > maxHeight) {
-            width *= maxHeight / height;
-            height = maxHeight;
-          }
-        }
-
-        canvas.width = width;
-        canvas.height = height;
-
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, width, height);
-
-        // Base64로 변환 (압축)
-        const resizedImage = canvas.toDataURL('image/jpeg', 0.8);
-        setPreviewImage(resizedImage);
-        setFormData({ ...formData, profileImage: resizedImage });
-      };
-      img.src = event.target.result;
-    };
-    reader.readAsDataURL(file);
+    // 미리보기용 로컬 URL 생성
+    const localPreviewUrl = URL.createObjectURL(file);
+    setPreviewImage(localPreviewUrl);
+    setSelectedFile(file);
   };
 
-  const handleSubmit = () => {
-    onSave(formData);
-    onClose();
+  const handleSubmit = async () => {
+    setIsUploading(true);
+
+    try {
+      const body = new FormData();
+
+      body.append('description', formData.description);
+      if (selectedFile) body.append('image', selectedFile);
+      else if (!previewImage) body.append('profileImageFilename', null);
+
+      // 업데이트된 데이터 저장
+      await api.patch(`/users/${user.student_id}`, body, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      await refetchUser();
+
+      onClose();
+    } catch (error) {
+      alert('프로필 업데이트에 실패했습니다.');
+      console.error(error);
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const handleClose = () => {
+    // 로컬 미리보기 URL 해제
+    if (previewImage && previewImage.startsWith('blob:')) {
+      URL.revokeObjectURL(previewImage);
+    }
+
     setFormData({
+      name: initialData?.name || '',
       description: initialData?.description || '',
-      profileImage: initialData?.profileImage || null,
+      profileURL: initialData?.profileURL || null,
     });
-    setPreviewImage(initialData?.profileImage || null);
+    setPreviewImage(initialData?.profileURL || null);
+    setSelectedFile(null);
     onClose();
   };
 
@@ -98,6 +103,7 @@ const ProfileEditModal = ({ isOpen, onClose, initialData, onSave }) => {
             onClick={handleClose}
             className="text-gray-400 hover:text-gray-600 transition-colors"
             aria-label="닫기"
+            disabled={isUploading}
           >
             <X className="size-6" />
           </button>
@@ -120,19 +126,56 @@ const ProfileEditModal = ({ isOpen, onClose, initialData, onSave }) => {
               </div>
               <label
                 htmlFor="profile-image"
-                className="absolute bottom-0 right-0 bg-blue-500 hover:bg-blue-600 text-white rounded-full p-2 cursor-pointer shadow-lg transition-colors"
+                className={`absolute bottom-0 right-0 bg-blue-500 hover:bg-blue-600 text-white rounded-full p-2 shadow-lg transition-colors ${
+                  isUploading
+                    ? 'opacity-50 cursor-not-allowed'
+                    : 'cursor-pointer'
+                }`}
               >
                 <Camera className="size-4" />
                 <input
                   id="profile-image"
                   type="file"
-                  accept="image/*"
+                  accept="image/jpeg,image/png,image/webp"
                   onChange={handleImageChange}
                   className="hidden"
+                  disabled={isUploading}
                 />
               </label>
+              {previewImage && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (previewImage.startsWith('blob:')) {
+                      URL.revokeObjectURL(previewImage);
+                    }
+                    setPreviewImage(null);
+                    setSelectedFile(null);
+                    setFormData({
+                      description: formData.description,
+                      profileURL: null,
+                    });
+                  }}
+                  className={`absolute -bottom-1 -left-1 bg-red-500 hover:bg-red-600 text-white rounded-full p-2 shadow-lg transition-colors ${
+                    isUploading
+                      ? 'opacity-50 cursor-not-allowed'
+                      : 'cursor-pointer'
+                  }`}
+                  disabled={isUploading}
+                  aria-label="프로필 사진 삭제"
+                >
+                  <X className="size-4" />
+                </button>
+              )}
             </div>
-            <p className="text-sm text-gray-500 mt-2">클릭하여 사진 변경</p>
+            <p className="text-sm text-gray-500 mt-2">
+              {selectedFile
+                ? `${selectedFile.name} 선택됨`
+                : '클릭하여 사진 변경'}
+            </p>
+            <p className="text-xs text-gray-400 mt-1">
+              JPG, PNG, WebP (최대 5MB)
+            </p>
           </div>
 
           {/* Description Input */}
@@ -153,6 +196,7 @@ const ProfileEditModal = ({ isOpen, onClose, initialData, onSave }) => {
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
               placeholder="상태 메시지를 입력하세요"
               maxLength={100}
+              disabled={isUploading}
             />
             <p className="text-xs text-gray-500 mt-1 text-right">
               {formData.description.length}/100
@@ -164,16 +208,25 @@ const ProfileEditModal = ({ isOpen, onClose, initialData, onSave }) => {
             <button
               type="button"
               onClick={handleClose}
-              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={isUploading}
             >
               취소
             </button>
             <button
               type="button"
               onClick={handleSubmit}
-              className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium"
+              className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              disabled={isUploading}
             >
-              저장
+              {isUploading ? (
+                <>
+                  <Loader2 className="size-4 animate-spin" />
+                  업로드 중...
+                </>
+              ) : (
+                '저장'
+              )}
             </button>
           </div>
         </div>

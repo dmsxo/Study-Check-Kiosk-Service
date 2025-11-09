@@ -56,7 +56,7 @@ export class UserController {
   async update_user(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateUserDto: UpdateUserDto,
-    @UploadedFile() file?: Express.Multer.File,
+    @UploadedFile() file: Express.Multer.File,
   ): Promise<ResponseUserDto> {
     const updatedUser = await this.userService.update_user(
       id,

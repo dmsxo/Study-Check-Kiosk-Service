@@ -42,13 +42,19 @@ export class UserService {
   async update_user(
     student_id: number,
     updateUserDto: UpdateUserDto,
-    file?: Express.Multer.File,
+    file: Express.Multer.File,
   ): Promise<User> {
+    console.log(updateUserDto);
     const student = await this.get_user(student_id);
+    const filename = student.profileImageFilename;
     if (file) {
-      const filename = student.profileImageFilename;
       const newFilename = await this.imageService.uploadImage(file, filename);
       student.profileImageFilename = newFilename;
+    } else if (updateUserDto.profileImageFilename == 'null') {
+      if (filename) {
+        await this.imageService.deleteImage(filename);
+      }
+      student.profileImageFilename = undefined;
     }
     Object.assign(student, updateUserDto);
     return this.userRepo.save(student);

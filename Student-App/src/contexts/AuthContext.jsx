@@ -19,15 +19,16 @@ export function AuthProvider({ children }) {
       const res = await checkSession();
       setUser(res);
       const profile = res.profileImageFilename;
-      if (profile) {
+      console.log(profile);
+      if (profile && profile != 'null') {
         const preSignedURL = await api.get(`/images/presigned/${profile}`);
         setProfileURL(preSignedURL.data.url);
-      }
+      } else setProfileURL(null);
       setIsLoggedIn(true);
       return res;
     } catch (e) {
       setUser(null);
-      // setProfileURL(null);
+      setProfileURL(null);
       setIsLoggedIn(false);
       return null;
     }

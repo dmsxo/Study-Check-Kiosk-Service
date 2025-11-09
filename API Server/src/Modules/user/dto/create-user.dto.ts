@@ -13,4 +13,8 @@ export class CreateUserDto {
   @IsString()
   @IsOptional()
   description?: string;
+
+  @IsString()
+  @IsOptional()
+  profileImageFilename?: string;
 }
