@@ -10,6 +10,7 @@ import { StudentModule } from './student/student.module';
 import { redisStore } from 'cache-manager-ioredis-yet';
 import { KioskModule } from './kiosk/kiosk.module';
 import { HealthModule } from './health/health.module';
+import { MinioModule } from './minio/minio.module';
 /*
 src/
 ├─ auth/
@@ -56,6 +57,7 @@ src/
     StudentModule,
     KioskModule,
     HealthModule,
+    MinioModule,
   ],
 })
 export class AppModule {}

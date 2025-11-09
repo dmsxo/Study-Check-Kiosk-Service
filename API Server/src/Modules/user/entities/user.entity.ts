@@ -25,7 +25,6 @@ export class User {
   @Column()
   description: string;
 
-  @Column()
   @OneToMany(() => Attendance, (attendance) => attendance.student_id)
   attendances: Attendance[];
 }
