@@ -4,7 +4,9 @@ function MainLayout() {
   return (
     <div className="flex h-screen">
       <SideBar />
-      <div className="flex-1 bg-gray-50">hahaha</div>
+      <div className="flex-1 bg-gray-50">
+        
+      </div>
     </div>
   )
 }
