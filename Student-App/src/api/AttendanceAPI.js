@@ -2,7 +2,7 @@ import axios from 'axios';
 import { userData } from '../test/userData';
 
 const api = axios.create({
-  baseURL: 'http://localhost:3000',
+  baseURL: '/api',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -29,10 +29,10 @@ api.interceptors.response.use(
   }
 );
 
-export async function getCode() {
+export async function getCode(student_id) {
   try {
     const response = await api.post(`/auth/checkin/code`, {
-      issuer: `student:${userData.studentID}`,
+      issuer: `student:${student_id}`,
       ttl: 10000
     });
     return response.data;
