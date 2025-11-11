@@ -42,8 +42,9 @@ function QRCheckinView() {
           const [issuerType, detail] = res.split(':');
           if (issuerType === 'student') {
             const user = await getUser(detail);
+            console.log(user);
             setIssuer(user.name);
-            check_in(user.student_id);
+            await check_in(user.student_id, 'night');
             setState('success');
           }
         } catch (err) {

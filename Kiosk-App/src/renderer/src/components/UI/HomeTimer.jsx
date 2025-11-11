@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 export default function HomeTimer() {
-  const [time, setTime] = useState(10);
+  const [time, setTime] = useState(100);
 
   useEffect(() => {
     const timer = setInterval(() => {
