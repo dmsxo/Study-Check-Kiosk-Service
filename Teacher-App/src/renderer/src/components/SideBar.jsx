@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState } from 'react';
 import {
   Home,
   Users,
@@ -10,23 +10,27 @@ import {
   FolderOpen,
   Menu,
   RotateCcw,
-  Megaphone
-} from 'lucide-react'
+  Monitor,
+  Image,
+  TrendingUp
+} from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 function SideBar() {
-  const [isCollapsed, setIsCollapsed] = useState(false)
-  const [activeItem, setActiveItem] = useState('dashboard')
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [activeItem, setActiveItem] = useState('Dashboard');
+  const navigate = useNavigate();
 
   const menuItems = [
-    { id: 'dashboard', icon: Home, label: '오늘의 출석' },
-    { id: 'analytics', icon: BarChart3, label: '출석 현황' },
-    { id: 'calendar', icon: Calendar, label: '학사 일정' },
-    { id: 'projects', icon: FolderOpen, label: '과제 내기' },
-    { id: 'thacher', icon: Users, label: '선생님 관리' },
-    { id: 'reset', icon: RotateCcw, label: '재설정' },
-    { id: 'advertisement', icon: Megaphone, label: '홍보물 올리기' },
-    { id: 'settings', icon: Settings, label: '설정' }
-  ]
+    { id: 'Dashboard', icon: Monitor, label: '오늘의 출석', route: '/' },
+    { id: 'Analytics', icon: TrendingUp, label: '출결 현황', route: '/analytics' },
+    { id: 'AcademicCalendar', icon: Calendar, label: '학사 일정 관리', route: '/calendar' },
+    // { id: 'projects', icon: FolderOpen, label: '과제 내기' },
+    { id: 'TeacherList', icon: Users, label: '선생님 관리', route: '/teachers' },
+    // { id: 'reset', icon: RotateCcw, label: '재설정' },
+    { id: 'PosterList', icon: Image, label: '홍보물 관리', route: '/posters' }
+    // { id: 'Settings', icon: Settings, label: '설정' }
+  ];
 
   return (
     <div
@@ -66,13 +70,16 @@ function SideBar() {
       <nav className="flex-1 py-4 overflow-y-auto">
         <ul className="space-y-1 px-2">
           {menuItems.map((item) => {
-            const Icon = item.icon
-            const isActive = activeItem === item.id
+            const Icon = item.icon;
+            const isActive = activeItem === item.id;
 
             return (
               <li key={item.id}>
                 <button
-                  onClick={() => setActiveItem(item.id)}
+                  onClick={() => {
+                    setActiveItem(item.id);
+                    navigate(item.route);
+                  }}
                   className={`w-full h-10 flex items-center rounded-lg transition-colors ${
                     isActive ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-100'
                   }`}
@@ -90,7 +97,7 @@ function SideBar() {
                   </span>
                 </button>
               </li>
-            )
+            );
           })}
         </ul>
       </nav>
@@ -110,7 +117,7 @@ function SideBar() {
         )}
       </div>
     </div>
-  )
+  );
 }
 
-export default SideBar
+export default SideBar;
