@@ -226,7 +226,7 @@ function Dashboard() {
         <hr className="text-slate-200 my-3" />
 
         <table className="w-full">
-          <thead>
+          <thead className="bg-gray-50">
             <tr className="border-b border-slate-200">
               <th className="px-5 py-3 text-sm text-left text-gray-500">학번</th>
               <th className="px-5 py-3 text-sm text-left text-gray-500">이름</th>

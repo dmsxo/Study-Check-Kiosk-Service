@@ -1,7 +1,7 @@
 import MainLayout from './Mainlayout';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import AcademicCalendar from './product/AcademicCalendar';
-import Analytics from './product/Analytics';
+import Analytics from './product/Analytics/Analytics';
 import Dashboard from './product/Dashboard';
 import PosterList from './product/PosterList';
 import TeacherList from './product/TeacherList';

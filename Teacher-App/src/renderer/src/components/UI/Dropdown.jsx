@@ -3,7 +3,6 @@ import { ChevronDown } from 'lucide-react';
 
 function selectedMessege(options, option_cnt) {
   // option.length > 0
-  console.log(options.slice(0, 2));
   if (options.length === option_cnt) return '전체 선택';
   else if (options.length <= 2) return options.join(', ');
   else return options.slice(0, 2).join(', ') + `외 ${options.length - 2}개 선택됨`;
@@ -35,7 +34,10 @@ function Dropdown({ options, placeholder = '옵션을 선택하세요', onChange
       } else {
         newSelectedItems = [...selectedItems, option];
       }
-    } else newSelectedItems = [option];
+    } else {
+      if (selectedItems.includes(option)) newSelectedItems = [];
+      else newSelectedItems = [option];
+    }
     setSelectedItems(newSelectedItems);
     if (onChange) {
       onChange(newSelectedItems);
