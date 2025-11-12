@@ -161,7 +161,7 @@ function Dashboard() {
   ];
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-5 min-w-fit">
       {/* title */}
       <h1 className="font-semibold text-3xl text-gray-900">오늘의 출석</h1>
 
@@ -221,18 +221,24 @@ function Dashboard() {
       </LayoutContainer>
 
       {/* 학생 목록 */}
-      <LayoutContainer>
+      <LayoutContainer className="min-w-fit">
         <h2 className="font-semibold text-2xl mb-3">학생 목록</h2>
         <hr className="text-slate-200 my-3" />
 
         <table className="w-full">
           <thead className="bg-gray-50">
             <tr className="border-b border-slate-200">
-              <th className="px-5 py-3 text-sm text-left text-gray-500">학번</th>
-              <th className="px-5 py-3 text-sm text-left text-gray-500">이름</th>
-              <th className="px-5 py-3 text-sm text-left text-gray-500">현재 상태</th>
-              <th className="px-5 py-3 text-sm text-left text-gray-500">체크인시간</th>
-              <th className="px-5 py-3 text-sm text-left text-gray-500">체크아웃 시간</th>
+              <th className="whitespace-nowrap px-5 py-3 text-sm text-left text-gray-500">학번</th>
+              <th className="whitespace-nowrap px-5 py-3 text-sm text-left text-gray-500">이름</th>
+              <th className="whitespace-nowrap px-5 py-3 text-sm text-left text-gray-500">
+                현재 상태
+              </th>
+              <th className="whitespace-nowrap px-5 py-3 text-sm text-left text-gray-500">
+                체크인시간
+              </th>
+              <th className="whitespace-nowrap px-5 py-3 text-sm text-left text-gray-500">
+                체크아웃 시간
+              </th>
               <th />
             </tr>
           </thead>
@@ -240,12 +246,20 @@ function Dashboard() {
             {list.map((student) => {
               return (
                 <tr key={student.student_id}>
-                  <td className="px-5 py-4 text-sm text-gray-900">{student.student_id}</td>
-                  <td className="px-5 py-4 text-sm text-gray-900">{student.name}</td>
-                  <td className="px-5 py-4">{student.status}</td>
-                  <td className="px-5 py-4 text-sm text-gray-600">{student.check_in_time}</td>
-                  <td className="px-5 py-4 text-sm text-gray-600">{student.check_out_time}</td>
-                  <td className="px-5 py-4 text-sm text-blue-400">수정</td>
+                  <td className="whitespace-nowrap px-5 py-4 text-sm text-gray-900">
+                    {student.student_id}
+                  </td>
+                  <td className="whitespace-nowrap px-5 py-4 text-sm text-gray-900">
+                    {student.name}
+                  </td>
+                  <td className="whitespace-nowrap px-5 py-4">{student.status}</td>
+                  <td className="whitespace-nowrap px-5 py-4 text-sm text-gray-600">
+                    {student.check_in_time}
+                  </td>
+                  <td className="whitespace-nowrap px-5 py-4 text-sm text-gray-600">
+                    {student.check_out_time}
+                  </td>
+                  <td className="whitespace-nowrap px-5 py-4 text-sm text-blue-400">수정</td>
                 </tr>
               );
             })}
