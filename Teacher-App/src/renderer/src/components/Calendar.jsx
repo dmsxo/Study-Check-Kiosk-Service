@@ -8,15 +8,17 @@ dayjs.extend(timezone);
 
 const KST = 'Asia/Seoul';
 
-function CalendarUI() {
+const defaultDayContent = (day) => {
+  return <div className="border border-slate-200 bg-white rounded-xl p-4">{day}</div>;
+};
+
+function CalendarUI({ header = true, current = dayjs().tz(KST), dayContent = defaultDayContent }) {
   const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
 
-  const [currentDate, setCurrentDate] = useState(dayjs().tz(KST));
+  const [currentDate, setCurrentDate] = useState(current);
   const [year, month, day] = currentDate.format('YYYY-MM-DD').split('-');
   const startWeekDay = currentDate.startOf('month').day();
   const dayInMonth = currentDate.endOf('month').date();
-
-  function renderDayContent(day) {}
 
   function renderCalendar() {
     let days = [];
@@ -24,11 +26,7 @@ function CalendarUI() {
       days.push(<div key={`empty${day}`} />);
     }
     for (let day = 0; day < dayInMonth; day++) {
-      days.push(
-        <div key={`day${day}`} className="p-4 border border-slate-200 rounded-lg min-h-20">
-          {day}
-        </div>
-      );
+      days.push(<div key={`day${day}`}>{dayContent(day + 1)}</div>);
     }
     return days;
   }
@@ -36,25 +34,27 @@ function CalendarUI() {
   return (
     <>
       {/* header */}
-      <div className="flex p-4">
-        <button
-          onClick={() => {
-            setCurrentDate((pre) => dayjs(pre).subtract(1, 'month').startOf('month'));
-          }}
-        >
-          <ChevronLeft />
-        </button>
-        <h3 className="flex-1 text-center text-xl font-bold">
-          {year}년 {month}월
-        </h3>
-        <button
-          onClick={() => {
-            setCurrentDate((pre) => dayjs(pre).add(1, 'month').startOf('month'));
-          }}
-        >
-          <ChevronRight />
-        </button>
-      </div>
+      {header && (
+        <div className="flex p-4">
+          <button
+            onClick={() => {
+              setCurrentDate((pre) => dayjs(pre).subtract(1, 'month').startOf('month'));
+            }}
+          >
+            <ChevronLeft />
+          </button>
+          <h3 className="flex-1 text-center text-xl font-bold">
+            {year}년 {month}월
+          </h3>
+          <button
+            onClick={() => {
+              setCurrentDate((pre) => dayjs(pre).add(1, 'month').startOf('month'));
+            }}
+          >
+            <ChevronRight />
+          </button>
+        </div>
+      )}
 
       {/* week day header */}
       <div className="grid grid-cols-7 gap-2 mb-2">

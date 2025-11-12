@@ -176,10 +176,10 @@ function Dashboard() {
         <hr className="text-slate-200 my-3" />
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 px-2">
-          <Card title="총 인원" Icon={Users} iconColor={'text-blue-500'} value={5} />
-          <Card title="공부중" Icon={UserPen} iconColor={'text-green-500'} value={5} />
-          <Card title="미참여/결석" Icon={UserX} iconColor={'text-red-500'} value={5} />
-          <Card title="퇴실 인원" Icon={LogOut} iconColor={'text-gray-500'} value={5} />
+          <Card title="총 인원" Icon={Users} color={'blue'} value={'5명'} />
+          <Card title="공부중" Icon={UserPen} color={'green'} value={'5명'} />
+          <Card title="미참여/결석" Icon={UserX} color={'red'} value={'5명'} />
+          <Card title="퇴실 인원" Icon={LogOut} color={'gray'} value={'5명'} />
         </div>
       </LayoutContainer>
 

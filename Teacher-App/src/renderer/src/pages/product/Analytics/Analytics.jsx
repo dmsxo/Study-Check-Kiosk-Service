@@ -23,7 +23,7 @@ function Analytics() {
     if (!isDragging) return;
     const delta = ((e.clientX - startX) / window.innerWidth) * 100;
     const newWidth = startWidth + delta;
-    if (newWidth > 50 && newWidth < 65) {
+    if (newWidth > 35 && newWidth < 65) {
       setContentWidth(newWidth);
     }
   };
@@ -51,7 +51,7 @@ function Analytics() {
       {/* Main Contents */}
       <div
         style={{ width: `${contentWidth}%` }}
-        className={`flex flex-col overflow-auto scrollbar-hide ${selectedStudent ? '' : 'flex-1'}`}
+        className={`flex flex-col overflow-auto scrollbar-hide ${selectedStudent ? '' : 'flex-1'} min-w-fit`}
       >
         <AnalyticsMainContents setSelectedStudent={setSelectedStudent} />
       </div>
