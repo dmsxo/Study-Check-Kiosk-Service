@@ -49,13 +49,6 @@ function SideBar() {
           </button>
         </div>
         <div className="flex items-center space-x-2">
-          <div
-            className={`w-8 h-8 bg-linear-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center transition-opacity duration-200 ${
-              isCollapsed ? 'opacity-0' : 'opacity-100'
-            }`}
-          >
-            <span className="text-white font-bold text-sm">A</span>
-          </div>
           <span
             className={`font-semibold text-gray-900 whitespace-nowrap transition-opacity duration-200 ${
               isCollapsed ? 'opacity-0 w-0 overflow-hidden' : 'opacity-100'
@@ -81,7 +74,7 @@ function SideBar() {
                     navigate(item.route);
                   }}
                   className={`w-full h-10 flex items-center rounded-lg transition-colors ${
-                    isActive ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-100'
+                    isActive ? 'bg-gray-900 text-white' : 'text-gray-700 hover:bg-gray-100'
                   }`}
                   title={isCollapsed ? item.label : ''}
                 >

@@ -5,7 +5,6 @@ import Analytics from './product/Analytics';
 import Dashboard from './product/Dashboard';
 import PosterList from './product/PosterList';
 import TeacherList from './product/TeacherList';
-import SelfStudyCalendar from './TESTVIEW';
 
 function App() {
   return (
@@ -13,7 +12,7 @@ function App() {
       <Routes>
         <Route element={<MainLayout />}>
           <Route index element={<Dashboard />} />
-          <Route path="/analytics" element={<SelfStudyCalendar />} />
+          <Route path="/analytics" element={<Analytics />} />
           <Route path="/calendar" element={<AcademicCalendar />} />
           <Route path="/posters" element={<PosterList />} />
           <Route path="/teachers" element={<TeacherList />} />
