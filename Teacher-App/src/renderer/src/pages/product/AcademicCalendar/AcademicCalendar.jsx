@@ -5,11 +5,25 @@ import LayoutContainer from '../../../components/UI/LayoutContainer';
 import PeriodManagement from './PeriodManagement';
 
 function AcademicCalendar() {
+  const [schedules, setSchedules] = useState([
+    {
+      id: 1,
+      semester: '1학기',
+      type: '야간 자율',
+      grades: [1, 2, 3],
+      applicationStart: '2025-03-01',
+      applicationEnd: '2025-03-07',
+      operationStart: '2025-03-10',
+      operationEnd: '2025-07-18',
+      additionalApplications: []
+    }
+  ]);
+
   return (
     <>
       <h1 className="font-semibold text-3xl text-gray-900 mb-5">학사 일정 관리</h1>
 
-      <PeriodManagement />
+      <PeriodManagement schedules={schedules} setSchedules={setSchedules} />
     </>
   );
 }

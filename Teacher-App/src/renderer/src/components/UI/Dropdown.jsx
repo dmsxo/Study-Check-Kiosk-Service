@@ -8,7 +8,13 @@ function selectedMessege(options, option_cnt) {
   else return options.slice(0, 2).join(', ') + `외 ${options.length - 2}개 선택됨`;
 }
 
-function Dropdown({ options, placeholder = '옵션을 선택하세요', onChange, multiSelect }) {
+function Dropdown({
+  title = '타이틀',
+  options,
+  placeholder = '옵션을 선택하세요',
+  onChange,
+  multiSelect
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
   const dropdownRef = useRef(null);
@@ -46,6 +52,7 @@ function Dropdown({ options, placeholder = '옵션을 선택하세요', onChange
 
   return (
     <div className="relative w-full" ref={dropdownRef}>
+      <label className="block text-sm font-medium text-gray-700 mb-2">{title}</label>
       {/* 드롭다운 버튼 */}
       <button
         onClick={() => setIsOpen(!isOpen)}

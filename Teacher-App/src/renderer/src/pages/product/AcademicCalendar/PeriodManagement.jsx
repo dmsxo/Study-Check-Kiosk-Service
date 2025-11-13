@@ -1,33 +1,17 @@
 import { useState } from 'react';
 import { Calendar, Plus, Trash2, Edit2, Save, X } from 'lucide-react';
 import LayoutContainer from '../../../components/UI/LayoutContainer';
+import PeriodEditModal from './Modals/PeriodModal';
+import dayjs from 'dayjs';
 
-function PeriodManagement() {
-  const [schedules, setSchedules] = useState([
-    {
-      id: 1,
-      semester: '1학기',
-      type: '야간 자율',
-      grades: [1, 2, 3],
-      applicationStart: '2025-03-01',
-      applicationEnd: '2025-03-07',
-      operationStart: '2025-03-10',
-      operationEnd: '2025-07-18',
-      additionalApplications: []
-    }
-  ]);
-
-  const grades = [1, 2, 3];
-  const types = ['아침독서', '야간 자율'];
-
-  const [isEditing, setIsEditing] = useState(false);
+function PeriodManagement({ schedules, setSchedules }) {
   const [editingSchedule, setEditingSchedule] = useState(null);
 
   const addNewSchedule = () => {
     const newSchedule = {
       id: Date.now(),
       semester: '',
-      type: '야간 자율',
+      type: '야간 자율 학습',
       grades: [],
       applicationStart: '',
       applicationEnd: '',
@@ -36,28 +20,27 @@ function PeriodManagement() {
       additionalApplications: []
     };
     setEditingSchedule(newSchedule);
-    setIsEditing(true);
   };
 
-  const saveSchedule = () => {
-    if (editingSchedule.id && schedules.find((s) => s.id === editingSchedule.id)) {
-      setSchedules(schedules.map((s) => (s.id === editingSchedule.id ? editingSchedule : s)));
+  const saveSchedule = (schedule) => {
+    if (schedule.id && schedules.find((s) => s.id === schedule.id)) {
+      setSchedules(schedules.map((s) => (s.id === schedule.id ? schedule : s)));
     } else {
-      setSchedules([...schedules, editingSchedule]);
+      setSchedules([...schedules, schedule]);
     }
-    setIsEditing(false);
     setEditingSchedule(null);
   };
 
   const deleteSchedule = (id) => {
-    setSchedules(schedules.filter((s) => s.id !== id));
+    if (confirm('이 일정을 삭제하시겠습니까?')) {
+      setSchedules(schedules.filter((s) => s.id !== id));
+    }
   };
-
   return (
     <LayoutContainer>
-      {/* Title */}
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold text-gray-900">자율학습 일정 목록</h2>
+      {/* Header */}
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="font-semibold text-2xl">자율학습 기간 설정</h2>
         <button
           onClick={addNewSchedule}
           className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
@@ -66,15 +49,8 @@ function PeriodManagement() {
         </button>
       </div>
 
-      {/* Schedule Create or Edit */}
-      <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
-        <h3 className="font-semibold text-gray-900 mb-4">
-          일정 {editingSchedule.id ? '수정' : '생성'}
-        </h3>
-      </div>
-
-      {/* Study Schedules */}
-      <div className="space-y-3">
+      {/* 자율학습 운영 기간 view */}
+      <div className="space-y-3 mb-3">
         {schedules.map((schedule) => (
           <div
             key={schedule.id}
@@ -139,6 +115,14 @@ function PeriodManagement() {
           </div>
         ))}
       </div>
+
+      {editingSchedule && (
+        <PeriodEditModal
+          schedule={editingSchedule}
+          onSave={saveSchedule}
+          onClose={() => setEditingSchedule(null)}
+        />
+      )}
     </LayoutContainer>
   );
 }

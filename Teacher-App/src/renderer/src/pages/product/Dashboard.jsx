@@ -4,20 +4,6 @@ import { Users, UserPen, UserX, LogOut } from 'lucide-react';
 import dayjs from 'dayjs';
 import Dropdown from '../../components/UI/Dropdown';
 
-function DropdownUI({ title, options, onChange, placeholder, isMulti }) {
-  return (
-    <div className="flex flex-col gap-2">
-      <label className="text-gray-800 text-sm font-semibold">{title}</label>
-      <Dropdown
-        options={options}
-        onChange={onChange}
-        placeholder={placeholder}
-        multiSelect={isMulti}
-      />
-    </div>
-  );
-}
-
 function Dashboard() {
   // filter options
   const grades = ['1학년', '2학년', '3학년'];
