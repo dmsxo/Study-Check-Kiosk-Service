@@ -869,7 +869,7 @@ const SelfStudyScheduleManager = () => {
     },
     {
       id: 2,
-      date: '2025-11-14',
+      date: '2025-11-13',
       reason: '수능일',
       grades: [1, 2],
       types: ['아침독서', '야간 자율']

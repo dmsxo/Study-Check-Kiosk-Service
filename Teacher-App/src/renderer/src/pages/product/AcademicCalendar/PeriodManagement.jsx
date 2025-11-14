@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Calendar, Plus, Trash2, Edit2, Save, X } from 'lucide-react';
 import LayoutContainer from '../../../components/UI/LayoutContainer';
-import PeriodEditModal from './Modals/PeriodModal';
+import PeriodEditModal from './Modals/PeriodEditModal';
 import dayjs from 'dayjs';
 
 function PeriodManagement({ schedules, setSchedules }) {
@@ -37,13 +37,13 @@ function PeriodManagement({ schedules, setSchedules }) {
     }
   };
   return (
-    <LayoutContainer>
+    <LayoutContainer className="mb-5">
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <h2 className="font-semibold text-2xl">자율학습 기간 설정</h2>
         <button
           onClick={addNewSchedule}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg "
         >
           <Plus className="w-4 h-4" />새 일정 추가
         </button>
@@ -72,7 +72,6 @@ function PeriodManagement({ schedules, setSchedules }) {
                 <button
                   onClick={() => {
                     setEditingSchedule(schedule);
-                    setIsEditing(true);
                   }}
                   className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
                 >
@@ -107,7 +106,7 @@ function PeriodManagement({ schedules, setSchedules }) {
                 <p className="text-sm text-gray-600 mb-2">추가 신청 기간</p>
                 {schedule.additionalApplications.map((app, idx) => (
                   <p key={idx} className="text-sm font-medium text-gray-900">
-                    {app.start} ~ {app.end}
+                    {idx + 1}차 : {app.start} ~ {app.end}
                   </p>
                 ))}
               </div>

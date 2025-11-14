@@ -16,6 +16,19 @@ function Dashboard() {
   const today = dayjs().tz('Asia/Seoul').format('YYYY년 MM월 DD일');
   const weekDay = days[dayjs().tz('Asia/Seoul').day()];
 
+  const getStatusBadge = (status) => {
+    const styles = {
+      공부중: 'bg-green-100 text-green-800 border-green-200',
+      퇴실: 'bg-gray-100 text-gray-800 border-gray-200',
+      미참여: 'bg-red-100 text-red-800 border-red-200'
+    };
+    return (
+      <span className={`px-3 py-1 rounded-full text-xs font-medium border ${styles[status]}`}>
+        {status}
+      </span>
+    );
+  };
+
   // student list (dummy)
   const list = [
     {
@@ -159,7 +172,6 @@ function Dashboard() {
             {today} ({weekDay})
           </h3>
         </div>
-        <hr className="text-slate-200 my-3" />
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 px-2">
           <Card title="총 인원" Icon={Users} color={'blue'} value={'5명'} />
@@ -172,7 +184,6 @@ function Dashboard() {
       {/* 필터 */}
       <LayoutContainer>
         <h2 className="font-semibold text-2xl mb-3">학생 필터</h2>
-        <hr className="text-slate-200 my-3" />
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-5 gap-y-15">
           <Dropdown
@@ -209,48 +220,55 @@ function Dashboard() {
       {/* 학생 목록 */}
       <LayoutContainer className="min-w-fit">
         <h2 className="font-semibold text-2xl mb-3">학생 목록</h2>
-        <hr className="text-slate-200 my-3" />
 
-        <table className="w-full">
-          <thead className="bg-gray-50">
-            <tr className="border-b border-slate-200">
-              <th className="whitespace-nowrap px-5 py-3 text-sm text-left text-gray-500">학번</th>
-              <th className="whitespace-nowrap px-5 py-3 text-sm text-left text-gray-500">이름</th>
-              <th className="whitespace-nowrap px-5 py-3 text-sm text-left text-gray-500">
-                현재 상태
-              </th>
-              <th className="whitespace-nowrap px-5 py-3 text-sm text-left text-gray-500">
-                체크인시간
-              </th>
-              <th className="whitespace-nowrap px-5 py-3 text-sm text-left text-gray-500">
-                체크아웃 시간
-              </th>
-              <th />
-            </tr>
-          </thead>
-          <tbody>
-            {list.map((student) => {
-              return (
-                <tr key={student.student_id}>
-                  <td className="whitespace-nowrap px-5 py-4 text-sm text-gray-900">
-                    {student.student_id}
-                  </td>
-                  <td className="whitespace-nowrap px-5 py-4 text-sm text-gray-900">
-                    {student.name}
-                  </td>
-                  <td className="whitespace-nowrap px-5 py-4">{student.status}</td>
-                  <td className="whitespace-nowrap px-5 py-4 text-sm text-gray-600">
-                    {student.check_in_time}
-                  </td>
-                  <td className="whitespace-nowrap px-5 py-4 text-sm text-gray-600">
-                    {student.check_out_time}
-                  </td>
-                  <td className="whitespace-nowrap px-5 py-4 text-sm text-blue-400">수정</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+        <div className="overflow-x-auto rounded-xl border border-gray-100 mt-6">
+          <table className="w-full">
+            <thead className="bg-gray-50">
+              <tr className="border-b border-slate-200 rounded-2xl">
+                <th className="whitespace-nowrap px-5 py-3 text-sm text-left text-gray-500">
+                  학번
+                </th>
+                <th className="whitespace-nowrap px-5 py-3 text-sm text-left text-gray-500">
+                  이름
+                </th>
+                <th className="whitespace-nowrap px-5 py-3 text-sm text-left text-gray-500">
+                  현재 상태
+                </th>
+                <th className="whitespace-nowrap px-5 py-3 text-sm text-left text-gray-500">
+                  체크인시간
+                </th>
+                <th className="whitespace-nowrap px-5 py-3 text-sm text-left text-gray-500">
+                  체크아웃 시간
+                </th>
+                <th />
+              </tr>
+            </thead>
+            <tbody>
+              {list.map((student) => {
+                return (
+                  <tr key={student.student_id}>
+                    <td className="whitespace-nowrap px-5 py-4 text-sm text-gray-900">
+                      {student.student_id}
+                    </td>
+                    <td className="whitespace-nowrap px-5 py-4 text-sm text-gray-900">
+                      {student.name}
+                    </td>
+                    <td className="whitespace-nowrap px-5 py-4">
+                      {getStatusBadge(student.status)}
+                    </td>
+                    <td className="whitespace-nowrap px-5 py-4 text-sm text-gray-600 font-mono">
+                      {student.check_in_time}
+                    </td>
+                    <td className="whitespace-nowrap px-5 py-4 text-sm text-gray-600 font-mono">
+                      {student.check_out_time}
+                    </td>
+                    <td className="whitespace-nowrap px-5 py-4 text-sm text-blue-600">수정</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </LayoutContainer>
     </div>
   );

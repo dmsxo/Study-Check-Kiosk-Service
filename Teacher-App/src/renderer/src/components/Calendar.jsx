@@ -8,11 +8,24 @@ dayjs.extend(timezone);
 
 const KST = 'Asia/Seoul';
 
-const defaultDayContent = (day) => {
-  return <div className="border border-slate-200 bg-white rounded-xl p-4">{day}</div>;
+const defaultDayContent = (date) => {
+  return (
+    <div className="border border-slate-200 bg-white rounded-xl p-4">
+      {Number(date.split('-')[2])}
+    </div>
+  );
 };
 
-function CalendarUI({ header = true, current = dayjs().tz(KST), dayContent = defaultDayContent }) {
+const defaultEmpty = (day) => {
+  return <div key={`empty${day}`} className="bg-gray-50 border border-gray-100 rounded-xl" />;
+};
+
+function CalendarUI({
+  header = true,
+  current = dayjs().tz(KST),
+  dayContent = defaultDayContent,
+  emptyContent = defaultEmpty
+}) {
   const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
 
   const [currentDate, setCurrentDate] = useState(current);
@@ -23,10 +36,10 @@ function CalendarUI({ header = true, current = dayjs().tz(KST), dayContent = def
   function renderCalendar() {
     let days = [];
     for (let day = 0; day < startWeekDay; day++) {
-      days.push(<div key={`empty${day}`} />);
+      days.push(emptyContent(day));
     }
     for (let day = 0; day < dayInMonth; day++) {
-      days.push(<div key={`day${day}`}>{dayContent(day + 1)}</div>);
+      days.push(dayContent(currentDate.date(day + 1).format('YYYY-MM-DD')));
     }
     return days;
   }

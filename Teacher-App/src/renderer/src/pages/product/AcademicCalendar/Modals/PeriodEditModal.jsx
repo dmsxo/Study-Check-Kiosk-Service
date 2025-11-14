@@ -139,7 +139,7 @@ const PeriodEditModal = ({ schedule, onSave, onClose }) => {
                     <DateSelecter
                       title={''}
                       value={app.end}
-                      oonChange={(e) => {
+                      onChange={(e) => {
                         const newApps = [...editingSchedule.additionalApplications];
                         newApps[idx].end = e.target.value;
                         setEditingSchedule({ ...editingSchedule, additionalApplications: newApps });
@@ -172,7 +172,7 @@ const PeriodEditModal = ({ schedule, onSave, onClose }) => {
           </button>
           <button
             onClick={() => onSave(editingSchedule)}
-            className="px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 font-medium shadow-sm"
+            className="px-5 py-2.5 bg-gray-900 text-white rounded-lg flex items-center gap-2 font-medium shadow-sm"
           >
             <Save className="w-4 h-4" />
             저장

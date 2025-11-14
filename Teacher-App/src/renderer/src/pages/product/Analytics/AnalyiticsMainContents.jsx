@@ -35,7 +35,7 @@ function AnalyticsMainContents({ setSelectedStudent }) {
       {/* 조건 선택 */}
       <LayoutContainer className="mb-5">
         <h2 className="text-2xl font-semibold mb-3 text-gray-900">조회 필터</h2>
-        <hr className="text-slate-200 my-3" />
+
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-5 gap-y-15">
           <Dropdown
             title="학년"
@@ -63,7 +63,7 @@ function AnalyticsMainContents({ setSelectedStudent }) {
       {/* 학생 목록 */}
       <LayoutContainer>
         <h2 className="text-2xl font-semibold mb-3 text-gray-900">출석 데이터</h2>
-        <hr className="text-slate-200 my-3" />
+
         <table className="w-full min-w-fit">
           <thead className="bg-gray-50">
             <tr className="border-b border-slate-200">

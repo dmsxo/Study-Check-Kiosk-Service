@@ -15,7 +15,7 @@ function SideView({ contentWidth, selectedStudent, setSelectedStudent }) {
   return (
     <div
       style={{ width: `${100 - contentWidth}%` }}
-      className="bg-white flex flex-col border-l border-gray-200 overflow-auto rounded-r-2xl min-w-fit"
+      className="bg-white flex flex-col border-l border-gray-200 overflow-auto rounded-r-2xl "
     >
       <div className="p-8 border-b border-gray-100">
         <div className="flex items-start justify-between mb-6">

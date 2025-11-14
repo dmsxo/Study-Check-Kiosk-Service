@@ -1,14 +1,16 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import AnalyticsMainContents from './AnalyiticsMainContents';
 import SideView from './SideView';
 
 function Analytics() {
-  //현재 선택한 학생
   const [selectedStudent, setSelectedStudent] = useState(null);
-  const [contentWidth, setContentWidth] = useState(50); // 왼쪽 영역 비율 (%)
-  const [isDragging, setIsDragging] = useState(false); // 드래그 중인지 여부
+  const [contentWidth, setContentWidth] = useState(50); // % 기준
+  const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [startWidth, setStartWidth] = useState(50);
+
+  const containerRef = useRef(null);
+  const animationRef = useRef(null);
 
   const handleMouseDown = (e) => {
     e.preventDefault();
@@ -18,21 +20,28 @@ function Analytics() {
     document.body.style.userSelect = 'none';
   };
 
-  // 드래그 중
   const handleMouseMove = (e) => {
     if (!isDragging) return;
-    const delta = ((e.clientX - startX) / window.innerWidth) * 100;
-    const newWidth = startWidth + delta;
-    if (newWidth > 35 && newWidth < 65) {
-      setContentWidth(newWidth);
-    }
+
+    if (animationRef.current) cancelAnimationFrame(animationRef.current);
+
+    const MIN_WIDTH = 40; // 최소 퍼센트
+    const MAX_WIDTH = 60; // 최대 퍼센트
+
+    animationRef.current = requestAnimationFrame(() => {
+      const containerWidth = containerRef.current.offsetWidth;
+      const delta = ((e.clientX - startX) / containerWidth) * 100;
+      const newWidth = startWidth + delta;
+      const boundedWidth = Math.min(Math.max(newWidth, MIN_WIDTH), MAX_WIDTH);
+      setContentWidth(boundedWidth);
+    });
   };
 
-  // 드래그 종료
   const handleMouseUp = () => {
     if (!isDragging) return;
     setIsDragging(false);
     document.body.style.userSelect = '';
+    if (animationRef.current) cancelAnimationFrame(animationRef.current);
   };
 
   useEffect(() => {
@@ -47,11 +56,11 @@ function Analytics() {
   }, [isDragging]);
 
   return (
-    <div className="flex h-full">
+    <div ref={containerRef} className="flex h-full">
       {/* Main Contents */}
       <div
-        style={{ width: `${contentWidth}%` }}
-        className={`flex flex-col overflow-auto scrollbar-hide ${selectedStudent ? '' : 'flex-1'} min-w-fit`}
+        style={selectedStudent ? { width: `${contentWidth}%`, minWidth: '200px' } : { flex: 1 }}
+        className="flex flex-col overflow-auto scrollbar-hide"
       >
         <AnalyticsMainContents setSelectedStudent={setSelectedStudent} />
       </div>
@@ -60,9 +69,7 @@ function Analytics() {
       {selectedStudent && (
         <div
           onMouseDown={handleMouseDown}
-          onMouseUp={handleMouseUp}
-          onMouseMove={handleMouseMove}
-          className="w-1 bg-gray-200 hover:bg-blue-500 cursor-col-resize transition-colors relative group shrink-0 ml-5"
+          className="w-1 bg-gray-200 hover:bg-blue-500 cursor-col-resize transition-colors relative group shrink-0 ml-4"
         >
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1 h-16 bg-gray-300 group-hover:bg-blue-600 rounded-full"></div>
         </div>
@@ -79,4 +86,5 @@ function Analytics() {
     </div>
   );
 }
+
 export default Analytics;
