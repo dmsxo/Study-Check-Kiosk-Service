@@ -29,7 +29,7 @@ function CalendarUI({
   const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
 
   const [currentDate, setCurrentDate] = useState(current);
-  const [year, month, day] = currentDate.format('YYYY-MM-DD').split('-');
+  const [year, month] = currentDate.format('YYYY-MM-DD').split('-');
   const startWeekDay = currentDate.startOf('month').day();
   const dayInMonth = currentDate.endOf('month').date();
 

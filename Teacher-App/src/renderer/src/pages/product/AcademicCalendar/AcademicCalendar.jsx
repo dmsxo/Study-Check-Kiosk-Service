@@ -4,6 +4,7 @@ import ToggleGroup from '../../../components/AcademicCalendar/Toggles';
 import LayoutContainer from '../../../components/UI/LayoutContainer';
 import PeriodManagement from './PeriodManagement';
 import OverrideSchedule from './OverrideSchedule';
+import DefaultSchedule from './DefaultSchedule';
 
 function AcademicCalendar() {
   const [schedules, setSchedules] = useState([
@@ -37,10 +38,23 @@ function AcademicCalendar() {
     }
   ]);
 
+  const [weeklySchedule, setWeeklySchedule] = useState([
+    {},
+    { morning: [1, 2, 3], night: [1, 2, 3] }, // 월
+    { morning: [1, 2, 3], night: [1, 2, 3] }, // 화
+    { morning: [1, 2, 3], night: [1, 2, 3] }, // 수
+    { morning: [1, 2, 3], night: [1, 2, 3] }, // 목
+    { morning: [1, 2, 3], night: [] }, // 금
+    {}
+  ]);
+
   return (
     <>
       <h1 className="font-semibold text-3xl text-gray-900 mb-5">학사 일정 관리</h1>
-      <PeriodManagement schedules={schedules} setSchedules={setSchedules} />
+      <div className="flex gap-5">
+        <PeriodManagement schedules={schedules} setSchedules={setSchedules} />
+        <DefaultSchedule weeklySchedule={weeklySchedule} setWeeklySchedule={setWeeklySchedule} />
+      </div>
       <OverrideSchedule overrides={overrides} setOverrides={setOverrides} />
     </>
   );

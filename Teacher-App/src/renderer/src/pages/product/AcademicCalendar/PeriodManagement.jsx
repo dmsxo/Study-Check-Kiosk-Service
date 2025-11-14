@@ -37,7 +37,7 @@ function PeriodManagement({ schedules, setSchedules }) {
     }
   };
   return (
-    <LayoutContainer className="mb-5">
+    <LayoutContainer className="mb-5 grow-3">
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <h2 className="font-semibold text-2xl">자율학습 기간 설정</h2>
@@ -50,12 +50,9 @@ function PeriodManagement({ schedules, setSchedules }) {
       </div>
 
       {/* 자율학습 운영 기간 view */}
-      <div className="space-y-3 mb-3">
+      <div className="space-y-3 mb-3 overflow-y-auto h-72">
         {schedules.map((schedule) => (
-          <div
-            key={schedule.id}
-            className="border border-gray-200 rounded-lg p-4 hover:border-blue-300 transition-colors"
-          >
+          <div key={schedule.id} className="border border-gray-200 rounded-lg p-4">
             <div className="flex justify-between items-start mb-3">
               <div>
                 <div className="flex items-center gap-2 mb-1">

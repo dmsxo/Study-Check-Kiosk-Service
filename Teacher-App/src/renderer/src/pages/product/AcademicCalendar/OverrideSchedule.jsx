@@ -45,7 +45,7 @@ function OverrideSchedule({ overrides, setOverrides }) {
     return (
       <div
         key={date}
-        className={`h-24 rounded-xl border p-2 ${currentOverrides.length > 0 ? 'bg-amber-50 border-amber-300' : curruntDay === date ? 'bg-blue-50 border-blue-300' : 'bg-white border-gray-200'}`}
+        className={`min-h-24 rounded-xl border p-2 ${currentOverrides.length > 0 ? 'bg-amber-50 border-amber-300' : curruntDay === date ? 'bg-blue-50 border-blue-300' : 'bg-white border-gray-200'}`}
         onClick={() => setSelectedDate(date)}
       >
         <p
@@ -67,7 +67,7 @@ function OverrideSchedule({ overrides, setOverrides }) {
   };
 
   return (
-    <LayoutContainer className="space-y-6">
+    <LayoutContainer className="space-y-6 mb-5">
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <h2 className="font-semibold text-2xl">예외 일정 관리</h2>
@@ -79,12 +79,12 @@ function OverrideSchedule({ overrides, setOverrides }) {
         </button>
       </div>
       {/* Calendar */}
-      <LayoutContainer>
+      <LayoutContainer className="mx-5">
         <CalendarUI dayContent={dayContent} />
       </LayoutContainer>
       {/* Detail View */}
       {selectedDate && (
-        <LayoutContainer>
+        <LayoutContainer className="mx-5">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-900">
               {selectedDate.split('-')[0]}년 {selectedDate.split('-')[1]}월{' '}

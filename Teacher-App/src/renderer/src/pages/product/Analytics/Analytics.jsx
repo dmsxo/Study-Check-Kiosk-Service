@@ -4,6 +4,7 @@ import SideView from './SideView';
 
 function Analytics() {
   const [selectedStudent, setSelectedStudent] = useState(null);
+  const [selectedMonth, setSelectedMonth] = useState(null);
   const [contentWidth, setContentWidth] = useState(50); // % 기준
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
@@ -62,7 +63,11 @@ function Analytics() {
         style={selectedStudent ? { width: `${contentWidth}%`, minWidth: '200px' } : { flex: 1 }}
         className="flex flex-col overflow-auto scrollbar-hide"
       >
-        <AnalyticsMainContents setSelectedStudent={setSelectedStudent} />
+        <AnalyticsMainContents
+          setSelectedStudent={setSelectedStudent}
+          selectedMonth={selectedMonth}
+          setSelectedMonth={setSelectedMonth}
+        />
       </div>
 
       {/* Handle */}

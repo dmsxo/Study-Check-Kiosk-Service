@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import LayoutContainer from '../../../components/UI/LayoutContainer';
 import Dropdown from '../../../components/UI/Dropdown';
-function AnalyticsMainContents({ setSelectedStudent }) {
+import MonthSelecter from '../../../components/AcademicCalendar/MonthSelecter';
+
+function AnalyticsMainContents({ setSelectedStudent, selectedMonth, setSelectedMonth }) {
   // filter options
   const grades = ['1학년', '2학년', '3학년'];
   const classes = ['1반', '2반', '3반', '4반', '5반', '6반', '7반', '8반', '9반', '10반'];
@@ -58,6 +60,10 @@ function AnalyticsMainContents({ setSelectedStudent }) {
             placeholder="공부 유형 선택"
             multiSelect={false}
           />
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">월 선택</label>
+            <MonthSelecter selectedMonth={selectedMonth} setSelectedMonth={setSelectedMonth} />
+          </div>
         </div>
       </LayoutContainer>
       {/* 학생 목록 */}
