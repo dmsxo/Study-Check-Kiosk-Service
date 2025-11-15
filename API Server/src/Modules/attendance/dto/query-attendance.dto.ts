@@ -1,5 +1,6 @@
 // src/attendance/dto/query-attendance.dto.ts
-import { IsOptional, IsDateString, IsString } from 'class-validator';
+import { IsOptional, IsDateString, IsString, IsEnum } from 'class-validator';
+import { StudyType } from 'src/common/enums/study-type.enum';
 
 export class QueryAttendanceDto {
   @IsOptional()
@@ -11,8 +12,8 @@ export class QueryAttendanceDto {
   date_to?: string;
 
   @IsOptional()
-  @IsString()
-  type?: 'morning' | 'night';
+  @IsEnum(StudyType)
+  type?: StudyType;
 
   @IsOptional()
   @IsString()

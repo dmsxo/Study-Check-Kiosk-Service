@@ -129,7 +129,7 @@ export class AttendanceService {
 
   /** ================= 유틸 ================= */
 
-  private convertToTime(timeString: string): Date {
+  private convertToTime(timeString: string): string {
     const [h, m, s] = timeString.split(':').map(Number);
     return dayjs()
       .tz('Asia/Seoul')
@@ -137,6 +137,6 @@ export class AttendanceService {
       .minute(m)
       .second(s)
       .millisecond(0)
-      .toDate();
+      .format('HH:mm:ss');
   }
 }

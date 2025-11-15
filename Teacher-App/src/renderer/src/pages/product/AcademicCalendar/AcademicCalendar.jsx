@@ -26,15 +26,19 @@ function AcademicCalendar() {
       id: 1,
       date: '2025-05-15',
       reason: '중간고사',
-      grades: [1, 2, 3],
-      types: ['아침독서', '야간 자율']
+      interruptions: {
+        '아침 독서': [1, 2, 3],
+        '야간 자율 학습': [1, 2, 3]
+      }
     },
     {
       id: 2,
       date: '2025-11-13',
       reason: '수능일',
-      grades: [1, 2],
-      types: ['아침독서', '야간 자율']
+      interruptions: {
+        '아침 독서': [1, 2, 3],
+        '야간 자율 학습': [1, 2, 3]
+      }
     }
   ]);
 

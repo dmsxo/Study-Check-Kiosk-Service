@@ -16,6 +16,7 @@ import { UpdateAttendanceDto } from '../attendance/dto/update-attendance.dto';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
+import { StudyType } from 'src/common/enums/study-type.enum';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
@@ -34,7 +35,7 @@ export class StudentService {
   // 현재 공부중인 출석기록 가져오기
   async getCurrentStudyStatus(
     student_id: number,
-    type: 'morning' | 'night',
+    type: StudyType,
   ): Promise<ResponseAttendanceDto | null> {
     try {
       // redis에서 현재 공부중인 키 조회
@@ -71,7 +72,7 @@ export class StudentService {
 
   async checkIn(
     student_id: number,
-    type: 'morning' | 'night',
+    type: StudyType,
   ): Promise<ResponseAttendanceDto | null> {
     // Redis에서 현재 공부중인지 확인
     const exists = await this.cacheManager.get<StudyCacheStatus>(
@@ -104,7 +105,7 @@ export class StudentService {
   }
   async checkOut(
     student_id: number,
-    type: 'morning' | 'night',
+    type: StudyType,
     description: string,
   ): Promise<ResponseAttendanceDto | null> {
     // Redis에서 attendance PK 가져오기
