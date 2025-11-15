@@ -15,8 +15,8 @@ export class User {
   @Column()
   name: string;
 
-  @Column({ unique: true })
   @Index()
+  @Column({ unique: true, type: 'int' })
   student_id: number;
 
   @Column({ unique: true })

@@ -2,7 +2,7 @@ import { Controller, Get } from '@nestjs/common';
 import { StudentService } from '../student.service';
 import { Req, UseGuards, Query, BadRequestException } from '@nestjs/common';
 import type { Request } from 'express';
-import { AuthGuard } from 'src/Modules/auth/auth.guard';
+import { AuthGuard } from 'src/common/guards/auth.guard';
 import { ResponseAttendanceDto } from '../../attendance/dto/response-attendance.dto';
 import { Post } from '@nestjs/common';
 

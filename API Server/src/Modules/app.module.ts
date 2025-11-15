@@ -11,6 +11,9 @@ import { redisStore } from 'cache-manager-ioredis-yet';
 import { KioskModule } from './kiosk/kiosk.module';
 import { HealthModule } from './health/health.module';
 import { ImagesModule } from 'src/Modules/images/images.module';
+import { RegistrationModule } from './registration/registration.module';
+import { StudyPeriodModule } from './study-period/study-period.module';
+import { ScheduleModule } from './schedule/schedule.module';
 /*
 src/
 ├─ auth/
@@ -58,6 +61,9 @@ src/
     KioskModule,
     HealthModule,
     ImagesModule,
+    RegistrationModule,
+    StudyPeriodModule,
+    ScheduleModule,
   ],
 })
 export class AppModule {}

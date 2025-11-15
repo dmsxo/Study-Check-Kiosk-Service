@@ -11,7 +11,7 @@ import {
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import type { Response, Request } from 'express';
-import { AuthGuard } from './auth.guard';
+import { AuthGuard } from '../../common/guards/auth.guard';
 import { UserRole } from '../user/user-role.enum';
 
 @Controller('auth')
