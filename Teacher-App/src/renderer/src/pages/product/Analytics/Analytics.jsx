@@ -9,11 +9,30 @@ function Analytics() {
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [startWidth, setStartWidth] = useState(50);
+  const [isOverlayMode, setIsOverlayMode] = useState(false);
 
   const containerRef = useRef(null);
   const animationRef = useRef(null);
 
+  // 화면 크기 감지
+  useEffect(() => {
+    const checkOverlayMode = () => {
+      if (containerRef.current) {
+        const containerWidth = containerRef.current.offsetWidth;
+        // 컨테이너 너비가 800px 이하면 오버레이 모드
+        setIsOverlayMode(containerWidth < 1200);
+      }
+    };
+
+    checkOverlayMode();
+    window.addEventListener('resize', checkOverlayMode);
+
+    return () => window.removeEventListener('resize', checkOverlayMode);
+  }, [selectedStudent]);
+
   const handleMouseDown = (e) => {
+    if (isOverlayMode) return; // 오버레이 모드에서는 드래그 비활성화
+
     e.preventDefault();
     setIsDragging(true);
     setStartX(e.clientX);
@@ -22,12 +41,12 @@ function Analytics() {
   };
 
   const handleMouseMove = (e) => {
-    if (!isDragging) return;
+    if (!isDragging || isOverlayMode) return;
 
     if (animationRef.current) cancelAnimationFrame(animationRef.current);
 
-    const MIN_WIDTH = 40; // 최소 퍼센트
-    const MAX_WIDTH = 60; // 최대 퍼센트
+    const MIN_WIDTH = 40;
+    const MAX_WIDTH = 60;
 
     animationRef.current = requestAnimationFrame(() => {
       const containerWidth = containerRef.current.offsetWidth;
@@ -54,13 +73,17 @@ function Analytics() {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [isDragging]);
+  }, [isDragging, isOverlayMode]);
 
   return (
-    <div ref={containerRef} className="flex h-full">
+    <div ref={containerRef} className="flex h-full relative">
       {/* Main Contents */}
       <div
-        style={selectedStudent ? { width: `${contentWidth}%`, minWidth: '200px' } : { flex: 1 }}
+        style={
+          selectedStudent && !isOverlayMode
+            ? { width: `${contentWidth}%`, minWidth: '200px' }
+            : { flex: 1 }
+        }
         className="flex flex-col overflow-auto scrollbar-hide"
       >
         <AnalyticsMainContents
@@ -70,8 +93,8 @@ function Analytics() {
         />
       </div>
 
-      {/* Handle */}
-      {selectedStudent && (
+      {/* Handle - 오버레이 모드에서는 숨김 */}
+      {selectedStudent && !isOverlayMode && (
         <div
           onMouseDown={handleMouseDown}
           className="w-1 bg-gray-200 hover:bg-blue-500 cursor-col-resize transition-colors relative group shrink-0 ml-4"
@@ -80,13 +103,18 @@ function Analytics() {
         </div>
       )}
 
-      {/* SideView */}
+      {/* SideView - 오버레이 모드일 때 absolute로 오른쪽에 고정 */}
       {selectedStudent && (
-        <SideView
-          contentWidth={contentWidth}
-          selectedStudent={selectedStudent}
-          setSelectedStudent={setSelectedStudent}
-        />
+        <div
+          className={`${
+            isOverlayMode
+              ? 'absolute right-0 top-0 h-full w-[600px] max-w-[90%] shadow-2xl z-10'
+              : ''
+          }`}
+          style={!isOverlayMode ? { width: `${100 - contentWidth}%`, minWidth: '300px' } : {}}
+        >
+          <SideView selectedStudent={selectedStudent} setSelectedStudent={setSelectedStudent} />
+        </div>
       )}
     </div>
   );

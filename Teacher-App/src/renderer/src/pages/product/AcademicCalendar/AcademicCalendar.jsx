@@ -40,11 +40,11 @@ function AcademicCalendar() {
 
   const [weeklySchedule, setWeeklySchedule] = useState([
     {},
-    { morning: [1, 2, 3], night: [1, 2, 3] }, // 월
-    { morning: [1, 2, 3], night: [1, 2, 3] }, // 화
-    { morning: [1, 2, 3], night: [1, 2, 3] }, // 수
-    { morning: [1, 2, 3], night: [1, 2, 3] }, // 목
-    { morning: [1, 2, 3], night: [] }, // 금
+    { morning: [1, 2], night: [1, 2, 3] }, // 월
+    { morning: [1, 2], night: [1, 2, 3] }, // 화
+    { morning: [1, 2], night: [1, 2, 3] }, // 수
+    { morning: [1, 2], night: [1, 2, 3] }, // 목
+    { morning: [1, 2], night: [] }, // 금
     {}
   ]);
 

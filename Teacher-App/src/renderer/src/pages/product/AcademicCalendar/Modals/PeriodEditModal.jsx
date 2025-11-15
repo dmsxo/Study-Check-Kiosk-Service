@@ -43,14 +43,14 @@ const PeriodEditModal = ({ schedule, onSave, onClose }) => {
               title="학기"
               options={['1학기', '2학기']}
               placeholder="학기 선택"
-              onChange={(e) => setEditingSchedule({ ...editingSchedule, semester: e.target.value })}
+              onChange={(e) => setEditingSchedule({ ...editingSchedule, semester: e })}
               multiSelect={false}
             />
             <Dropdown
               title="종류"
               options={['아침 독서', '야간 자율 학습']}
               placeholder={editingSchedule.type}
-              onChange={(e) => setEditingSchedule({ ...editingSchedule, type: e.target.value })}
+              onChange={(e) => setEditingSchedule({ ...editingSchedule, type: e })}
               multiSelect={false}
             />
           </div>

@@ -2,21 +2,20 @@ import { X, Calendar, Clock, Percent } from 'lucide-react';
 import Card from '../../../components/UI/CardUI';
 import CalendarUI from '../../../components/Calendar';
 
-function SideView({ contentWidth, selectedStudent, setSelectedStudent }) {
+function SideView({ selectedStudent, setSelectedStudent }) {
   // 한달치 dummy 출석 (api로 대체)
   const attendances = [{ level: 1, checkin: '07:30', checkout: '08:30' }];
 
-  const dayContent = (day) => {
-    const level = [];
-
-    return <div className="bg-white border border-slate-200">{day}</div>;
+  const dayContent = (date) => {
+    return (
+      <div className="bg-white border border-slate-200 min-h-16 rounded-xl p-2">
+        <label className="block">{Number(date.split('-')[2])}</label>
+      </div>
+    );
   };
 
   return (
-    <div
-      style={{ width: `${100 - contentWidth}%` }}
-      className="bg-white flex flex-col border-l border-gray-200 overflow-auto rounded-r-2xl "
-    >
+    <div className="bg-white flex flex-col border-l border-gray-200 overflow-auto rounded-r-2xl h-full w-full scrollbar-hide">
       <div className="p-8 border-b border-gray-100">
         <div className="flex items-start justify-between mb-6">
           <div>

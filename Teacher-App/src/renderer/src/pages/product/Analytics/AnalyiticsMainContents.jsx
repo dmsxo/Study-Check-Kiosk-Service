@@ -7,7 +7,7 @@ function AnalyticsMainContents({ setSelectedStudent, selectedMonth, setSelectedM
   // filter options
   const grades = ['1학년', '2학년', '3학년'];
   const classes = ['1반', '2반', '3반', '4반', '5반', '6반', '7반', '8반', '9반', '10반'];
-  const states = ['미참여', '공부중', '퇴실'];
+
   const types = ['아침 독서', '야간 자율 학습'];
   const list = [
     { student_id: 20129, name: '황은태', info: '26/30', hour: 150, rate: '90%' },
@@ -33,9 +33,13 @@ function AnalyticsMainContents({ setSelectedStudent, selectedMonth, setSelectedM
   ];
   return (
     <>
-      <h1 className="font-semibold text-3xl text-gray-900 mb-5">출결 현황</h1>
+      <div className="flex justify-between items-center mb-5">
+        <h1 className="font-semibold text-3xl text-gray-900">출결 현황</h1>
+        <button className="bg-green-800 px-4 py-2 rounded text-white">EXEL로 내보내기</button>
+      </div>
+
       {/* 조건 선택 */}
-      <LayoutContainer className="mb-5">
+      <LayoutContainer className="mb-5 min-w-fit">
         <h2 className="text-2xl font-semibold mb-3 text-gray-900">조회 필터</h2>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-5 gap-y-15">
@@ -67,7 +71,7 @@ function AnalyticsMainContents({ setSelectedStudent, selectedMonth, setSelectedM
         </div>
       </LayoutContainer>
       {/* 학생 목록 */}
-      <LayoutContainer>
+      <LayoutContainer className="min-w-fit">
         <h2 className="text-2xl font-semibold mb-3 text-gray-900">출석 데이터</h2>
 
         <table className="w-full min-w-fit">
