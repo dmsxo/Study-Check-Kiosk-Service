@@ -1,46 +1,25 @@
-import { Type } from 'class-transformer';
 import {
   IsArray,
   IsEnum,
-  IsNumber,
-  IsOptional,
-  IsString,
+  IsInt,
+  IsNotEmpty,
   ValidateNested,
 } from 'class-validator';
-import { GradeCapacityDto } from 'src/common/dto/grade-capacity.dto';
-import { RangeDto } from 'src/common/dto/range.dto';
+import { Type } from 'class-transformer';
 import { StudyType } from 'src/common/enums/study-type.enum';
+import { BasePeriodDto } from './base-period.dto';
+import { GradeCapacityPair } from './grade-capacity.dto';
 
-export class CreatePeriodDto {
-  @IsString()
-  name: string;
+export class CreatePeriodDto extends BasePeriodDto {
+  @IsInt()
+  termId: number;
 
-  @IsNumber()
-  grade: number;
-
-  @IsString()
+  @IsNotEmpty()
   @IsEnum(StudyType)
   studyType: StudyType;
 
-  @ValidateNested()
-  @Type(() => RangeDto)
-  registration: RangeDto;
-
   @ValidateNested({ each: true })
   @IsArray()
-  @Type(() => RangeDto)
-  additionalRegistration: RangeDto;
-
-  @ValidateNested()
-  @Type(() => RangeDto)
-  operation: RangeDto;
-
-  @ValidateNested()
-  @Type(() => RangeDto)
-  dailyOperation: RangeDto;
-
-  @ValidateNested()
-  @IsOptional()
-  @Type(() => GradeCapacityDto)
-  capacity?: GradeCapacityDto;
+  @Type(() => GradeCapacityPair)
+  grades: GradeCapacityPair[];
 }

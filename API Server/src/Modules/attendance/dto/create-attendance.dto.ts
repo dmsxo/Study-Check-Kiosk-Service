@@ -4,11 +4,13 @@ import {
   IsOptional,
   IsDateString,
   IsEnum,
+  IsInt,
 } from 'class-validator';
 import { StudyType } from 'src/common/enums/study-type.enum';
 
 export class CreateAttendanceDto {
   @IsNotEmpty()
+  @IsInt()
   student_id: number;
 
   @IsNotEmpty()
@@ -19,7 +21,7 @@ export class CreateAttendanceDto {
   @IsDateString()
   date: string; // YYYY-MM-DD
 
-  @IsOptional()
+  @IsNotEmpty()
   check_in_time: string; // HH:MM:SS
 
   @IsOptional()
