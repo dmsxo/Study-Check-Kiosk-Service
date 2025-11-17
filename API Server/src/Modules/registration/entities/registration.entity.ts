@@ -26,9 +26,13 @@ export class Registration {
   })
   status: RegistrationStatus; // active, cancelled, removed
 
-  @ManyToOne(() => User, (user) => user.registrations)
+  @ManyToOne(() => User, (user) => user.registrations, {
+    onDelete: 'CASCADE',
+  })
   student: User;
 
-  @ManyToOne(() => StudyPeriod, (period) => period.registrations)
+  @ManyToOne(() => StudyPeriod, (period) => period.registrations, {
+    onDelete: 'CASCADE',
+  })
   period: StudyPeriod;
 }

@@ -29,6 +29,8 @@ export class Attendance {
   @Column({ nullable: true })
   description: string;
 
-  @ManyToOne(() => User, (student_id) => student_id.attendances)
+  @ManyToOne(() => User, (student_id) => student_id.attendances, {
+    onDelete: 'CASCADE',
+  })
   student_id: User;
 }
