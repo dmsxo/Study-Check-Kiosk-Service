@@ -35,7 +35,7 @@ function AnalyticsMainContents({ setSelectedStudent, selectedMonth, setSelectedM
     <>
       <div className="flex justify-between items-center mb-5">
         <h1 className="font-semibold text-3xl text-gray-900">출결 현황</h1>
-        <button className="bg-green-800 px-4 py-2 rounded text-white">EXEL로 내보내기</button>
+        <button className="bg-green-800 px-4 py-2 rounded-xl text-white">EXEL로 내보내기</button>
       </div>
 
       {/* 조건 선택 */}

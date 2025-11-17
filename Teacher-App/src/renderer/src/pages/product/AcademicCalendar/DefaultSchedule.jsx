@@ -1,7 +1,7 @@
 import LayoutContainer from '../../../components/UI/LayoutContainer';
 
 function DefaultSchedule({ weeklySchedule, setWeeklySchedule }) {
-  const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
+  const weekDays = ['월', '화', '수', '목', '금'];
 
   const grades = [
     {
@@ -63,26 +63,27 @@ function DefaultSchedule({ weeklySchedule, setWeeklySchedule }) {
   };
 
   return (
-    <LayoutContainer className="mb-5 space-y-5 grow-7">
+    <LayoutContainer className="mb-5 space-y-5 flex-6 min-w-lg">
       <h2 className="font-semibold text-2xl">요일별 기본 운영</h2>
 
       {periods.map((period) => (
-        <div key={period.id} className="grid grid-cols-8 gap-2">
+        <div key={period.id} className="grid grid-cols-6 gap-2">
           <div
-            className={`flex items-center justify-center text-sm px-4 font-semibold border ${period.borderColor} ${period.bgColor} rounded-xl ${period.textColor}`}
+            className={`flex items-center justify-center whitespace-nowrap text-sm font-semibol text-center font-semibold border ${period.borderColor} ${period.bgColor} rounded-xl ${period.textColor}`}
           >
             {period.label}
           </div>
-          {weeklySchedule.map((schedule, idx) =>
-            idx === 6 || idx === 0 ? (
-              <div key={idx} className="bg-gray-50 border border-slate-200 rounded-xl p-4">
-                <label
-                  className={`block text-sm mb-1 ${idx === 0 ? 'text-red-500' : 'text-blue-500'}`}
-                >
-                  {weekDays[idx]}
-                </label>
-              </div>
-            ) : (
+          {weeklySchedule.map(
+            (schedule, idx) => (
+              // idx === 6 || idx === 0 ? (
+              //   <div key={idx} className="bg-gray-50 border border-slate-200 rounded-xl p-4">
+              //     <label
+              //       className={`block text-sm mb-1 ${idx === 0 ? 'text-red-500' : 'text-blue-500'}`}
+              //     >
+              //       {weekDays[idx]}
+              //     </label>
+              //   </div>
+              // ) : (
               <div
                 key={idx}
                 className="bg-white border border-slate-200 p-4 rounded-xl min-h-24 space-y-1"
@@ -101,6 +102,7 @@ function DefaultSchedule({ weeklySchedule, setWeeklySchedule }) {
                 ))}
               </div>
             )
+            // )
           )}
         </div>
       ))}

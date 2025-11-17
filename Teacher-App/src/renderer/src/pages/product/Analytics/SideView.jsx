@@ -15,7 +15,7 @@ function SideView({ selectedStudent, setSelectedStudent }) {
   };
 
   return (
-    <div className="bg-white flex flex-col border-l border-gray-200 overflow-auto rounded-r-2xl h-full w-full scrollbar-hide">
+    <div className="bg-white flex flex-col border-l border-gray-200 overflow-auto rounded-r h-full w-full scrollbar-hide">
       <div className="p-8 border-b border-gray-100">
         <div className="flex items-start justify-between mb-6">
           <div>

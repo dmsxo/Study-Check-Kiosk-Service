@@ -18,9 +18,12 @@ function Analytics() {
   useEffect(() => {
     const checkOverlayMode = () => {
       if (containerRef.current) {
+        const vw = window.innerWidth;
         const containerWidth = containerRef.current.offsetWidth;
-        // 컨테이너 너비가 800px 이하면 오버레이 모드
-        setIsOverlayMode(containerWidth < 1200);
+        const percent = (containerWidth / vw) * 100;
+
+        // 70% 미만이면 오버레이
+        setIsOverlayMode(percent < 65);
       }
     };
 
@@ -46,7 +49,7 @@ function Analytics() {
     if (animationRef.current) cancelAnimationFrame(animationRef.current);
 
     const MIN_WIDTH = 40;
-    const MAX_WIDTH = 60;
+    const MAX_WIDTH = 50;
 
     animationRef.current = requestAnimationFrame(() => {
       const containerWidth = containerRef.current.offsetWidth;
@@ -107,9 +110,7 @@ function Analytics() {
       {selectedStudent && (
         <div
           className={`${
-            isOverlayMode
-              ? 'absolute right-0 top-0 h-full w-[600px] max-w-[90%] shadow-2xl z-10'
-              : ''
+            isOverlayMode ? 'absolute right-0 top-0 h-full w-[600px] max-w-[90%] z-10' : ''
           }`}
           style={!isOverlayMode ? { width: `${100 - contentWidth}%`, minWidth: '300px' } : {}}
         >

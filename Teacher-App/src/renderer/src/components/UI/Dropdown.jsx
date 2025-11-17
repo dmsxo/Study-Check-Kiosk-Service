@@ -58,7 +58,7 @@ function Dropdown({
         onClick={() => setIsOpen(!isOpen)}
         className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 flex items-center justify-between hover:border-gray-400 transition-colors duration-150"
       >
-        <span className="text-gray-700">
+        <span className="text-gray-700 whitespace-nowrap overflow-hidden text-ellipsis">
           {selectedItems.length > 0 ? selectedMessege(selectedItems, options.length) : placeholder}
         </span>
         <ChevronDown

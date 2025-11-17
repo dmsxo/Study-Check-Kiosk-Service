@@ -37,15 +37,18 @@ function PeriodManagement({ schedules, setSchedules }) {
     }
   };
   return (
-    <LayoutContainer className="mb-5 grow-3">
+    <LayoutContainer className="mb-5 flex-4">
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
-        <h2 className="font-semibold text-2xl">자율학습 기간 설정</h2>
+        <h2 className="font-semibold text-2xl whitespace-nowrap overflow-hidden text-ellipsis">
+          자율학습 기간 설정
+        </h2>
         <button
           onClick={addNewSchedule}
-          className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg "
+          className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg min-w-fit"
         >
-          <Plus className="w-4 h-4" />새 일정 추가
+          <Plus className="w-4 h-4" />
+          <span className="">새 일정 추가</span>
         </button>
       </div>
 

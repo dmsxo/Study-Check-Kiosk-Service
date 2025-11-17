@@ -43,20 +43,26 @@ function MonthSelecter({ selectedMonth, setSelectedMonth }) {
         }}
         className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 flex items-center justify-between hover:border-gray-400 transition-colors duration-150"
       >
-        <span>
+        <span className="text-gray-700 whitespace-nowrap overflow-hidden text-ellipsis">
           {selectedMonth ? `${selectedMonth.year()}년 ${selectedMonth.month() + 1}월` : '월 선택'}
         </span>
         <Calendar />
       </button>
 
       {isOpen && (
-        <div className="absolute mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-10 p-4">
+        <div className="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-10 p-4">
           <div className="flex items-center justify-between mb-3 pb-3 border-b border-gray-200">
-            <button className="p-1 hover:bg-gray-100 rounded">
+            <button
+              className="p-1 hover:bg-gray-100 rounded"
+              onClick={() => setSelectedMonth((pre) => pre.subtract(1, 'year'))}
+            >
               <ChevronLeft />
             </button>
             <span className="text-sm font-medium text-gray-700">{selectedMonth.year()}년</span>
-            <button className="p-1 hover:bg-gray-100 rounded">
+            <button
+              className="p-1 hover:bg-gray-100 rounded"
+              onClick={() => setSelectedMonth((pre) => pre.add(1, 'year'))}
+            >
               <ChevronRight />
             </button>
           </div>
