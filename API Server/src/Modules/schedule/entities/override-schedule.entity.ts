@@ -1,8 +1,9 @@
 import { StudyType } from 'src/common/enums/study-type.enum';
 import { Weekday } from 'src/common/enums/weekday.enum';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
 
 @Entity('override_schedules')
+@Unique(['grade', 'studyType', 'date'])
 export class OverrideSchedule {
   @PrimaryGeneratedColumn()
   id: number;
@@ -16,8 +17,8 @@ export class OverrideSchedule {
   @Column({ type: 'date' })
   date: string;
 
-  @Column()
-  description: string;
+  @Column({ array: true })
+  descriptions: string[];
 
   @Column()
   isOpen: boolean;
