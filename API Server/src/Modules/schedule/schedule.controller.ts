@@ -6,13 +6,15 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { ScheduleService } from './schedule.service';
 import { CreateDefaultScheduleDto } from './dto/default/create-default-schedule.dto';
-import { Weekday } from 'src/common/enums/weekday.enum';
-import { StudyType } from 'src/common/enums/study-type.enum';
 import { DefaultSchedule } from './entities/default-schedule.entity';
 import { UpdateDefaultScheduleDto } from './dto/default/update-default-schedule.dto';
+import { CreateOverrideScheduleDto } from './dto/override/create-override-schedule.dto';
+import { UpdateOverrideScheduleDto } from './dto/override/update-override-schedule.dto';
+import { QueryOverrideScheduleDto } from './dto/override/query-override-schedule.dto';
 
 @Controller('schedule')
 export class ScheduleController {
@@ -41,18 +43,18 @@ export class ScheduleController {
 
   // override schedule
   @Post('override')
-  async createOverrideSchedule() {
-    return await this.scheduleService.createOverrideSchedule();
+  async createOverrideSchedule(@Body() overrideDto: CreateOverrideScheduleDto) {
+    return await this.scheduleService.createOverrideSchedule(overrideDto);
   }
 
   @Get('override')
-  async getOverrideSchedule() {
-    return await this.scheduleService.getOverrideSchedule();
+  async getOverrideSchedule(@Query() queryDto: QueryOverrideScheduleDto) {
+    return await this.scheduleService.getOverrideSchedule(queryDto);
   }
 
   @Patch('override')
-  async updateOverrideSchedule() {
-    return await this.scheduleService.updateOverrideSchedule();
+  async updateOverrideSchedule(@Body() filter: UpdateOverrideScheduleDto) {
+    return await this.scheduleService.updateOverrideSchedule(filter);
   }
 
   @Delete('override')
