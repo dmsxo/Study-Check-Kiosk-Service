@@ -61,4 +61,7 @@ export class ScheduleController {
   async deleteOverrideSchedule() {
     return await this.scheduleService.deleteOverrideSchedule();
   }
+
+  @Get()
+  async getAvailableDates() {}
 }
