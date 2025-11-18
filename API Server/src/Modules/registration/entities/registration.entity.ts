@@ -22,7 +22,7 @@ export class Registration {
   @Column({
     type: 'enum',
     enum: Object.values(RegistrationStatus),
-    default: 'active',
+    default: RegistrationStatus.ACTIVE,
   })
   status: RegistrationStatus; // active, cancelled, removed
 
