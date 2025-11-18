@@ -7,7 +7,7 @@ import { AttendanceController } from './attendance.controller';
 import { UserModule } from '../user/user.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Attendance]), UserModule],
+  imports: [TypeOrmModule.forFeature([Attendance])],
   providers: [AttendanceService],
   controllers: [AttendanceController],
   exports: [AttendanceService],
