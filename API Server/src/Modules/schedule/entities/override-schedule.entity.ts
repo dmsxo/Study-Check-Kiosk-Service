@@ -17,7 +17,7 @@ export class OverrideSchedule {
   @Column({ type: 'date' })
   date: string;
 
-  @Column({ array: true })
+  @Column({ type: 'text', array: true, nullable: true })
   descriptions: string[];
 
   @Column()

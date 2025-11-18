@@ -1,17 +1,56 @@
-import { IsBoolean, IsEnum, IsInt } from 'class-validator';
-import { StudyType } from 'src/common/enums/study-type.enum';
-import { Weekday } from 'src/common/enums/weekday.enum';
+import { IsBoolean, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
 
-export class CreateDefaultScheduleDto {
-  @IsInt()
-  grade: number; // 1, 2, 3
-
-  @IsEnum(StudyType)
-  studyType: StudyType;
-
-  @IsEnum(Weekday)
-  weekday: Weekday;
+// 학년별 스케줄
+export class GradeSchedule {
+  @IsBoolean()
+  grade1: boolean;
 
   @IsBoolean()
-  isOpen: boolean;
+  grade2: boolean;
+
+  @IsBoolean()
+  grade3: boolean;
+}
+
+// 아침/야간 타입별 스케줄
+export class TypeSchedule {
+  @ValidateNested()
+  @Type(() => GradeSchedule)
+  morning: GradeSchedule;
+
+  @ValidateNested()
+  @Type(() => GradeSchedule)
+  night: GradeSchedule;
+}
+
+// 요일별 스케줄
+export class CreateDefaultScheduleDto {
+  @ValidateNested()
+  @Type(() => TypeSchedule)
+  SUN: TypeSchedule;
+
+  @ValidateNested()
+  @Type(() => TypeSchedule)
+  MON: TypeSchedule;
+
+  @ValidateNested()
+  @Type(() => TypeSchedule)
+  TUES: TypeSchedule;
+
+  @ValidateNested()
+  @Type(() => TypeSchedule)
+  WED: TypeSchedule;
+
+  @ValidateNested()
+  @Type(() => TypeSchedule)
+  THUR: TypeSchedule;
+
+  @ValidateNested()
+  @Type(() => TypeSchedule)
+  FRI: TypeSchedule;
+
+  @ValidateNested()
+  @Type(() => TypeSchedule)
+  SAT: TypeSchedule;
 }
