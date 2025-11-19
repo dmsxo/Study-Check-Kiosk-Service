@@ -9,5 +9,6 @@ import { StudyPeriodModule } from '../study-period/study-period.module';
   imports: [TypeOrmModule.forFeature([Registration]), StudyPeriodModule],
   controllers: [RegistrationController],
   providers: [RegistrationService],
+  exports: [RegistrationService],
 })
 export class RegistrationModule {}

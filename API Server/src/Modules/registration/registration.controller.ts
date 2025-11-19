@@ -10,6 +10,7 @@ import {
 import { RegistrationService } from './registration.service';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { UpdateRegistrationDto } from './dto/update-registration.dto';
+import { QueryRegistrationDto } from './dto/query-registration.dto';
 
 @Controller('registration')
 export class RegistrationController {
@@ -23,6 +24,11 @@ export class RegistrationController {
   @Get(':id')
   async getRegistration(@Param('id') id: number) {
     return await this.registrationService.getRegistration(id);
+  }
+
+  @Get()
+  async getRegistrationByFilter(@Body() queryDto: QueryRegistrationDto) {
+    return await this.registrationService.getRegistrationByFilter(queryDto);
   }
 
   @Patch(':id')
