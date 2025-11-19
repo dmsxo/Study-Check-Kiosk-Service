@@ -19,7 +19,7 @@ export class Attendance {
 
   @Column({ type: 'date' })
   date: string; // YYYY-MM-DD
-
+ 
   @Column({ type: 'time' })
   check_in_time: string; // HH:MM:SS
 

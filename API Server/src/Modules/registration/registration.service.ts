@@ -6,6 +6,7 @@ import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { UpdateRegistrationDto } from './dto/update-registration.dto';
 import { UserService } from './../user/user.service';
 import { StudyPeriodService } from '../study-period/study-period.service';
+import { QueryRegistrationDto } from './dto/query-registration.dto';
 
 @Injectable()
 export class RegistrationService {
@@ -38,6 +39,17 @@ export class RegistrationService {
     });
     if (!registration)
       throw new NotFoundException(`registration with id:${id} not founded`);
+    return registration;
+  }
+
+  async getRegistrationByFilter(dto: QueryRegistrationDto) {
+    const registration = await this.registrationRepo.findOne({
+      where: {
+        student: { id: dto.studentId },
+        period: { id: dto.periodId },
+      },
+    });
+
     return registration;
   }
 

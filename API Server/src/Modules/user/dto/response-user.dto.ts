@@ -11,7 +11,7 @@ export class ResponseUserDto {
   name: string;
   @Expose()
   @IsNumber()
-  student_id: number;
+  studentId: number;
   @Expose()
   @IsString()
   @IsEmail()

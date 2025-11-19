@@ -11,7 +11,7 @@ import { StudyType } from 'src/common/enums/study-type.enum';
 export class CreateAttendanceDto {
   @IsNotEmpty()
   @IsInt()
-  student_id: number;
+  studentId: number;
 
   @IsNotEmpty()
   @IsEnum(StudyType)

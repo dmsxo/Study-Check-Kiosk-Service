@@ -17,6 +17,10 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import { StudyType } from 'src/common/enums/study-type.enum';
+import { RegistrationService } from '../registration/registration.service';
+import { RegistrationStatus } from 'src/common/enums/registration-status.enum';
+import { CheckInDto } from './dto/check-in.dto';
+import { CheckOutDto } from './dto/check-out.dto';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
@@ -26,21 +30,22 @@ export class StudentService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private readonly userService: UserService,
     private readonly attendanceService: AttendanceService,
+    private readonly registrationService: RegistrationService,
   ) {}
   // 내 프로필 가져오기
-  async getMyProfile(student_id: number) {
-    return this.userService.get_user(student_id);
+  async getMyProfile(studentId: number) {
+    return this.userService.get_user(studentId);
   }
 
   // 현재 공부중인 출석기록 가져오기
   async getCurrentStudyStatus(
-    student_id: number,
+    studentId: number,
     type: StudyType,
   ): Promise<ResponseAttendanceDto | null> {
     try {
       // redis에서 현재 공부중인 키 조회
       const status = await this.cacheManager.get<StudyCacheStatus>(
-        `study:${student_id}:${type}`,
+        `study:${studentId}:${type}`,
       );
       if (!status) throw new NotFoundException('key does not exist ');
 
@@ -61,22 +66,72 @@ export class StudentService {
 
   // 출석 기록 가져오기
   async getMyAttendances(
-    student_id: number,
+    studentId: number,
   ): Promise<ResponseAttendanceDto[] | null> {
     const attendances =
-      await this.attendanceService.findAllByStudent(student_id);
+      await this.attendanceService.findAllByStudent(studentId);
     return plainToInstance(ResponseAttendanceDto, attendances, {
       excludeExtraneousValues: true,
     });
   }
 
+  // 인증후 스터디 타입 반환, 아니면 에러 내기
+  async validateRegistration(studentId, periodId): Promise<StudyType> {
+    // regi 가져오기
+    const registration = await this.registrationService.getRegistrationByFilter(
+      {
+        studentId,
+        periodId,
+      },
+    );
+
+    if (!registration)
+      throw new NotFoundException('registration not founded :(');
+    //status 확인
+    if (registration.status !== RegistrationStatus.ACTIVE)
+      throw new BadRequestException(
+        `student id with ${studentId} is not ACTIVE`,
+      );
+    // period
+    const currentPeriod = registration.period;
+    //period로 운영 기간 확인
+    const currentDate = dayjs().tz('Asia/Seoul').format('YYYY-MM-DD');
+    const operateDate = currentPeriod.operation;
+    if (currentDate < operateDate.start || operateDate.end < currentDate)
+      throw new BadRequestException(
+        "It's currently not the designated study period.",
+      );
+    //period로 운영 시간 확인
+    const currentTime = dayjs().tz('Asia/Seoul').format('HH:mm:ss');
+    const dailyOperateTime = registration.period.dailyOperation;
+    const startTime = dayjs(dailyOperateTime.start)
+      .subtract(1, 'hour')
+      .format('HH:mm:ss');
+    const endTime = dayjs(dailyOperateTime.end)
+      .subtract(1, 'hour')
+      .format('HH:mm:ss');
+
+    if (currentTime < startTime || endTime < currentTime) {
+      throw new BadRequestException(
+        "It's currently not the designated study time.",
+      );
+    }
+
+    return registration.period.studyType;
+  }
+
   async checkIn(
-    student_id: number,
-    type: StudyType,
+    studentId: number,
+    checkInDto: CheckInDto,
+    // periodId: number,
+    // ttl: number = 6 * 60 * 60 * 1000,
   ): Promise<ResponseAttendanceDto | null> {
+    const { periodId, ttl }: CheckInDto = checkInDto;
+    // period 검증
+    const type = await this.validateRegistration(studentId, periodId);
     // Redis에서 현재 공부중인지 확인
     const exists = await this.cacheManager.get<StudyCacheStatus>(
-      `study:${student_id}:${type}`,
+      `study:${studentId}`,
     );
     // 이미 체크인 한 상태라면 에러 반환
     if (exists && !exists.isStudy)
@@ -85,7 +140,7 @@ export class StudentService {
     // 출석 기록 생성
     const now = dayjs().tz('Asia/Seoul');
     const attendanceDto: CreateAttendanceDto = {
-      student_id,
+      studentId,
       type,
       date: now.format('YYYY-MM-DD'),
       check_in_time: now.format('HH:mm:ss'),
@@ -94,23 +149,26 @@ export class StudentService {
 
     // Redis에 attendance.id 저장
     await this.cacheManager.set(
-      `study:${student_id}:${type}`,
+      `study:${studentId}`,
       { attendance_id: attendance.id, isStudy: true },
-      6 * 60 * 60 * 1000,
+      ttl ?? 6 * 60 * 60 * 1000,
     );
     // 출석 기록 DTO 변환후 반환
     return plainToInstance(ResponseAttendanceDto, attendance, {
       excludeExtraneousValues: true,
     });
   }
+
   async checkOut(
-    student_id: number,
-    type: StudyType,
-    description: string,
+    studentId: number,
+    checkOutDto: CheckOutDto,
+    // description: string,
+    // ttl: number = 6 * 60 * 60 * 1000,
   ): Promise<ResponseAttendanceDto | null> {
+    const { description, ttl }: CheckOutDto = checkOutDto;
     // Redis에서 attendance PK 가져오기
     const status = await this.cacheManager.get<StudyCacheStatus>(
-      `study:${student_id}:${type}`,
+      `study:${studentId}`,
     );
     if (!status) {
       throw new NotFoundException(
@@ -126,7 +184,7 @@ export class StudentService {
     const now = dayjs().tz('Asia/Seoul');
     const updateDto: UpdateAttendanceDto = {
       check_out_time: now.format('HH:mm:ss'),
-      description,
+      description: description ?? '',
     };
     const attendance = await this.attendanceService.update(
       status.attendance_id,
@@ -134,9 +192,9 @@ export class StudentService {
     );
 
     await this.cacheManager.set(
-      `study:${student_id}:${type}`,
+      `study:${studentId}`,
       { attendance_id: attendance.id, isStudy: false },
-      12 * 60 * 60 * 1000,
+      ttl ?? 6 * 60 * 60 * 1000,
     );
 
     return plainToInstance(ResponseAttendanceDto, attendance, {

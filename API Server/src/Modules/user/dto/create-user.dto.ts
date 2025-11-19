@@ -5,7 +5,7 @@ export class CreateUserDto {
   name: string;
 
   @IsNumber()
-  student_id: number;
+  studentId: number;
 
   @IsEmail()
   email: string;

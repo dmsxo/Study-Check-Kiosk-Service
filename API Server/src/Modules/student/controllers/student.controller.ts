@@ -1,4 +1,11 @@
-import { Controller, Get, Param, ParseEnumPipe } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseEnumPipe,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { StudentService } from '../student.service';
 import { Req, UseGuards, Query, BadRequestException } from '@nestjs/common';
 import type { Request } from 'express';
@@ -7,6 +14,8 @@ import { ResponseAttendanceDto } from '../../attendance/dto/response-attendance.
 import { Post } from '@nestjs/common';
 import { StudyType } from 'src/common/enums/study-type.enum';
 import { StudyTypePipe } from 'src/common/pipe/study-type.pipe';
+import { CheckInDto } from '../dto/check-in.dto';
+import { CheckOutDto } from '../dto/check-out.dto';
 
 @Controller('users/:id/')
 export class StudentController {
@@ -33,22 +42,17 @@ export class StudentController {
   @Post('attendances/check-in')
   async checkIn(
     @Param('id') id: number,
-    @Query('type', StudyTypePipe) type: StudyType,
+    @Body() checkInDto: CheckInDto,
   ): Promise<ResponseAttendanceDto | null> {
-    if (!Object.values(StudyType).includes(type as StudyType))
-      throw new BadRequestException('Invalid type');
-    return await this.studentService.checkIn(id, type);
+    return await this.studentService.checkIn(id, checkInDto);
   }
 
   // 체크아웃
   @Post('attendances/check-out')
   async checkOut(
     @Param('id') id: number,
-    @Query('type', StudyTypePipe) type: StudyType,
-    @Query('description') description?: string,
+    @Body() checkOutDto: CheckOutDto,
   ): Promise<ResponseAttendanceDto | null> {
-    if (!Object.values(StudyType).includes(type as StudyType))
-      throw new BadRequestException('Invalid type');
-    return await this.studentService.checkOut(id, type, description ?? '');
+    return await this.studentService.checkOut(id, checkOutDto);
   }
 }
