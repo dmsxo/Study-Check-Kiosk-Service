@@ -29,7 +29,7 @@ export class User {
   @Column({ nullable: true })
   profileImageFilename?: string;
 
-  @OneToMany(() => Attendance, (attendance) => attendance.student_id)
+  @OneToMany(() => Attendance, (attendance) => attendance.studentId)
   attendances?: Attendance[];
 
   @OneToMany(() => Registration, (registration) => registration.student)

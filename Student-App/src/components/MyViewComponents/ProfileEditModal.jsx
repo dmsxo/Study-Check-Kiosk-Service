@@ -1,12 +1,12 @@
-import { useState } from 'react';
-import { X, Camera, UserRound, Loader2 } from 'lucide-react';
-import api from '../../api/AttendanceAPI';
-import { useAuth } from '../../contexts/AuthContext';
+import { useState } from "react";
+import { X, Camera, UserRound, Loader2 } from "lucide-react";
+import api from "../../api/AttendanceAPI";
+import { useAuth } from "../../contexts/AuthContext";
 
 const ProfileEditModal = ({ isOpen, onClose, initialData }) => {
   const { user, refetchUser } = useAuth();
   const [formData, setFormData] = useState({
-    description: initialData?.description || '',
+    description: initialData?.description || "",
     profileURL: initialData?.profileURL || null,
   });
   const [selectedFile, setSelectedFile] = useState(null);
@@ -22,20 +22,20 @@ const ProfileEditModal = ({ isOpen, onClose, initialData }) => {
     if (!file) return;
 
     // 파일 형식 체크
-    const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    const validTypes = ["image/jpeg", "image/png", "image/webp"];
     if (!validTypes.includes(file.type)) {
-      alert('JPG, PNG, WebP 형식만 업로드 가능합니다.');
+      alert("JPG, PNG, WebP 형식만 업로드 가능합니다.");
       return;
     }
 
     // 파일 크기 체크 (5MB)
     const maxSize = 5 * 1024 * 1024;
     if (file.size > maxSize) {
-      alert('파일 크기는 5MB 이하여야 합니다.');
+      alert("파일 크기는 5MB 이하여야 합니다.");
       return;
     }
 
-    if (previewImage && previewImage.startsWith('blob:')) {
+    if (previewImage && previewImage.startsWith("blob:")) {
       URL.revokeObjectURL(previewImage);
     }
 
@@ -51,14 +51,14 @@ const ProfileEditModal = ({ isOpen, onClose, initialData }) => {
     try {
       const body = new FormData();
 
-      body.append('description', formData.description);
-      if (selectedFile) body.append('image', selectedFile);
-      else if (!previewImage) body.append('profileImageFilename', null);
+      body.append("description", formData.description);
+      if (selectedFile) body.append("image", selectedFile);
+      else if (!previewImage) body.append("profileImageFilename", null);
 
       // 업데이트된 데이터 저장
-      await api.patch(`/users/${user.student_id}`, body, {
+      await api.patch(`/users/${user.studentId}`, body, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
         },
       });
 
@@ -66,7 +66,7 @@ const ProfileEditModal = ({ isOpen, onClose, initialData }) => {
 
       onClose();
     } catch (error) {
-      alert('프로필 업데이트에 실패했습니다.');
+      alert("프로필 업데이트에 실패했습니다.");
       console.error(error);
     } finally {
       setIsUploading(false);
@@ -75,13 +75,13 @@ const ProfileEditModal = ({ isOpen, onClose, initialData }) => {
 
   const handleClose = () => {
     // 로컬 미리보기 URL 해제
-    if (previewImage && previewImage.startsWith('blob:')) {
+    if (previewImage && previewImage.startsWith("blob:")) {
       URL.revokeObjectURL(previewImage);
     }
 
     setFormData({
-      name: initialData?.name || '',
-      description: initialData?.description || '',
+      name: initialData?.name || "",
+      description: initialData?.description || "",
       profileURL: initialData?.profileURL || null,
     });
     setPreviewImage(initialData?.profileURL || null);
@@ -128,8 +128,8 @@ const ProfileEditModal = ({ isOpen, onClose, initialData }) => {
                 htmlFor="profile-image"
                 className={`absolute bottom-0 right-0 bg-blue-500 hover:bg-blue-600 text-white rounded-full p-2 shadow-lg transition-colors ${
                   isUploading
-                    ? 'opacity-50 cursor-not-allowed'
-                    : 'cursor-pointer'
+                    ? "opacity-50 cursor-not-allowed"
+                    : "cursor-pointer"
                 }`}
               >
                 <Camera className="size-4" />
@@ -146,7 +146,7 @@ const ProfileEditModal = ({ isOpen, onClose, initialData }) => {
                 <button
                   type="button"
                   onClick={() => {
-                    if (previewImage.startsWith('blob:')) {
+                    if (previewImage.startsWith("blob:")) {
                       URL.revokeObjectURL(previewImage);
                     }
                     setPreviewImage(null);
@@ -158,8 +158,8 @@ const ProfileEditModal = ({ isOpen, onClose, initialData }) => {
                   }}
                   className={`absolute -bottom-1 -left-1 bg-red-500 hover:bg-red-600 text-white rounded-full p-2 shadow-lg transition-colors ${
                     isUploading
-                      ? 'opacity-50 cursor-not-allowed'
-                      : 'cursor-pointer'
+                      ? "opacity-50 cursor-not-allowed"
+                      : "cursor-pointer"
                   }`}
                   disabled={isUploading}
                   aria-label="프로필 사진 삭제"
@@ -171,7 +171,7 @@ const ProfileEditModal = ({ isOpen, onClose, initialData }) => {
             <p className="text-sm text-gray-500 mt-2">
               {selectedFile
                 ? `${selectedFile.name} 선택됨`
-                : '클릭하여 사진 변경'}
+                : "클릭하여 사진 변경"}
             </p>
             <p className="text-xs text-gray-400 mt-1">
               JPG, PNG, WebP (최대 5MB)
@@ -225,7 +225,7 @@ const ProfileEditModal = ({ isOpen, onClose, initialData }) => {
                   업로드 중...
                 </>
               ) : (
-                '저장'
+                "저장"
               )}
             </button>
           </div>

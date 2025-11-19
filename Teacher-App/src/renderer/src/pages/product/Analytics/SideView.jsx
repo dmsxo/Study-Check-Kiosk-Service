@@ -19,7 +19,7 @@ function SideView({ selectedStudent, setSelectedStudent }) {
       <div className="p-8 border-b border-gray-100">
         <div className="flex items-start justify-between mb-6">
           <div>
-            <p className="text-sm text-gray-500 mt-1">{selectedStudent.student_id}</p>
+            <p className="text-sm text-gray-500 mt-1">{selectedStudent.studentId}</p>
             <h2 className="text-2xl font-bold text-gray-900">{selectedStudent.name}</h2>
           </div>
           <button

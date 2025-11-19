@@ -27,7 +27,7 @@ export class AttendanceController {
     @Param('userId', ParseIntPipe) userId: number,
     @Body() dto: CreateAttendanceDto,
   ) {
-    dto.student_id = userId;
+    dto.studentId = userId;
     const attendance = await this.attendanceService.create(dto);
     return plainToInstance(ResponseAttendanceDto, attendance, {
       excludeExtraneousValues: true,

@@ -9,7 +9,7 @@ import { User } from '../../user/entities/user.entity';
 import { StudyType } from 'src/common/enums/study-type.enum';
 
 @Entity('attendances')
-@Unique(['student_id', 'date', 'type'])
+@Unique(['studentId', 'date', 'type'])
 export class Attendance {
   @PrimaryGeneratedColumn()
   id: number;
@@ -19,7 +19,7 @@ export class Attendance {
 
   @Column({ type: 'date' })
   date: string; // YYYY-MM-DD
- 
+
   @Column({ type: 'time' })
   check_in_time: string; // HH:MM:SS
 
@@ -29,8 +29,8 @@ export class Attendance {
   @Column({ nullable: true })
   description: string;
 
-  @ManyToOne(() => User, (student_id) => student_id.attendances, {
+  @ManyToOne(() => User, (studentId) => studentId.attendances, {
     onDelete: 'CASCADE',
   })
-  student_id: User;
+  studentId: User;
 }

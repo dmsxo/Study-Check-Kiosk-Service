@@ -10,26 +10,26 @@ function AnalyticsMainContents({ setSelectedStudent, selectedMonth, setSelectedM
 
   const types = ['아침 독서', '야간 자율 학습'];
   const list = [
-    { student_id: 20129, name: '황은태', info: '26/30', hour: 150, rate: '90%' },
-    { student_id: 20101, name: '박지원', info: '26/30', hour: 150, rate: '90%' },
-    { student_id: 20102, name: '김한율', info: '26/30', hour: 150, rate: '90%' },
-    { student_id: 20103, name: '노우성', info: '26/30', hour: 150, rate: '90%' },
-    { student_id: 20104, name: '임유겸', info: '26/30', hour: 150, rate: '90%' },
-    { student_id: 20105, name: '박종석', info: '26/30', hour: 150, rate: '90%' },
-    { student_id: 20106, name: '정성훈', info: '26/30', hour: 150, rate: '90%' },
-    { student_id: 20107, name: '이민준', info: '26/30', hour: 150, rate: '90%' },
-    { student_id: 20108, name: '문승준', info: '26/30', hour: 150, rate: '90%' },
-    { student_id: 20109, name: '조유빈', info: '26/30', hour: 150, rate: '90%' },
-    { student_id: 20110, name: '한정훈', info: '26/30', hour: 150, rate: '90%' },
-    { student_id: 20111, name: '윤서준', info: '26/30', hour: 150, rate: '90%' },
-    { student_id: 20112, name: '안창범', info: '26/30', hour: 150, rate: '90%' },
-    { student_id: 20113, name: '김하람', info: '26/30', hour: 150, rate: '90%' },
-    { student_id: 20114, name: '조호윤', info: '26/30', hour: 150, rate: '90%' },
-    { student_id: 20115, name: '정다혜', info: '26/30', hour: 150, rate: '90%' },
-    { student_id: 20116, name: '김동우', info: '26/30', hour: 150, rate: '90%' },
-    { student_id: 20117, name: '안재원', info: '26/30', hour: 150, rate: '90%' },
-    { student_id: 20118, name: '김동훈', info: '26/30', hour: 150, rate: '90%' },
-    { student_id: 20119, name: '박현재', info: '26/30', hour: 150, rate: '90%' }
+    { studentId: 20129, name: '황은태', info: '26/30', hour: 150, rate: '90%' },
+    { studentId: 20101, name: '박지원', info: '26/30', hour: 150, rate: '90%' },
+    { studentId: 20102, name: '김한율', info: '26/30', hour: 150, rate: '90%' },
+    { studentId: 20103, name: '노우성', info: '26/30', hour: 150, rate: '90%' },
+    { studentId: 20104, name: '임유겸', info: '26/30', hour: 150, rate: '90%' },
+    { studentId: 20105, name: '박종석', info: '26/30', hour: 150, rate: '90%' },
+    { studentId: 20106, name: '정성훈', info: '26/30', hour: 150, rate: '90%' },
+    { studentId: 20107, name: '이민준', info: '26/30', hour: 150, rate: '90%' },
+    { studentId: 20108, name: '문승준', info: '26/30', hour: 150, rate: '90%' },
+    { studentId: 20109, name: '조유빈', info: '26/30', hour: 150, rate: '90%' },
+    { studentId: 20110, name: '한정훈', info: '26/30', hour: 150, rate: '90%' },
+    { studentId: 20111, name: '윤서준', info: '26/30', hour: 150, rate: '90%' },
+    { studentId: 20112, name: '안창범', info: '26/30', hour: 150, rate: '90%' },
+    { studentId: 20113, name: '김하람', info: '26/30', hour: 150, rate: '90%' },
+    { studentId: 20114, name: '조호윤', info: '26/30', hour: 150, rate: '90%' },
+    { studentId: 20115, name: '정다혜', info: '26/30', hour: 150, rate: '90%' },
+    { studentId: 20116, name: '김동우', info: '26/30', hour: 150, rate: '90%' },
+    { studentId: 20117, name: '안재원', info: '26/30', hour: 150, rate: '90%' },
+    { studentId: 20118, name: '김동훈', info: '26/30', hour: 150, rate: '90%' },
+    { studentId: 20119, name: '박현재', info: '26/30', hour: 150, rate: '90%' }
   ];
   return (
     <>
@@ -93,9 +93,9 @@ function AnalyticsMainContents({ setSelectedStudent, selectedMonth, setSelectedM
           <tbody className="divide-y divide-slate-200">
             {list.map((student) => {
               return (
-                <tr key={student.student_id} onClick={() => setSelectedStudent(student)}>
+                <tr key={student.studentId} onClick={() => setSelectedStudent(student)}>
                   <th className="whitespace-nowrap px-5 py-3 text-left text-sm">
-                    {student.student_id}
+                    {student.studentId}
                   </th>
                   <th className="whitespace-nowrap px-5 py-3 text-left text-sm">{student.name}</th>
                   <th className="whitespace-nowrap px-5 py-3 text-left text-sm">{student.info}</th>

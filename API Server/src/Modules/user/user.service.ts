@@ -27,25 +27,23 @@ export class UserService {
     return students;
   }
 
-  async get_user(student_id: number): Promise<User> {
+  async get_user(studentId: number): Promise<User> {
     const student = await this.userRepo.findOne({
-      where: { student_id },
+      where: { studentId },
     });
     if (!student) {
-      throw new NotFoundException(
-        `User with student_id ${student_id} not found`,
-      );
+      throw new NotFoundException(`User with studentId ${studentId} not found`);
     }
     return student;
   }
 
   async update_user(
-    student_id: number,
+    studentId: number,
     updateUserDto: UpdateUserDto,
     file: Express.Multer.File,
   ): Promise<User> {
     console.log(updateUserDto);
-    const student = await this.get_user(student_id);
+    const student = await this.get_user(studentId);
     const filename = student.profileImageFilename;
     if (file) {
       const newFilename = await this.imageService.uploadImage(file, filename);
@@ -60,8 +58,8 @@ export class UserService {
     return this.userRepo.save(student);
   }
 
-  async delete_user(student_id: number): Promise<User> {
-    const student = await this.get_user(student_id);
+  async delete_user(studentId: number): Promise<User> {
+    const student = await this.get_user(studentId);
     const profile = student.profileImageFilename;
     if (profile) await this.imageService.deleteImage(profile);
     return this.userRepo.remove(student);

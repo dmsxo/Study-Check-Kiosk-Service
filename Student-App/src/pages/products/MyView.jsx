@@ -1,12 +1,12 @@
-import { useState } from 'react';
-import { UserRound, SquarePen, LogOut, SunMoon, Bell } from 'lucide-react';
+import { useState } from "react";
+import { UserRound, SquarePen, LogOut, SunMoon, Bell } from "lucide-react";
 import {
   LayoutContainer,
   ScreenFrame,
   Toggle,
-} from '../../components/UIComponents';
-import { useAuth } from '../../contexts/AuthContext';
-import ProfileEditModal from '../../components/MyViewComponents/ProfileEditModal';
+} from "../../components/UIComponents";
+import { useAuth } from "../../contexts/AuthContext";
+import ProfileEditModal from "../../components/MyViewComponents/ProfileEditModal";
 
 function parseStudentID(studentID) {
   let info = studentID;
@@ -26,8 +26,8 @@ function MyView() {
 
   const user = useAuth().user;
   const { logout, profileURL } = useAuth();
-  const { name, student_id, description, email } = user; // api로 대체
-  const { grade, classNum, num } = parseStudentID(student_id);
+  const { name, studentId, description, email } = user; // api로 대체
+  const { grade, classNum, num } = parseStudentID(studentId);
 
   return (
     <ScreenFrame>
