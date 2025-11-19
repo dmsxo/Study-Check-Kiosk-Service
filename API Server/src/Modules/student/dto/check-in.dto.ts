@@ -1,4 +1,4 @@
-import { IsInt, IsOptional } from 'class-validator';
+import { IsBoolean, IsInt, IsOptional } from 'class-validator';
 
 export class CheckInDto {
   @IsInt()
@@ -7,4 +7,7 @@ export class CheckInDto {
   @IsOptional()
   @IsInt()
   ttl?: number;
+
+  @IsBoolean()
+  isAutoCheckOut: boolean;
 }

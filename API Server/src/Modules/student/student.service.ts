@@ -16,11 +16,13 @@ import { UpdateAttendanceDto } from '../attendance/dto/update-attendance.dto';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
+import minMax from 'dayjs/plugin/minMax';
 import { StudyType } from 'src/common/enums/study-type.enum';
 import { RegistrationService } from '../registration/registration.service';
 import { RegistrationStatus } from 'src/common/enums/registration-status.enum';
 import { CheckInDto } from './dto/check-in.dto';
 import { CheckOutDto } from './dto/check-out.dto';
+import { RegistrationValidation } from './interface/validate-registration.interface';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
@@ -76,7 +78,10 @@ export class StudentService {
   }
 
   // 인증후 스터디 타입 반환, 아니면 에러 내기
-  async validateRegistration(studentId, periodId): Promise<StudyType> {
+  async validateRegistration(
+    studentId,
+    periodId,
+  ): Promise<RegistrationValidation> {
     // regi 가져오기
     const registration = await this.registrationService.getRegistrationByFilter(
       {
@@ -104,20 +109,23 @@ export class StudentService {
     //period로 운영 시간 확인
     const currentTime = dayjs().tz('Asia/Seoul').format('HH:mm:ss');
     const dailyOperateTime = registration.period.dailyOperation;
-    const startTime = dayjs(dailyOperateTime.start)
-      .subtract(1, 'hour')
-      .format('HH:mm:ss');
-    const endTime = dayjs(dailyOperateTime.end)
-      .subtract(1, 'hour')
-      .format('HH:mm:ss');
+    const startTime = dayjs(dailyOperateTime.start);
+    const endTime = dayjs(dailyOperateTime.end);
 
-    if (currentTime < startTime || endTime < currentTime) {
+    if (
+      currentTime < startTime.subtract(1, 'hour').format('HH:mm:ss') ||
+      endTime.subtract(1, 'hour').format('HH:mm:ss') < currentTime
+    ) {
       throw new BadRequestException(
         "It's currently not the designated study time.",
       );
     }
 
-    return registration.period.studyType;
+    return {
+      type: registration.period.studyType,
+      startTime: startTime.format('HH:mm:ss'),
+      endTime: endTime.format('HH:mm:ss'),
+    };
   }
 
   async checkIn(
@@ -126,9 +134,12 @@ export class StudentService {
     // periodId: number,
     // ttl: number = 6 * 60 * 60 * 1000,
   ): Promise<ResponseAttendanceDto | null> {
-    const { periodId, ttl }: CheckInDto = checkInDto;
+    const { periodId, ttl, isAutoCheckOut } = checkInDto;
     // period 검증
-    const type = await this.validateRegistration(studentId, periodId);
+    const { type, startTime, endTime } = await this.validateRegistration(
+      studentId,
+      periodId,
+    );
     // Redis에서 현재 공부중인지 확인
     const exists = await this.cacheManager.get<StudyCacheStatus>(
       `study:${studentId}`,
@@ -139,19 +150,27 @@ export class StudentService {
 
     // 출석 기록 생성
     const now = dayjs().tz('Asia/Seoul');
+    const currentTime = dayjs.max(
+      dayjs(`${now.format('YYYY-MM-DD')}T${startTime}`), // 운영 시작 시간보다 빠르게 체크인 한 경우 처리
+      now,
+    );
     const attendanceDto: CreateAttendanceDto = {
       studentId,
       type,
       date: now.format('YYYY-MM-DD'),
-      check_in_time: now.format('HH:mm:ss'),
+      check_in_time: currentTime.format('HH:mm:ss'),
     };
     const attendance = await this.attendanceService.create(attendanceDto);
 
+    const timeDiffToEnd = dayjs(`${now.format('YYYY-MM-DD')}T${endTime}`).diff(
+      currentTime,
+    ); // 밀리초 단위
+
     // Redis에 attendance.id 저장
-    await this.cacheManager.set(
+    await this.cacheManager.set<StudyCacheStatus>(
       `study:${studentId}`,
-      { attendance_id: attendance.id, isStudy: true },
-      ttl ?? 6 * 60 * 60 * 1000,
+      { attendance_id: attendance.id, isStudy: true, end_time: endTime },
+      timeDiffToEnd,
     );
     // 출석 기록 DTO 변환후 반환
     return plainToInstance(ResponseAttendanceDto, attendance, {
