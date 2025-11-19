@@ -17,5 +17,5 @@ export class QueryAttendanceDto {
 
   @IsOptional()
   @IsString()
-  student_id_like?: string; // 여기에 와일드카드 문자열 입력
+  studentId_like?: string; // 여기에 와일드카드 문자열 입력
 }

@@ -32,126 +32,126 @@ function Dashboard() {
   // student list (dummy)
   const list = [
     {
-      student_id: 20129,
+      studentId: 20129,
       name: '황은태',
       status: '공부중',
       check_in_time: 'hh:mm:ss',
       check_out_time: 'hh:mm:ss'
     },
     {
-      student_id: 20129,
+      studentId: 20129,
       name: '박지원',
       status: '공부중',
       check_in_time: 'hh:mm:ss',
       check_out_time: 'hh:mm:ss'
     },
     {
-      student_id: 20129,
+      studentId: 20129,
       name: '김한율',
       status: '퇴실',
       check_in_time: 'hh:mm:ss',
       check_out_time: 'hh:mm:ss'
     },
     {
-      student_id: 20129,
+      studentId: 20129,
       name: '정성훈',
       status: '미참여',
       check_in_time: 'hh:mm:ss',
       check_out_time: 'hh:mm:ss'
     },
     {
-      student_id: 20129,
+      studentId: 20129,
       name: '문승준',
       status: '퇴실',
       check_in_time: 'hh:mm:ss',
       check_out_time: 'hh:mm:ss'
     },
     {
-      student_id: 20129,
+      studentId: 20129,
       name: '박종석',
       status: '미참여',
       check_in_time: 'hh:mm:ss',
       check_out_time: 'hh:mm:ss'
     },
     {
-      student_id: 20129,
+      studentId: 20129,
       name: '황은태',
       status: '공부중',
       check_in_time: 'hh:mm:ss',
       check_out_time: 'hh:mm:ss'
     },
     {
-      student_id: 20129,
+      studentId: 20129,
       name: '박지원',
       status: '공부중',
       check_in_time: 'hh:mm:ss',
       check_out_time: 'hh:mm:ss'
     },
     {
-      student_id: 20129,
+      studentId: 20129,
       name: '김한율',
       status: '퇴실',
       check_in_time: 'hh:mm:ss',
       check_out_time: 'hh:mm:ss'
     },
     {
-      student_id: 20129,
+      studentId: 20129,
       name: '정성훈',
       status: '미참여',
       check_in_time: 'hh:mm:ss',
       check_out_time: 'hh:mm:ss'
     },
     {
-      student_id: 20129,
+      studentId: 20129,
       name: '문승준',
       status: '퇴실',
       check_in_time: 'hh:mm:ss',
       check_out_time: 'hh:mm:ss'
     },
     {
-      student_id: 20129,
+      studentId: 20129,
       name: '박종석',
       status: '미참여',
       check_in_time: 'hh:mm:ss',
       check_out_time: 'hh:mm:ss'
     },
     {
-      student_id: 20129,
+      studentId: 20129,
       name: '황은태',
       status: '공부중',
       check_in_time: 'hh:mm:ss',
       check_out_time: 'hh:mm:ss'
     },
     {
-      student_id: 20129,
+      studentId: 20129,
       name: '박지원',
       status: '공부중',
       check_in_time: 'hh:mm:ss',
       check_out_time: 'hh:mm:ss'
     },
     {
-      student_id: 20129,
+      studentId: 20129,
       name: '김한율',
       status: '퇴실',
       check_in_time: 'hh:mm:ss',
       check_out_time: 'hh:mm:ss'
     },
     {
-      student_id: 20129,
+      studentId: 20129,
       name: '정성훈',
       status: '미참여',
       check_in_time: 'hh:mm:ss',
       check_out_time: 'hh:mm:ss'
     },
     {
-      student_id: 20129,
+      studentId: 20129,
       name: '문승준',
       status: '퇴실',
       check_in_time: 'hh:mm:ss',
       check_out_time: 'hh:mm:ss'
     },
     {
-      student_id: 20129,
+      studentId: 20129,
       name: '박종석',
       status: '미참여',
       check_in_time: 'hh:mm:ss',
@@ -246,9 +246,9 @@ function Dashboard() {
             <tbody>
               {list.map((student) => {
                 return (
-                  <tr key={student.student_id}>
+                  <tr key={student.studentId}>
                     <td className="whitespace-nowrap px-5 py-4 text-sm text-gray-900">
-                      {student.student_id}
+                      {student.studentId}
                     </td>
                     <td className="whitespace-nowrap px-5 py-4 text-sm text-gray-900">
                       {student.name}

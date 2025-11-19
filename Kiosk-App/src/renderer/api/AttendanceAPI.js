@@ -27,13 +27,13 @@ export async function ping(kioksId="night-1"){ // 임시 값
   return res.data;
 }
 
-export async function check_in(student_id, type){
-  await axios.post(`${address}/users/${student_id}/attendances/check-in?type=${type}`);
+export async function check_in(studentId, type){
+  await axios.post(`${address}/users/${studentId}/attendances/check-in?type=${type}`);
 }
 
-// export async function getStatus(student_id, type) {
+// export async function getStatus(studentId, type) {
 //   try {
-//     const res = await axios.get(`${address}/attendances/status/${student_id}/studying?type=${type}`);
+//     const res = await axios.get(`${address}/attendances/status/${studentId}/studying?type=${type}`);
 //     return res.data;
 //   } catch (error) {
 //     console.error(error);
@@ -41,9 +41,9 @@ export async function check_in(student_id, type){
 //   }
 // }
 
-export async function getUser(student_id) {
+export async function getUser(studentId) {
   try{
-    const res = await axios.get(`${address}/users/${student_id}`)
+    const res = await axios.get(`${address}/users/${studentId}`)
     return res.data;
   }catch{
     console.error(error);

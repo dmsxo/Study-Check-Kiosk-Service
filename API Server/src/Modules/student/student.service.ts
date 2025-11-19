@@ -109,8 +109,8 @@ export class StudentService {
     //period로 운영 시간 확인
     const currentTime = dayjs().tz('Asia/Seoul').format('HH:mm:ss');
     const dailyOperateTime = registration.period.dailyOperation;
-    const startTime = dayjs(dailyOperateTime.start);
-    const endTime = dayjs(dailyOperateTime.end);
+    const startTime = dayjs(`${currentDate} ${dailyOperateTime.start}`);
+    const endTime = dayjs(`${currentDate} ${dailyOperateTime.end}`);
 
     if (
       currentTime < startTime.subtract(1, 'hour').format('HH:mm:ss') ||

@@ -29,10 +29,10 @@ export class AttendanceService {
   /** ================= CRUD ================= */
 
   async create(dto: CreateAttendanceDto): Promise<Attendance> {
-    const user: User = await this.userService.get_user(dto.student_id);
+    const user: User = await this.userService.get_user(dto.studentId);
     const attendance = this.attendanceRepo.create({
       ...dto,
-      student_id: user,
+      studentId: user,
       check_in_time: dto.check_in_time
         ? this.convertToTime(dto.check_in_time)
         : undefined,
@@ -52,7 +52,7 @@ export class AttendanceService {
       attendance.check_in_time = this.convertToTime(dto.check_in_time);
     if (dto.check_out_time)
       attendance.check_out_time = this.convertToTime(dto.check_out_time);
-    Object.assign(attendance, { ...dto, student_id: undefined }); // student_id는 변경 금지
+    Object.assign(attendance, { ...dto, studentId: undefined }); // studentId는 변경 금지
     return this.attendanceRepo.save(attendance);
   }
 
@@ -72,15 +72,15 @@ export class AttendanceService {
   /** ================= 조회 ================= */
 
   async findAllByStudent(
-    student_id: number,
+    studentId: number,
     query?: QueryAttendanceDto,
   ): Promise<ResponseAttendanceDto[]> {
-    const user = await this.userService.get_user(student_id);
+    const user = await this.userService.get_user(studentId);
 
     const qb = this.attendanceRepo
       .createQueryBuilder('attendance')
-      .where('attendance.student_id = :student_id', {
-        student_id: user.id,
+      .where('attendance.studentId = :studentId', {
+        studentId: user.id,
       });
 
     if (query?.type) {
@@ -103,7 +103,7 @@ export class AttendanceService {
   async findAll(query?: QueryAttendanceDto): Promise<ResponseAttendanceDto[]> {
     const qb = this.attendanceRepo
       .createQueryBuilder('attendance')
-      .leftJoinAndSelect('attendance.student_id', 'student');
+      .leftJoinAndSelect('attendance.studentId', 'student');
 
     if (query?.type) {
       qb.andWhere('attendance.type = :type', { type: query.type });
@@ -116,9 +116,9 @@ export class AttendanceService {
       });
     }
 
-    if (query?.student_id_like)
-      qb.andWhere(`CAST(student.student_id AS TEXT) LIKE :id_like`, {
-        id_like: `${query.student_id_like}%`,
+    if (query?.studentId_like)
+      qb.andWhere(`CAST(student.studentId AS TEXT) LIKE :id_like`, {
+        id_like: `${query.studentId_like}%`,
       });
 
     const attendances = await qb.orderBy('attendance.date', 'DESC').getMany();

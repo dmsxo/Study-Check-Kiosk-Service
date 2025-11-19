@@ -45,9 +45,10 @@ export class RegistrationService {
   async getRegistrationByFilter(dto: QueryRegistrationDto) {
     const registration = await this.registrationRepo.findOne({
       where: {
-        student: { id: dto.studentId },
+        student: { studentId: dto.studentId },
         period: { id: dto.periodId },
       },
+      relations: ['student', 'period'],
     });
 
     return registration;

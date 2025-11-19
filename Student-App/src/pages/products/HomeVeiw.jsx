@@ -12,7 +12,7 @@ function Home() {
   const { user } = useAuth();
 
   const getAuthCode = async () => {
-    const code = await getCode(user.student_id);
+    const code = await getCode(user.studentId);
     setCode(code);
   };
 

@@ -29,10 +29,10 @@ api.interceptors.response.use(
   }
 );
 
-export async function getCode(student_id) {
+export async function getCode(studentId) {
   try {
     const response = await api.post(`/auth/checkin/code`, {
-      issuer: `student:${student_id}`,
+      issuer: `student:${studentId}`,
       ttl: 10000
     });
     return response.data;

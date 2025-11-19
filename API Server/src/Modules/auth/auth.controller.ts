@@ -27,7 +27,7 @@ export class AuthController {
     const user = await this.authService.validateUser(loginDto);
 
     req.session.user = {
-      id: user.student_id,
+      id: user.studentId,
       role: UserRole.STUDENT,
     };
 
