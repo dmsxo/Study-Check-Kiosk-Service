@@ -37,7 +37,7 @@ export class StudyPeriod {
   @Column(() => TimeRange)
   dailyOperation: TimeRange;
 
-  @Column({ type: 'int' })
+  @Column({ type: 'int', nullable: true })
   capacity?: number;
 
   @OneToMany(() => Registration, (registration) => registration.period)

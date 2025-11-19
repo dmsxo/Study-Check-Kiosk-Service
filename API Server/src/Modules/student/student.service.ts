@@ -23,7 +23,10 @@ import { RegistrationStatus } from 'src/common/enums/registration-status.enum';
 import { CheckInDto } from './dto/check-in.dto';
 import { CheckOutDto } from './dto/check-out.dto';
 import { RegistrationValidation } from './interface/validate-registration.interface';
+import { InjectQueue } from '@nestjs/bull';
+import type { Queue } from 'bull';
 dayjs.extend(utc);
+dayjs.extend(minMax);
 dayjs.extend(timezone);
 
 @Injectable()
@@ -33,6 +36,9 @@ export class StudentService {
     private readonly userService: UserService,
     private readonly attendanceService: AttendanceService,
     private readonly registrationService: RegistrationService,
+
+    @InjectQueue('auto-checkout')
+    private readonly autoCheckoutQueue: Queue,
   ) {}
   // 내 프로필 가져오기
   async getMyProfile(studentId: number) {
@@ -123,8 +129,8 @@ export class StudentService {
 
     return {
       type: registration.period.studyType,
-      startTime: startTime.format('HH:mm:ss'),
-      endTime: endTime.format('HH:mm:ss'),
+      startTimeStr: startTime.format('HH:mm:ss'),
+      endTimeStr: endTime.format('HH:mm:ss'),
     };
   }
 
@@ -134,9 +140,9 @@ export class StudentService {
     // periodId: number,
     // ttl: number = 6 * 60 * 60 * 1000,
   ): Promise<ResponseAttendanceDto | null> {
-    const { periodId, ttl, isAutoCheckOut } = checkInDto;
+    const { periodId, isAutoCheckOut } = checkInDto;
     // period 검증
-    const { type, startTime, endTime } = await this.validateRegistration(
+    const { type, startTimeStr, endTimeStr } = await this.validateRegistration(
       studentId,
       periodId,
     );
@@ -150,28 +156,35 @@ export class StudentService {
 
     // 출석 기록 생성
     const now = dayjs().tz('Asia/Seoul');
-    const currentTime = dayjs.max(
-      dayjs(`${now.format('YYYY-MM-DD')}T${startTime}`), // 운영 시작 시간보다 빠르게 체크인 한 경우 처리
-      now,
-    );
+    const startTime = dayjs(`${now.format('YYYY-MM-DD')}T${startTimeStr}`); // 운영 시작 시간보다 빠르게 체크인 한 경우 처리
     const attendanceDto: CreateAttendanceDto = {
       studentId,
       type,
       date: now.format('YYYY-MM-DD'),
-      check_in_time: currentTime.format('HH:mm:ss'),
+      check_in_time: dayjs.max(now, startTime).format('HH:mm:ss'),
     };
     const attendance = await this.attendanceService.create(attendanceDto);
 
-    const timeDiffToEnd = dayjs(`${now.format('YYYY-MM-DD')}T${endTime}`).diff(
-      currentTime,
-    ); // 밀리초 단위
+    const timeDiffToEnd = dayjs(
+      `${now.format('YYYY-MM-DD')}T${endTimeStr}`,
+    ).diff(startTime); // 밀리초 단위
 
     // Redis에 attendance.id 저장
     await this.cacheManager.set<StudyCacheStatus>(
       `study:${studentId}`,
-      { attendance_id: attendance.id, isStudy: true, end_time: endTime },
-      timeDiffToEnd,
+      {
+        attendance_id: attendance.id,
+        isStudy: true,
+        start_time: startTimeStr,
+        end_time: endTimeStr,
+        isAutoCheckOut: isAutoCheckOut ?? false,
+      },
+      timeDiffToEnd + 1000 * 60 * 60 * 2,
     );
+
+    if (isAutoCheckOut) {
+      await this.autoCheckoutQueue.add(studentId, { delay: timeDiffToEnd });
+    }
     // 출석 기록 DTO 변환후 반환
     return plainToInstance(ResponseAttendanceDto, attendance, {
       excludeExtraneousValues: true,
@@ -184,7 +197,7 @@ export class StudentService {
     // description: string,
     // ttl: number = 6 * 60 * 60 * 1000,
   ): Promise<ResponseAttendanceDto | null> {
-    const { description, ttl }: CheckOutDto = checkOutDto;
+    const { description } = checkOutDto;
     // Redis에서 attendance PK 가져오기
     const status = await this.cacheManager.get<StudyCacheStatus>(
       `study:${studentId}`,
@@ -201,8 +214,16 @@ export class StudentService {
     }
 
     const now = dayjs().tz('Asia/Seoul');
+
+    if (
+      dayjs(`${now.format('YYYY-MM-DD')}T${status.start_time}`).isAfter(now)
+    ) {
+      throw new BadRequestException('You cannot check out at this time.');
+    }
+
+    const endTime = dayjs(`${now.format('YYYY-MM-DD')}T${status.end_time}`);
     const updateDto: UpdateAttendanceDto = {
-      check_out_time: now.format('HH:mm:ss'),
+      check_out_time: dayjs.min(now, endTime).format('HH:mm:ss'),
       description: description ?? '',
     };
     const attendance = await this.attendanceService.update(
@@ -210,11 +231,19 @@ export class StudentService {
       updateDto,
     );
 
-    await this.cacheManager.set(
-      `study:${studentId}`,
-      { attendance_id: attendance.id, isStudy: false },
-      ttl ?? 6 * 60 * 60 * 1000,
-    );
+    const ttl = endTime.diff(now);
+    if (ttl > 0) {
+      await this.cacheManager.set<StudyCacheStatus>(
+        `study:${studentId}`,
+        {
+          attendance_id: attendance.id,
+          isStudy: false,
+          start_time: status.start_time,
+          end_time: status.end_time,
+        },
+        ttl,
+      );
+    }
 
     return plainToInstance(ResponseAttendanceDto, attendance, {
       excludeExtraneousValues: true,

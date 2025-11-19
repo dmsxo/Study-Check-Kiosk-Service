@@ -14,6 +14,7 @@ import { ImagesModule } from 'src/Modules/images/images.module';
 import { RegistrationModule } from './registration/registration.module';
 import { StudyPeriodModule } from './study-period/study-period.module';
 import { ScheduleModule } from './schedule/schedule.module';
+import { BullModule } from '@nestjs/bull';
 /*
 src/
 ├─ auth/
@@ -38,10 +39,6 @@ src/
 
 @Module({
   imports: [
-    UserModule,
-    AuthModule,
-    AnalysisModule,
-
     TypeOrmModule.forRoot(typeORMConfig),
 
     CacheModule.registerAsync({
@@ -56,6 +53,17 @@ src/
       }),
     }),
 
+    BullModule.forRoot({
+      redis: { host: 'localhost', port: 6379 },
+      defaultJobOptions: {
+        removeOnComplete: true,
+        removeOnFail: true,
+      },
+    }),
+
+    UserModule,
+    AuthModule,
+    AnalysisModule,
     AttendanceModule,
     StudentModule,
     KioskModule,

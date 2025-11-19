@@ -5,9 +5,6 @@ export class CheckInDto {
   periodId: number;
 
   @IsOptional()
-  @IsInt()
-  ttl?: number;
-
   @IsBoolean()
-  isAutoCheckOut: boolean;
+  isAutoCheckOut?: boolean;
 }

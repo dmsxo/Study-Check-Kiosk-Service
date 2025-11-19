@@ -1,7 +1,4 @@
 import {
-  IsBoolean,
-  IsEnum,
-  IsInt,
   IsString,
   IsArray,
   IsDateString,
