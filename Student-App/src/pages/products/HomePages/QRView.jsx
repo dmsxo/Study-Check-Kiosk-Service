@@ -31,7 +31,7 @@ function QRView({ code, getAuthCode, setIsStudying }) {
 
   useEffect(() => {
     const fetchStatus = async () => {
-      return await getStatus("night");
+      return await getStatus();
     };
 
     const timer = setInterval(() => {
@@ -44,7 +44,7 @@ function QRView({ code, getAuthCode, setIsStudying }) {
       });
       fetchStatus()
         .then((status) => {
-          if (!!status) setIsStudying(true);
+          if (status ? status.isStudy : false) setIsStudying(true);
         })
         .catch(console.error);
     }, 1000);

@@ -33,10 +33,10 @@ function KeyChekinView() {
           if (res) {
             getUser(res).then((user) => {
               console.log(user);
-              setIssuer(user.name);
-              setState('success');
-            });
-          }
+                setIssuer(user.name);
+                setState('success');
+              });
+            }
         });
       }, 1000);
 

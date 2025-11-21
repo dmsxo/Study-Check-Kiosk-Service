@@ -4,7 +4,7 @@ const address = "http://localhost:3000";
 
 export async function getCode(){
   const response = await axios.post(`${address}/auth/checkin/code`, {
-      issuer: "kiosk:night-1", // or "kiosk"
+      issuer: "kiosk:1", // or "kiosk"
       ttl: 15000
     });
     return response.data; // { code, expiresIn }
@@ -22,13 +22,13 @@ export async function verifyCode(code){
   }
 }
 
-export async function ping(kioksId="night-1"){ // 임시 값
+export async function ping(kioksId=1){ // 임시 값
   const res = await axios.get(`${address}/kiosk/ping?kioskId=${kioksId}`);
   return res.data;
 }
 
-export async function check_in(studentId, type){
-  await axios.post(`${address}/users/${studentId}/attendances/check-in?type=${type}`);
+export async function check_in(studentId){
+  await axios.post(`${address}/users/${studentId}/attendances/check-in`, {periodId: 1});
 }
 
 // export async function getStatus(studentId, type) {

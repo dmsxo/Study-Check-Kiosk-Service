@@ -1,13 +1,13 @@
-import { useState } from 'react';
-import { ArrowLeft } from 'lucide-react';
-import FinalPopupModal from './FinalPopupModal';
-import { useNavigate } from 'react-router-dom';
-import { check_out } from '../../api/AttendanceAPI';
-import { useAttendance } from '../../hooks/useAttendance';
+import { useState } from "react";
+import { ArrowLeft } from "lucide-react";
+import FinalPopupModal from "./FinalPopupModal";
+import { useNavigate } from "react-router-dom";
+import { check_out } from "../../api/AttendanceAPI";
+import { useAttendance } from "../../hooks/useAttendance";
 
 export default function CheckoutModal() {
   const [showConfirm, setShowConfirm] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [isCheckedOut, setIsCheckedOut] = useState(false);
   const navigate = useNavigate();
 
@@ -18,14 +18,14 @@ export default function CheckoutModal() {
   };
 
   const handleFinalCheckout = () => {
-    console.log('체크아웃 메시지:', message);
+    console.log("체크아웃 메시지:", message);
     setIsCheckedOut(true);
     setShowConfirm(false);
 
     setTimeout(() => {
-      check_out('night', message).then(() => {
+      check_out(message).then(() => {
         refresh().then(() => {
-          navigate('/', { replace: true });
+          navigate("/", { replace: true });
         });
       });
     }, 3000);
@@ -35,17 +35,17 @@ export default function CheckoutModal() {
     if (showConfirm) {
       setShowConfirm(false);
     } else {
-      navigate('/');
+      navigate("/");
     }
   };
 
   const placeholderExamples = [
-    'ex) 오늘 집중이 잘 됐어요! 💪',
-    'ex) 가족 약속이 있어서 일찍 나가요',
-    'ex) 학원에 가야해서 일찍 나가요',
-    'ex) 조금 피곤하지만 보람찬 하루였어요',
-    'ex) 내일 더 열심히 하겠습니다!',
-    'ex) 오늘은 여기까지!',
+    "ex) 오늘 집중이 잘 됐어요! 💪",
+    "ex) 가족 약속이 있어서 일찍 나가요",
+    "ex) 학원에 가야해서 일찍 나가요",
+    "ex) 조금 피곤하지만 보람찬 하루였어요",
+    "ex) 내일 더 열심히 하겠습니다!",
+    "ex) 오늘은 여기까지!",
   ];
 
   const randomPlaceholder =

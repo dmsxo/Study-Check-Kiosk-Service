@@ -15,6 +15,7 @@ import { StudyType } from 'src/common/enums/study-type.enum';
 import { StudyTypePipe } from 'src/common/pipe/study-type.pipe';
 import { CheckInDto } from '../dto/check-in.dto';
 import { CheckOutDto } from '../dto/check-out.dto';
+import { StudyCacheStatus } from 'src/Modules/attendance/interface/study-cache-status.interface';
 
 @Controller('me')
 @UseGuards(AuthGuard)
@@ -36,13 +37,9 @@ export class AuthStudentController {
   @Get('attendances/current')
   async getCurrentStudyStatus(
     @Req() req: Request,
-    @Query('type', StudyTypePipe) type: StudyType,
-  ): Promise<ResponseAttendanceDto | null> {
-    if (!Object.values(StudyType).includes(type as StudyType))
-      throw new BadRequestException('Invalid type');
+  ): Promise<StudyCacheStatus | null> {
     return await this.studentService.getCurrentStudyStatus(
       req.session.user!.id,
-      type,
     );
   }
 

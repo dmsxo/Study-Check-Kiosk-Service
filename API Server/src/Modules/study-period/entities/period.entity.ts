@@ -41,5 +41,5 @@ export class StudyPeriod {
   capacity?: number;
 
   @OneToMany(() => Registration, (registration) => registration.period)
-  registrations?: Registration;
+  registrations?: Registration[];
 }

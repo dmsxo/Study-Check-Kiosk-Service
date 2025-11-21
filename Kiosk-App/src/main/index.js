@@ -43,6 +43,7 @@ async function connectSerial() {
 
     port.on('data', (chunk) => {
       const line = chunk.toString().trim();
+      console.log(line);
       if (line && mainWindow) {
         mainWindow.webContents.send('serial-data', line);
       }

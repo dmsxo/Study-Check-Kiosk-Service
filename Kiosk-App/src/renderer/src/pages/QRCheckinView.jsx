@@ -44,7 +44,7 @@ function QRCheckinView() {
             const user = await getUser(detail);
             console.log(user);
             setIssuer(user.name);
-            await check_in(user.studentId, 'night');
+            await check_in(user.studentId);
             setState('success');
           }
         } catch (err) {

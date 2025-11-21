@@ -54,7 +54,10 @@ export class StudyPeriodService {
   }
 
   async getPeriodById(id: number): Promise<StudyPeriod> {
-    const period = await this.periodRepo.findOneBy({ id: id });
+    const period = await this.periodRepo.findOne({
+      where: { id },
+      relations: ['registrations'],
+    });
     if (!period)
       throw new NotFoundException(`study period with id:${id} is not founded`);
     return period;

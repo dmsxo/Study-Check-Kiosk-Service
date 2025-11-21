@@ -112,6 +112,23 @@ const PeriodEditModal = ({ schedule, onSave, onClose }) => {
             />
           </div>
 
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <DateSelecter
+              title={'운영 시작 시간'}
+              value={editingSchedule.operationStart}
+              onChange={(e) =>
+                setEditingSchedule({ ...editingSchedule, operationStart: e.target.value })
+              }
+            />
+            <DateSelecter
+              title={'운영 종료 시간'}
+              value={editingSchedule.operationEnd}
+              onChange={(e) =>
+                setEditingSchedule({ ...editingSchedule, operationEnd: e.target.value })
+              }
+            />
+          </div>
+
           <>
             <div className="flex items-center justify-between mb-2">
               <label className="block text-sm font-medium text-gray-700">추가 신청 기간</label>
