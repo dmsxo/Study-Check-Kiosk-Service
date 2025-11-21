@@ -45,7 +45,7 @@ export class RegistrationService {
     );
 
     // validate
-    this.validateRegistration(student, period);
+    // this.validateRegistration(student, period);
 
     const newRegistration = this.registrationRepo.create({
       student,
