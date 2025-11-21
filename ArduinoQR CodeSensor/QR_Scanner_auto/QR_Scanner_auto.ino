@@ -1,91 +1,128 @@
 #include <SoftwareSerial.h>
-#include <string.h>
 
-// ── Wiring ───────────────────────────────────────────────
-// Module TX → D11 (Arduino RX), Module RX → D10 (Arduino TX)
 SoftwareSerial scanner(9, 8);
 
-// ── Packets ──────────────────────────────────────────────
-const uint8_t SCAN_TRIGGER[] = {0x7E,0x00,0x08,0x01,0x00,0x02,0x01,0xAB,0xCD}; // trigger
-const uint8_t SCAN_CANCEL[]  = {0x7E,0x00,0x08,0x01,0x00,0x02,0x00,0xAB,0xCD}; // cancle
-const uint8_t ACK_PKT[]      = {0x02,0x00,0x00,0x01,0x00,0x33,0x31};            // ACK
-
-// (초기 1회) 스캔 시간 10초로 설정 및 플래시에 저장
-const uint8_t SET_10S[]      = {0x7E,0x00,0x08,0x01,0x00,0x06,0x64,0xAB,0xCD}; // 0x64 = 10.0s
-const uint8_t SAVE_FLASH[]   = {0x7E,0x00,0x09,0x01,0x00,0x00,0x00,0xDE,0xC8};
-
-// 아두이노가 결과를 기다릴 시간(센서와 동기화: 10초)
-const unsigned long SCAN_WINDOW_MS = 10000;
-
-
-// ── Helpers ──────────────────────────────────────────────
-// 트리거 직후 들어오는 ACK 시퀀스를 조용히 버린다.
-bool discardAck(unsigned long timeout_ms = 100) {
+// ───────────────────────────────────────
+// 패킷 읽기
+// ───────────────────────────────────────
+bool readPacket(uint8_t *buf, size_t &length, unsigned long timeout = 500)
+{
+  unsigned long t0 = millis();
   size_t idx = 0;
-  unsigned long t0 = millis();
-  while (millis() - t0 < timeout_ms && idx < sizeof(ACK_PKT)) {
-    if (scanner.available()) {
-      uint8_t v = scanner.read();
-      if (v == ACK_PKT[idx]) idx++;
-      else return false; // ACK 형태가 아니면 즉시 중단
-    }
-  }
-  return (idx == sizeof(ACK_PKT));
-}
 
-void clearScannerBuffer() {
-  while (scanner.available()) scanner.read();
-}
+  while (millis() - t0 < timeout)
+  {
+    while (scanner.available())
+    {
+      uint8_t b = scanner.read();
 
-// 출력 가능한 ASCII(0x20~0x7E)만 내보내고, CR/LF는 개행 처리
-void readBarcodeWindow(unsigned long ms) {
-  unsigned long t0 = millis();
-  String data = "";
-  while (millis() - t0 < ms) {
-    if(Serial.available() && Serial.read() == 'c'){
-      scanner.write(SCAN_CANCEL, sizeof(SCAN_CANCEL));
-      scanner.flush();
-      break;
-    } 
-    if (scanner.available()) {
-      char c = scanner.read();
-      if (c == '\r' || c == '\n') {
-        Serial.println(data);
-      } else if (c >= 0x20 && c <= 0x7E) {
-        data += c;
+      // 첫 바이트 = 0x02일 때만 패킷 시작
+      if (idx == 0 && b != 0x02)
+        continue;
+
+      buf[idx++] = b;
+
+      // 최소 4바이트(헤더 + 길이) 확보 후 길이를 계산
+      if (idx == 4)
+      {
+        uint8_t dataLen = buf[3];
+        // 전체 패킷 길이 = 4 + dataLen + 2(CRC)
+        length = 4 + dataLen + 2;
       }
-      // 그 외(제어/이진 바이트)는 무시
+
+      // 목표 길이에 도달하면 패킷 완성
+      if (idx > 4 && idx == length)
+        return true;
+
+      // 오버플로 방지
+      if (idx >= 200)
+        return false;
     }
   }
-  // 잔여 ACK 버리기
-  clearScannerBuffer();
-  if(data == "") Serial.println("404");
+  return false;
 }
 
-// ── Setup / Loop ─────────────────────────────────────────
-void setup() {
+// ───────────────────────────────────────
+// 스캔 트리거
+// ───────────────────────────────────────
+void triggerScan()
+{
+  uint8_t cmd[] = {0x7E, 0x00, 0x08, 0x01, 0x00, 0x02, 0x01, 0xAB, 0xCD};
+  scanner.write(cmd, sizeof(cmd));
+}
+
+// 스캔 취소
+void cancelScan()
+{
+  uint8_t cmd[] = {0x7E, 0x00, 0x08, 0x01, 0x00, 0x02, 0x00, 0xAB, 0xCD};
+  scanner.write(cmd, sizeof(cmd));
+}
+
+// ───────────────────────────────────────
+// 스캔 수행 (10초 타임아웃)
+// ───────────────────────────────────────
+bool scanOnce(String &result)
+{
+  triggerScan();
+
+  uint8_t pkt[200];
+  size_t pktLen = 0;
+
+  unsigned long t0 = millis();
+  while (millis() - t0 < 10000)
+  {
+    // cancel 입력
+    if (Serial.available() && Serial.read() == 'c')
+    {
+      cancelScan();
+      return false;
+    }
+
+    // 패킷 수신
+    if (readPacket(pkt, pktLen, 50))
+    {
+      if (pkt[0] == 0x02 && pkt[1] == 0x00)
+      {
+        uint8_t len = pkt[3];
+        result = "";
+
+        for (int i = 0; i < len; i++)
+        {
+          char c = pkt[4 + i];
+          result += c;
+        }
+        return true;
+      }
+    }
+  }
+
+  cancelScan();
+  return false;
+}
+
+// ───────────────────────────────────────
+// Setup / Loop
+// ───────────────────────────────────────
+void setup()
+{
   Serial.begin(115200);
   scanner.begin(9600);
+  Serial.println("Scanner ready. (press 's' to scan)");
 }
 
-void loop() {
-  if (Serial.available()) {
-    char cmd = Serial.read();
-    if (cmd == 's') {
-      clearScannerBuffer();
-      // 1) 트리거 전송
-      scanner.write(SCAN_TRIGGER, sizeof(SCAN_TRIGGER));
-      scanner.flush();
+void loop()
+{
+  if (Serial.available())
+  {
+    if (Serial.read() == 's')
+    {
+      String data;
+      Serial.println("Scanning... (press 'c' to cancel)");
 
-      // 2) 즉시 들어오는 ACK를 조용히 버림(모니터에 안 보이게)
-      discardAck(120);
-
-      // 3) 10초 동안 디코딩된 문자열만 표시
-      readBarcodeWindow(SCAN_WINDOW_MS);
-
-      // 정리용
-      scanner.write(SCAN_CANCEL, sizeof(SCAN_CANCEL));
-      scanner.flush();
+      if (scanOnce(data))
+        Serial.println("RESULT = " + data);
+      else
+        Serial.println("Scan failed or canceled.");
     }
   }
 }
