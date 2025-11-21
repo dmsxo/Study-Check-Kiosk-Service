@@ -129,13 +129,15 @@ const uint8_t INIT_SCAN_ENHANCE = 0x01;
 void setup()
 {
   Serial.begin(115200);
+  delay(5000);
   scanner.begin(9600);
-  delay(500); // 기기 부팅 안정 구간
+  delay(5000); // 기기 부팅 안정 구간
 
   Serial.println(F("\n=== SAFE BARCODE INIT START ==="));
 
   // 필요시
-  // factoryReset();
+   factoryReset();
+   delay(5000);
 
   writeReg(0x0000, INIT_MODE_SILENCE_CMD);
   writeReg(0x0006, INIT_SINGLE_SCAN_TIME);
