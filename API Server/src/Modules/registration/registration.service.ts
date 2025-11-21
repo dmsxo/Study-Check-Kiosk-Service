@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Registration } from './entities/registration.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -7,6 +11,8 @@ import { UpdateRegistrationDto } from './dto/update-registration.dto';
 import { UserService } from './../user/user.service';
 import { StudyPeriodService } from '../study-period/study-period.service';
 import { QueryRegistrationDto } from './dto/query-registration.dto';
+import { User } from '../user/entities/user.entity';
+import { StudyPeriod } from '../study-period/entities/period.entity';
 
 @Injectable()
 export class RegistrationService {
@@ -17,11 +23,29 @@ export class RegistrationService {
     private readonly periodService: StudyPeriodService,
   ) {}
 
+  validateRegistration(student: User, period: StudyPeriod) {
+    if (Number(String(student.studentId)[0]) !== period.grade) {
+      throw new ConflictException(
+        'Your grade level does not match the eligibility requirements.',
+      );
+    }
+
+    if (
+      period.capacity != null &&
+      (period.registrations?.length ?? 0 >= period.capacity)
+    ) {
+      throw new ConflictException('Registration capacity reached.');
+    }
+  }
+
   async createRegisration(registration: CreateRegistrationDto) {
     const student = await this.userService.get_user(registration.studentId);
     const period = await this.periodService.getPeriodById(
       registration.periodId,
     );
+
+    // validate
+    this.validateRegistration(student, period);
 
     const newRegistration = this.registrationRepo.create({
       student,
@@ -55,8 +79,6 @@ export class RegistrationService {
   }
 
   async updateRegistration(id: number, updateStatusDto: UpdateRegistrationDto) {
-    console.log(id);
-    console.log(updateStatusDto.status);
     return await this.registrationRepo.update(
       { id },
       { status: updateStatusDto.status },

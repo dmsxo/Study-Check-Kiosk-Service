@@ -33,5 +33,5 @@ export class User {
   attendances?: Attendance[];
 
   @OneToMany(() => Registration, (registration) => registration.student)
-  registrations?: Registration;
+  registrations?: Registration[];
 }
