@@ -48,25 +48,15 @@ export class StudentService {
   // 현재 공부중인 출석기록 가져오기
   async getCurrentStudyStatus(
     studentId: number,
-    type: StudyType,
-  ): Promise<ResponseAttendanceDto | null> {
+  ): Promise<StudyCacheStatus | null> {
     try {
       // redis에서 현재 공부중인 키 조회
       const status = await this.cacheManager.get<StudyCacheStatus>(
-        `study:${studentId}:${type}`,
+        `study:${studentId}`,
       );
       if (!status) throw new NotFoundException('key does not exist ');
 
-      // 공부중이라면 출석기록 반환
-      if (status.isStudy) {
-        const currunt = await this.attendanceService.findOneById(
-          status.attendance_id,
-        );
-        return plainToInstance(ResponseAttendanceDto, currunt, {
-          excludeExtraneousValues: true,
-        });
-      }
-      return null;
+      return status;
     } catch {
       return null;
     }
@@ -157,11 +147,12 @@ export class StudentService {
     // 출석 기록 생성
     const now = dayjs().tz('Asia/Seoul');
     const startTime = dayjs(`${now.format('YYYY-MM-DD')}T${startTimeStr}`); // 운영 시작 시간보다 빠르게 체크인 한 경우 처리
+    const check_in_time = dayjs.max(now, startTime).format('HH:mm:ss');
     const attendanceDto: CreateAttendanceDto = {
       studentId,
       type,
       date: now.format('YYYY-MM-DD'),
-      check_in_time: dayjs.max(now, startTime).format('HH:mm:ss'),
+      check_in_time,
     };
     const attendance = await this.attendanceService.create(attendanceDto);
 
@@ -175,7 +166,7 @@ export class StudentService {
       {
         attendance_id: attendance.id,
         isStudy: true,
-        start_time: startTimeStr,
+        start_time: check_in_time,
         end_time: endTimeStr,
         isAutoCheckOut: isAutoCheckOut ?? false,
       },
@@ -222,8 +213,9 @@ export class StudentService {
     }
 
     const endTime = dayjs(`${now.format('YYYY-MM-DD')}T${status.end_time}`);
+    const check_out_time = dayjs.min(now, endTime).format('HH:mm:ss');
     const updateDto: UpdateAttendanceDto = {
-      check_out_time: dayjs.min(now, endTime).format('HH:mm:ss'),
+      check_out_time,
       description: description ?? '',
     };
     const attendance = await this.attendanceService.update(
@@ -239,7 +231,7 @@ export class StudentService {
           attendance_id: attendance.id,
           isStudy: false,
           start_time: status.start_time,
-          end_time: status.end_time,
+          end_time: check_out_time,
         },
         ttl,
       );

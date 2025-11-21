@@ -19,12 +19,10 @@ export default function KeyInput() {
       const verify = async () => {
         try {
           const res = await verifyCode(code.join(""));
-          const [issuerType, detail] = res.split(":");
-          const [type] = detail.split("-");
-          // console.log(issuerType, detail);
+          const [issuerType, periodId] = res.split(":");
           if (issuerType === "kiosk") {
-            await check_in(type);
-            await pong(detail, user.studentId);
+            await check_in(Number(periodId));
+            await pong(periodId, user.studentId);
             navigate("/", { replace: true });
           }
         } catch (err) {

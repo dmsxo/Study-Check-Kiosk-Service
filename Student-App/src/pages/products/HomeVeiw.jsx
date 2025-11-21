@@ -18,8 +18,8 @@ function Home() {
 
   useEffect(() => {
     const fetchStatus = async () => {
-      const status = await getStatus("night");
-      setIsStudying(!!status);
+      const status = await getStatus();
+      setIsStudying(status ? status.isStudy : false);
     };
     fetchStatus();
   }, []);

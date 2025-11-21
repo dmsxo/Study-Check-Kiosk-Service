@@ -87,9 +87,9 @@ export async function checkSession() {
   }
 }
 
-export async function check_in(type) {
+export async function check_in(periodId) {
   try {
-    return await api.post(`/me/attendances/check-in?type=${type}`);
+    return await api.post(`/me/attendances/check-in`, {periodId});
   } catch (error) {
     throw error;
   }
@@ -103,17 +103,17 @@ export async function pong(kioskId, studentId) {
   }
 }
 
-export async function check_out(type, description) {
+export async function check_out(description) {
   try {
-    return await api.post(`/me/attendances/check-out?type=${type}&description=${description}`);
+    return await api.post(`/me/attendances/check-out`, {description});
   } catch (error) {
     throw error;
   }
 }
 
-export async function getStatus(type) {
+export async function getStatus() {
   try {
-    const response = await api.get(`/me/attendances/current?type=${type}`);
+    const response = await api.get(`/me/attendances/current`);
     return response.data;
   } catch (error) {
     console.error(error);
