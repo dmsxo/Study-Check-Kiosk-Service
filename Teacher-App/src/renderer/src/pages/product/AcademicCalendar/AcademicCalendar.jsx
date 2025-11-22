@@ -17,6 +17,8 @@ function AcademicCalendar() {
       applicationEnd: '2025-03-07',
       operationStart: '2025-03-10',
       operationEnd: '2025-07-18',
+      dailyOperationStart: '18:00:00',
+      dailyOperationEnd: '21:00:00',
       additionalApplications: []
     }
   ]);

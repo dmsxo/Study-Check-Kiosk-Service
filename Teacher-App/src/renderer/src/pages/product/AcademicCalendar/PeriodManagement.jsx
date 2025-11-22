@@ -17,12 +17,15 @@ function PeriodManagement({ schedules, setSchedules }) {
       applicationEnd: '',
       operationStart: '',
       operationEnd: '',
+      dailyOperationStart: '',
+      dailyOperationEnd: '',
       additionalApplications: []
     };
     setEditingSchedule(newSchedule);
   };
 
   const saveSchedule = (schedule) => {
+    console.log(schedule);
     if (schedule.id && schedules.find((s) => s.id === schedule.id)) {
       setSchedules(schedules.map((s) => (s.id === schedule.id ? schedule : s)));
     } else {
@@ -36,6 +39,7 @@ function PeriodManagement({ schedules, setSchedules }) {
       setSchedules(schedules.filter((s) => s.id !== id));
     }
   };
+
   return (
     <LayoutContainer className="mb-5 flex-4">
       {/* Header */}

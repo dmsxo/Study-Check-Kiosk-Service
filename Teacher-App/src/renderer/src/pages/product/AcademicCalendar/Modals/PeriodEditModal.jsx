@@ -2,6 +2,7 @@ import DateSelecter from '../../../../components/UI/DateSelecter';
 import { useState } from 'react';
 import { Plus, Trash2, Save, X } from 'lucide-react';
 import Dropdown from '../../../../components/UI/Dropdown';
+import TimePicker from '../../../../components/UI/TimePicker';
 
 const PeriodEditModal = ({ schedule, onSave, onClose }) => {
   const [editingSchedule, setEditingSchedule] = useState(schedule);
@@ -113,19 +114,15 @@ const PeriodEditModal = ({ schedule, onSave, onClose }) => {
           </div>
 
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <DateSelecter
+            <TimePicker
               title={'운영 시작 시간'}
-              value={editingSchedule.operationStart}
-              onChange={(e) =>
-                setEditingSchedule({ ...editingSchedule, operationStart: e.target.value })
-              }
+              value={editingSchedule.dailyOperationStart}
+              onChange={(e) => setEditingSchedule({ ...editingSchedule, operationStart: e })}
             />
-            <DateSelecter
+            <TimePicker
               title={'운영 종료 시간'}
-              value={editingSchedule.operationEnd}
-              onChange={(e) =>
-                setEditingSchedule({ ...editingSchedule, operationEnd: e.target.value })
-              }
+              value={editingSchedule.dailyOperationEnd}
+              onChange={(e) => setEditingSchedule({ ...editingSchedule, dailyOperationEnd: e })}
             />
           </div>
 
