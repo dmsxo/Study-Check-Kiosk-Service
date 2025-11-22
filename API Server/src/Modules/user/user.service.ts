@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ImagesService } from '../images/images.service';
@@ -14,8 +14,15 @@ export class UserService {
     private imageService: ImagesService,
   ) {}
 
-  async create_user(createUserDto: CreateUserDto): Promise<User> {
+  async create_user(
+    createUserDto: CreateUserDto,
+    file: Express.Multer.File,
+  ): Promise<User> {
     const newStudent = this.userRepo.create({ ...createUserDto });
+    if (file) {
+      const filename = await this.imageService.uploadImage(file);
+      newStudent.profileImageFilename = filename;
+    }
     return this.userRepo.save(newStudent);
   }
 
@@ -63,5 +70,20 @@ export class UserService {
     const profile = student.profileImageFilename;
     if (profile) await this.imageService.deleteImage(profile);
     return this.userRepo.remove(student);
+  }
+
+  async getStudentIdByGrade(grade: number): Promise<number> {
+    const user_count = await this.userRepo
+      .createQueryBuilder('users')
+      .where('CAST(users.studentId AS TEXT) LIKE :id_like', {
+        id_like: `${grade}%`,
+      })
+      .getCount();
+
+    const MAX = 40;
+    const class_id = Math.floor(user_count / MAX) + 1;
+    const student_number = (user_count % MAX) + 1;
+
+    return grade * 10000 + class_id * 100 + student_number;
   }
 }

@@ -12,6 +12,7 @@ import Home from './products/HomeVeiw';
 import CheckoutModal from '../components/HomeComponenets/CheckoutModal';
 import { AuthProvider } from '../contexts/AuthContext';
 import ServerNotConnected from './products/ServerNotConnected';
+import LoginViewForEventsOnly from './auth/LoginViewForEventsOnly';
 
 function App() {
   return (
@@ -22,7 +23,7 @@ function App() {
             path="/login"
             element={
               <PublicRoute>
-                <Login />
+                <LoginViewForEventsOnly />
               </PublicRoute>
             }
           />

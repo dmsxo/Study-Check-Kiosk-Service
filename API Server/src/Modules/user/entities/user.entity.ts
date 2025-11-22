@@ -20,8 +20,8 @@ export class User {
   @Column({ unique: true, type: 'int' })
   studentId: number;
 
-  @Column({ unique: true })
-  email: string;
+  // @Column({ unique: true })
+  // email: string;
 
   @Column({ nullable: true })
   description?: string;

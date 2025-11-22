@@ -11,6 +11,7 @@ import {
   UseGuards,
   UseInterceptors,
   UploadedFile,
+  Query,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -23,14 +24,30 @@ import { FileInterceptor } from '@nestjs/platform-express';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  // @Post()
+  // async create_user(
+  //   @Body() createUserDto: CreateUserDto,
+  // ): Promise<ResponseUserDto> {
+  //   const user = await this.userService.create_user(createUserDto);
+  //   return plainToInstance(ResponseUserDto, user, {
+  //     excludeExtraneousValues: true,
+  //   });
+  // }
   @Post()
+  @UseInterceptors(FileInterceptor('image'))
   async create_user(
     @Body() createUserDto: CreateUserDto,
+    @UploadedFile() file: Express.Multer.File,
   ): Promise<ResponseUserDto> {
-    const user = await this.userService.create_user(createUserDto);
+    const user = await this.userService.create_user(createUserDto, file);
     return plainToInstance(ResponseUserDto, user, {
       excludeExtraneousValues: true,
     });
+  }
+
+  @Get('studentId')
+  async getStudentIdByGrade(@Query('grade') grade: number) {
+    return await this.userService.getStudentIdByGrade(grade);
   }
 
   @Get()

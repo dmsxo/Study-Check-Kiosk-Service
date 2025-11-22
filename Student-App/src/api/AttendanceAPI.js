@@ -54,10 +54,11 @@ export async function verifyCode(code) {
   }
 }
 
-export async function login_session(email) {
+export async function login_session(/*email */studentId) {
   try {
     const response = await api.post(`/auth/login`, {
-      email: email
+      // email: email
+      studentId: studentId
     });
     return response.data;
   } catch (error) {
@@ -65,6 +66,18 @@ export async function login_session(email) {
     throw error;
   }
 }
+
+// export async function login_session(email) {
+//   try {
+//     const response = await api.post(`/auth/login`, {
+//       email: email
+//     });
+//     return response.data;
+//   } catch (error) {
+//     console.error("Login failed", error);
+//     throw error;
+//   }
+// }
 
 export async function logout_session() {
   try {

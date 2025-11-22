@@ -20,9 +20,13 @@ export class AuthService {
   ) {}
 
   async validateUser(loginDto: LoginDto) {
-    const { email } = loginDto;
+    // const { email } = loginDto;
 
-    const user = await this.userRepo.findOne({ where: { email } });
+    // const user = await this.userRepo.findOne({ where: { email } });
+
+    const { studentId } = loginDto;
+
+    const user = await this.userRepo.findOne({ where: { studentId } });
 
     if (!user) throw new UnauthorizedException('User not found');
 
