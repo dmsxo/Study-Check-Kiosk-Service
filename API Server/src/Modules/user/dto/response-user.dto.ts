@@ -1,10 +1,10 @@
-import { IsEmail, IsNumber, IsString } from 'class-validator';
+import { IsEmail, IsInt, IsNumber, IsString } from 'class-validator';
 import { Attendance } from '../../attendance/entities/attendance.entity';
 import { Expose, Exclude } from 'class-transformer';
 
 export class ResponseUserDto {
   @Expose()
-  @IsNumber()
+  @IsInt()
   id: number;
   @Expose()
   @IsString()
@@ -12,10 +12,10 @@ export class ResponseUserDto {
   @Expose()
   @IsNumber()
   studentId: number;
-  @Expose()
-  @IsString()
-  @IsEmail()
-  email: string;
+  // @Expose()
+  // @IsString()
+  // @IsEmail()
+  // email: string;
 
   @Expose()
   @IsString()

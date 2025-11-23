@@ -39,8 +39,8 @@ export function AuthProvider({ children }) {
     refetchUser();
   }, []);
 
-  const login = async (email) => {
-    const res = await login_session(email);
+  const login = async (/*email*/ studentId) => {
+    const res = await login_session(/*email*/ studentId);
     setIsLoggedIn(true);
     setUser(res);
     await refetchUser();

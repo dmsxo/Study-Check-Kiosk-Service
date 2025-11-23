@@ -16,6 +16,10 @@ export default defineConfig({
         '@renderer': resolve('src/renderer/src')
       }
     },
-    plugins: [tailwindcss(), react()]
+    plugins: [tailwindcss(), react()],
+    server: {
+      port: 5000, // 원하는 포트로 바꾸기
+      strictPort: true, // 포트 이미 사용 중이면 바로 에러
+    },
   }
 })

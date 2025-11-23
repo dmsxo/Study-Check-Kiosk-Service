@@ -13,11 +13,7 @@ export class UpdateOverrideScheduleDto {
 
   @IsArray()
   @IsString({ each: true })
-  add?: string[];
-
-  @IsArray()
-  @IsString({ each: true })
-  remove?: string[];
+  descriptions: string[];
 
   @ValidateNested()
   @Type(() => TypeSchedule)

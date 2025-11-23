@@ -15,6 +15,7 @@ import { UpdateDefaultScheduleDto } from './dto/default/update-default-schedule.
 import { CreateOverrideScheduleDto } from './dto/override/create-override-schedule.dto';
 import { UpdateOverrideScheduleDto } from './dto/override/update-override-schedule.dto';
 import { QueryOverrideScheduleDto } from './dto/override/query-override-schedule.dto';
+import { DeleteResult } from 'typeorm';
 
 @Controller('schedule')
 export class ScheduleController {
@@ -58,8 +59,10 @@ export class ScheduleController {
   }
 
   @Delete('override')
-  async deleteOverrideSchedule() {
-    return await this.scheduleService.deleteOverrideSchedule();
+  async deleteOverrideSchedule(
+    @Query('date') date: string,
+  ): Promise<DeleteResult> {
+    return await this.scheduleService.deleteOverrideSchedule(date);
   }
 
   @Get()

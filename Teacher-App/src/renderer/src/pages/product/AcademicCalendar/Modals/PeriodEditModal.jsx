@@ -2,26 +2,30 @@ import DateSelecter from '../../../../components/UI/DateSelecter';
 import { useState } from 'react';
 import { Plus, Trash2, Save, X } from 'lucide-react';
 import Dropdown from '../../../../components/UI/Dropdown';
+import TimePicker from '../../../../components/UI/TimePicker';
+import GradeCapaticy from '../../../../components/AcademicCalendar/GradeCapacity';
+import GradeCapacity from '../../../../components/AcademicCalendar/GradeCapacity';
 
 const PeriodEditModal = ({ schedule, onSave, onClose }) => {
   const [editingSchedule, setEditingSchedule] = useState(schedule);
-  const grades = [1, 2, 3];
 
   const addAdditionalApplication = () => {
     setEditingSchedule({
       ...editingSchedule,
-      additionalApplications: [...editingSchedule.additionalApplications, { start: '', end: '' }]
+      additionalRegistration: [...editingSchedule.additionalRegistration, { start: '', end: '' }]
     });
   };
 
   const removeAdditionalApplication = (index) => {
     setEditingSchedule({
       ...editingSchedule,
-      additionalApplications: editingSchedule.additionalApplications.filter(
+      additionalRegistration: editingSchedule.additionalRegistration.filter(
         (_, idx) => idx !== index
       )
     });
   };
+
+  console.log(editingSchedule);
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -42,36 +46,48 @@ const PeriodEditModal = ({ schedule, onSave, onClose }) => {
             <Dropdown
               title="학기"
               options={['1학기', '2학기']}
-              placeholder="학기 선택"
-              onChange={(e) => setEditingSchedule({ ...editingSchedule, semester: e })}
+              placeholder={`${editingSchedule.termId}학기`}
+              onChange={(e) =>
+                setEditingSchedule({ ...editingSchedule, termId: Number(e[0].replace('학기', '')) })
+              }
               multiSelect={false}
             />
             <Dropdown
               title="종류"
               options={['아침 독서', '야간 자율 학습']}
-              placeholder={editingSchedule.type}
-              onChange={(e) => setEditingSchedule({ ...editingSchedule, type: e })}
+              placeholder={editingSchedule.studyType === 'night' ? '야간 자율 학습' : '아침 독서'}
+              onChange={(e) =>
+                setEditingSchedule({
+                  ...editingSchedule,
+                  studyType: e[0].trim() === '아침 독서'.trim() ? 'morning' : 'night'
+                })
+              }
               multiSelect={false}
             />
           </div>
           {/* 대상 학년 선택 */}
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">대상 학년</label>
-            <div className="flex gap-3">
-              {grades.map((grade) => (
-                <label key={grade} className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={editingSchedule.grades.includes(grade)}
+            <label className="block text-sm font-m edium text-gray-700 mb-2">대상 학년</label>
+            <div className="grid grid-cols-3 gap-4 justify-center">
+              {editingSchedule.grades.map((gradeItem) => (
+                <label key={gradeItem.grade} className="cursor-pointer">
+                  <GradeCapacity
+                    title={`${gradeItem.grade}학년`}
+                    value={
+                      editingSchedule.grades.find((g) => g.grade === gradeItem.grade)?.capacity ??
+                      ''
+                    }
                     onChange={(e) => {
-                      const newGrades = e.target.checked
-                        ? [...editingSchedule.grades, grade]
-                        : editingSchedule.grades.filter((g) => g !== grade);
-                      setEditingSchedule({ ...editingSchedule, grades: newGrades });
+                      const newCapacity = Number(e);
+
+                      setEditingSchedule((prev) => ({
+                        ...prev,
+                        grades: prev.grades.map((g) =>
+                          g.grade === gradeItem.grade ? { ...g, capacity: newCapacity } : g
+                        )
+                      }));
                     }}
-                    className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
                   />
-                  <span className="text-sm text-gray-700">{grade}학년</span>
                 </label>
               ))}
             </div>
@@ -81,16 +97,28 @@ const PeriodEditModal = ({ schedule, onSave, onClose }) => {
           <div className="grid grid-cols-2 gap-4 mb-4">
             <DateSelecter
               title={'신청 시작일'}
-              value={editingSchedule.applicationStart}
+              value={editingSchedule.registration.start}
               onChange={(e) =>
-                setEditingSchedule({ ...editingSchedule, applicationStart: e.target.value })
+                setEditingSchedule({
+                  ...editingSchedule,
+                  registration: {
+                    ...editingSchedule.registration,
+                    start: e.target.value
+                  }
+                })
               }
             />
             <DateSelecter
               title={'신청 종료일'}
-              value={editingSchedule.applicationEnd}
+              value={editingSchedule.registration.end}
               onChange={(e) =>
-                setEditingSchedule({ ...editingSchedule, applicationEnd: e.target.value })
+                setEditingSchedule({
+                  ...editingSchedule,
+                  registration: {
+                    ...editingSchedule.registration,
+                    end: e.target.value
+                  }
+                })
               }
             />
           </div>
@@ -98,33 +126,57 @@ const PeriodEditModal = ({ schedule, onSave, onClose }) => {
           <div className="grid grid-cols-2 gap-4 mb-4">
             <DateSelecter
               title={'운영 시작일'}
-              value={editingSchedule.operationStart}
+              value={editingSchedule.operation.start}
               onChange={(e) =>
-                setEditingSchedule({ ...editingSchedule, operationStart: e.target.value })
+                setEditingSchedule({
+                  ...editingSchedule,
+                  operation: {
+                    ...editingSchedule.operation,
+                    start: e.target.value
+                  }
+                })
               }
             />
             <DateSelecter
               title={'운영 종료일'}
-              value={editingSchedule.operationEnd}
+              value={editingSchedule.operation.end}
               onChange={(e) =>
-                setEditingSchedule({ ...editingSchedule, operationEnd: e.target.value })
+                setEditingSchedule({
+                  ...editingSchedule,
+                  operation: {
+                    ...editingSchedule.operation,
+                    end: e.target.value
+                  }
+                })
               }
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <DateSelecter
+            <TimePicker
               title={'운영 시작 시간'}
-              value={editingSchedule.operationStart}
+              value={editingSchedule.dailyOperation.start}
               onChange={(e) =>
-                setEditingSchedule({ ...editingSchedule, operationStart: e.target.value })
+                setEditingSchedule({
+                  ...editingSchedule,
+                  dailyOperation: {
+                    ...editingSchedule.dailyOperation,
+                    start: e
+                  }
+                })
               }
             />
-            <DateSelecter
+            <TimePicker
               title={'운영 종료 시간'}
-              value={editingSchedule.operationEnd}
+              value={editingSchedule.dailyOperation.end}
               onChange={(e) =>
-                setEditingSchedule({ ...editingSchedule, operationEnd: e.target.value })
+                setEditingSchedule({
+                  ...editingSchedule,
+                  dailyOperation: {
+                    ...editingSchedule.dailyOperation,
+                    end: e
+                  }
+                })
               }
             />
           </div>
@@ -140,26 +192,26 @@ const PeriodEditModal = ({ schedule, onSave, onClose }) => {
                 추가
               </button>
             </div>
-            {editingSchedule.additionalApplications.length > 0 ? (
+            {editingSchedule.additionalRegistration.length > 0 ? (
               <>
-                {editingSchedule.additionalApplications.map((app, idx) => (
+                {editingSchedule.additionalRegistration.map((app, idx) => (
                   <div key={idx} className="grid grid-cols-[1fr_1fr_auto] gap-2">
                     <DateSelecter
                       title={''}
                       value={app.start}
                       onChange={(e) => {
-                        const newApps = [...editingSchedule.additionalApplications];
+                        const newApps = [...editingSchedule.additionalRegistration];
                         newApps[idx].start = e.target.value;
-                        setEditingSchedule({ ...editingSchedule, additionalApplications: newApps });
+                        setEditingSchedule({ ...editingSchedule, additionalRegistration: newApps });
                       }}
                     />
                     <DateSelecter
                       title={''}
                       value={app.end}
                       onChange={(e) => {
-                        const newApps = [...editingSchedule.additionalApplications];
+                        const newApps = [...editingSchedule.additionalRegistration];
                         newApps[idx].end = e.target.value;
-                        setEditingSchedule({ ...editingSchedule, additionalApplications: newApps });
+                        setEditingSchedule({ ...editingSchedule, additionalRegistration: newApps });
                       }}
                     />
                     <button
