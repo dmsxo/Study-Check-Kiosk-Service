@@ -21,6 +21,7 @@
     "@electron-toolkit/preload": "^3.0.2",
     "@electron-toolkit/utils": "^4.0.0",
     "@tailwindcss/vite": "^4.1.17",
+    "axios": "^1.13.2",
     "classnames": "^2.5.1",
     "dayjs": "^1.11.19",
     "electron-updater": "^6.3.9",

@@ -4,27 +4,26 @@ import { useState } from 'react';
 const OverrideEditModal = ({ override, onSave, onClose }) => {
   const [editingOverride, setEditingOverride] = useState(override);
   const grades = [1, 2, 3];
-  const types = ['아침 독서', '야간 자율 학습'];
+  const types = ['morning', 'night'];
+  const typeLabels = { morning: '아침 독서', night: '야간 자율 학습' };
 
   const toggleGradeForType = (type, grade) => {
-    setEditingOverride((prev) => {
-      const currentGrades = prev.interruptions[type] || [];
-      const newGrades = currentGrades.includes(grade)
-        ? currentGrades.filter((g) => g !== grade)
-        : [...currentGrades, grade];
-
-      return {
-        ...prev,
-        interruptions: {
-          ...prev.interruptions,
-          [type]: newGrades
+    const gradeKey = `grade${grade}`;
+    setEditingOverride((prev) => ({
+      ...prev,
+      targets: {
+        ...prev.targets,
+        [type]: {
+          ...prev.targets[type],
+          [gradeKey]: !prev.targets[type][gradeKey]
         }
-      };
-    });
+      }
+    }));
   };
 
   const isGradeSelected = (type, grade) => {
-    return editingOverride.interruptions[type]?.includes(grade) || false;
+    const gradeKey = `grade${grade}`;
+    return editingOverride.targets[type][gradeKey];
   };
 
   return (
@@ -57,8 +56,10 @@ const OverrideEditModal = ({ override, onSave, onClose }) => {
               <label className="block text-sm font-medium text-gray-700 mb-2">사유</label>
               <input
                 type="text"
-                value={editingOverride.reason}
-                onChange={(e) => setEditingOverride({ ...editingOverride, reason: e.target.value })}
+                value={editingOverride.description}
+                onChange={(e) =>
+                  setEditingOverride({ ...editingOverride, description: e.target.value })
+                }
                 placeholder="예: 중간고사, 수능일"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
               />
@@ -67,14 +68,14 @@ const OverrideEditModal = ({ override, onSave, onClose }) => {
 
           <div className="mb-6">
             <label className="block text-sm font-medium text-gray-700 mb-3">
-              중단할 자율학습 및 학년
+              운영할 자율학습 및 학년
             </label>
 
             <div className="space-y-3">
               {types.map((type) => (
                 <div key={type} className="border border-gray-200 rounded-lg p-4">
                   <div className="flex items-center gap-2 mb-3">
-                    <span className="font-medium text-gray-900">{type}</span>
+                    <span className="font-medium text-gray-900">{typeLabels[type]}</span>
                   </div>
 
                   <div className="flex gap-4">

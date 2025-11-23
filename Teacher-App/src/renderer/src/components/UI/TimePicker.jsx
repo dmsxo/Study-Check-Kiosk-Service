@@ -13,8 +13,6 @@ export default function TimePicker({ title, value, onChange }) {
   const [minute, setMinute] = useState(m);
   const [period, setPeriod] = useState(A);
 
-  console.log(hour, minute, period);
-
   const hours = Array.from({ length: 12 }, (_, i) => (i + 1).toString().padStart(2, '0'));
   const minutes = Array.from({ length: 60 }, (_, i) => i.toString().padStart(2, '0'));
 

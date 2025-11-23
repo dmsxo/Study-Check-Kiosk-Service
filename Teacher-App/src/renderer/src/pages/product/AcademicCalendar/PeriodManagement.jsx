@@ -9,16 +9,16 @@ function PeriodManagement({ schedules, setSchedules }) {
 
   const addNewSchedule = () => {
     const newSchedule = {
-      id: Date.now(),
-      semester: '',
-      type: '야간 자율 학습',
-      grades: [],
-      applicationStart: '',
-      applicationEnd: '',
-      operationStart: '',
-      operationEnd: '',
-      dailyOperationStart: '',
-      dailyOperationEnd: '',
+      term_id: 1,
+      type: 'night',
+      grades: [
+        { grade: 1, capacity: null },
+        { grade: 2, capacity: null },
+        { grade: 3, capacity: null }
+      ],
+      application: { start: '', end: '' },
+      operation: { start: '', end: '' },
+      dailyOperation: { start: '', end: '' },
       additionalApplications: []
     };
     setEditingSchedule(newSchedule);
@@ -58,18 +58,18 @@ function PeriodManagement({ schedules, setSchedules }) {
 
       {/* 자율학습 운영 기간 view */}
       <div className="space-y-3 mb-3 overflow-y-auto h-72">
-        {schedules.map((schedule) => (
-          <div key={schedule.id} className="border border-gray-200 rounded-lg p-4">
+        {schedules.map((schedule, idx) => (
+          <div key={idx} className="border border-gray-200 rounded-lg p-4">
             <div className="flex justify-between items-start mb-3">
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="font-semibold text-gray-900">{schedule.semester}</span>
+                  <span className="font-semibold text-gray-900">{schedule.term_id}학기</span>
                   <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded">
-                    {schedule.type}
+                    {schedule.type === 'night' ? '야간 자율' : '아침 독서'}
                   </span>
                 </div>
                 <p className="text-sm text-gray-600">
-                  대상: {schedule.grades.map((g) => `${g}학년`).join(', ')}
+                  대상: {schedule.grades.map((g) => `${g.grade}학년`).join(', ')}
                 </p>
               </div>
               <div className="flex gap-2">
@@ -94,13 +94,13 @@ function PeriodManagement({ schedules, setSchedules }) {
               <div>
                 <p className="text-gray-600 mb-1">신청 기간</p>
                 <p className="font-medium text-gray-900">
-                  {schedule.applicationStart} ~ {schedule.applicationEnd}
+                  {schedule.application.start} ~ {schedule.application.end}
                 </p>
               </div>
               <div>
                 <p className="text-gray-600 mb-1">운영 기간</p>
                 <p className="font-medium text-gray-900">
-                  {schedule.operationStart} ~ {schedule.operationEnd}
+                  {schedule.operation.start} ~ {schedule.operation.end}
                 </p>
               </div>
             </div>

@@ -3,10 +3,11 @@ import { useState } from 'react';
 import { Plus, Trash2, Save, X } from 'lucide-react';
 import Dropdown from '../../../../components/UI/Dropdown';
 import TimePicker from '../../../../components/UI/TimePicker';
+import GradeCapaticy from '../../../../components/AcademicCalendar/GradeCapacity';
+import GradeCapacity from '../../../../components/AcademicCalendar/GradeCapacity';
 
 const PeriodEditModal = ({ schedule, onSave, onClose }) => {
   const [editingSchedule, setEditingSchedule] = useState(schedule);
-  const grades = [1, 2, 3];
 
   const addAdditionalApplication = () => {
     setEditingSchedule({
@@ -43,36 +44,46 @@ const PeriodEditModal = ({ schedule, onSave, onClose }) => {
             <Dropdown
               title="학기"
               options={['1학기', '2학기']}
-              placeholder="학기 선택"
-              onChange={(e) => setEditingSchedule({ ...editingSchedule, semester: e })}
+              placeholder={`${editingSchedule.term_id}학기`}
+              onChange={(e) => setEditingSchedule({ ...editingSchedule, term_id: Number(e[0]) })}
               multiSelect={false}
             />
             <Dropdown
               title="종류"
               options={['아침 독서', '야간 자율 학습']}
-              placeholder={editingSchedule.type}
-              onChange={(e) => setEditingSchedule({ ...editingSchedule, type: e })}
+              placeholder={editingSchedule.type === 'night' ? '야간 자율 학습' : '아침 독서'}
+              onChange={(e) =>
+                setEditingSchedule({
+                  ...editingSchedule,
+                  type: e === '아침독서' ? 'morning' : 'night'
+                })
+              }
               multiSelect={false}
             />
           </div>
           {/* 대상 학년 선택 */}
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">대상 학년</label>
-            <div className="flex gap-3">
-              {grades.map((grade) => (
-                <label key={grade} className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={editingSchedule.grades.includes(grade)}
+            <label className="block text-sm font-m edium text-gray-700 mb-2">대상 학년</label>
+            <div className="grid grid-cols-3 gap-4 justify-center">
+              {editingSchedule.grades.map((gradeItem) => (
+                <label key={gradeItem.grade} className="cursor-pointer">
+                  <GradeCapacity
+                    title={`${gradeItem.grade}학년`}
+                    value={
+                      editingSchedule.grades.find((g) => g.grade === gradeItem.grade)?.capacity ??
+                      ''
+                    }
                     onChange={(e) => {
-                      const newGrades = e.target.checked
-                        ? [...editingSchedule.grades, grade]
-                        : editingSchedule.grades.filter((g) => g !== grade);
-                      setEditingSchedule({ ...editingSchedule, grades: newGrades });
+                      const newCapacity = Number(e);
+
+                      setEditingSchedule((prev) => ({
+                        ...prev,
+                        grades: prev.grades.map((g) =>
+                          g.grade === gradeItem.grade ? { ...g, capacity: newCapacity } : g
+                        )
+                      }));
                     }}
-                    className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
                   />
-                  <span className="text-sm text-gray-700">{grade}학년</span>
                 </label>
               ))}
             </div>
@@ -82,16 +93,28 @@ const PeriodEditModal = ({ schedule, onSave, onClose }) => {
           <div className="grid grid-cols-2 gap-4 mb-4">
             <DateSelecter
               title={'신청 시작일'}
-              value={editingSchedule.applicationStart}
+              value={editingSchedule.application.start}
               onChange={(e) =>
-                setEditingSchedule({ ...editingSchedule, applicationStart: e.target.value })
+                setEditingSchedule({
+                  ...editingSchedule,
+                  application: {
+                    ...editingSchedule.application,
+                    start: e.target.value
+                  }
+                })
               }
             />
             <DateSelecter
               title={'신청 종료일'}
-              value={editingSchedule.applicationEnd}
+              value={editingSchedule.application.end}
               onChange={(e) =>
-                setEditingSchedule({ ...editingSchedule, applicationEnd: e.target.value })
+                setEditingSchedule({
+                  ...editingSchedule,
+                  application: {
+                    ...editingSchedule.application,
+                    end: e.target.value
+                  }
+                })
               }
             />
           </div>
@@ -99,16 +122,28 @@ const PeriodEditModal = ({ schedule, onSave, onClose }) => {
           <div className="grid grid-cols-2 gap-4 mb-4">
             <DateSelecter
               title={'운영 시작일'}
-              value={editingSchedule.operationStart}
+              value={editingSchedule.operation.start}
               onChange={(e) =>
-                setEditingSchedule({ ...editingSchedule, operationStart: e.target.value })
+                setEditingSchedule({
+                  ...editingSchedule,
+                  operation: {
+                    ...editingSchedule.operation,
+                    start: e.target.value
+                  }
+                })
               }
             />
             <DateSelecter
               title={'운영 종료일'}
-              value={editingSchedule.operationEnd}
+              value={editingSchedule.operation.end}
               onChange={(e) =>
-                setEditingSchedule({ ...editingSchedule, operationEnd: e.target.value })
+                setEditingSchedule({
+                  ...editingSchedule,
+                  operation: {
+                    ...editingSchedule.operation,
+                    end: e.target.value
+                  }
+                })
               }
             />
           </div>
@@ -116,13 +151,29 @@ const PeriodEditModal = ({ schedule, onSave, onClose }) => {
           <div className="grid grid-cols-2 gap-4 mb-4">
             <TimePicker
               title={'운영 시작 시간'}
-              value={editingSchedule.dailyOperationStart}
-              onChange={(e) => setEditingSchedule({ ...editingSchedule, operationStart: e })}
+              value={editingSchedule.dailyOperation.start}
+              onChange={(e) =>
+                setEditingSchedule({
+                  ...editingSchedule,
+                  dailyOperation: {
+                    ...editingSchedule.dailyOperation,
+                    start: e
+                  }
+                })
+              }
             />
             <TimePicker
               title={'운영 종료 시간'}
-              value={editingSchedule.dailyOperationEnd}
-              onChange={(e) => setEditingSchedule({ ...editingSchedule, dailyOperationEnd: e })}
+              value={editingSchedule.dailyOperation.end}
+              onChange={(e) =>
+                setEditingSchedule({
+                  ...editingSchedule,
+                  dailyOperation: {
+                    ...editingSchedule.dailyOperation,
+                    end: e
+                  }
+                })
+              }
             />
           </div>
 

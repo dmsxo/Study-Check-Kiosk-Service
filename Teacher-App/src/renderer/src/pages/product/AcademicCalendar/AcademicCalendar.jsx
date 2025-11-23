@@ -10,15 +10,25 @@ function AcademicCalendar() {
   const [schedules, setSchedules] = useState([
     {
       id: 1,
-      semester: '1학기',
-      type: '야간 자율',
-      grades: [1, 2, 3],
-      applicationStart: '2025-03-01',
-      applicationEnd: '2025-03-07',
-      operationStart: '2025-03-10',
-      operationEnd: '2025-07-18',
-      dailyOperationStart: '18:00:00',
-      dailyOperationEnd: '21:00:00',
+      term_id: 1,
+      type: 'night',
+      grades: [
+        { grade: 1, capacity: 30 },
+        { grade: 2, capacity: 20 },
+        { grade: 3, capacity: 20 }
+      ],
+      application: {
+        start: '2025-03-01',
+        end: '2025-03-07'
+      },
+      operation: {
+        start: '2025-03-10',
+        end: '2025-07-18'
+      },
+      dailyOperation: {
+        start: '18:00:00',
+        end: '21:00:00'
+      },
       additionalApplications: []
     }
   ]);
@@ -27,30 +37,53 @@ function AcademicCalendar() {
     {
       id: 1,
       date: '2025-05-15',
-      reason: '중간고사',
-      interruptions: {
-        '아침 독서': [1, 2, 3],
-        '야간 자율 학습': [1, 2, 3]
+      description: '중간고사',
+      targets: {
+        morning: { grade1: false, grade2: false, grade3: false },
+        night: { grade1: false, grade2: false, grade3: false }
       }
     },
     {
       id: 2,
       date: '2025-11-13',
-      reason: '수능일',
-      interruptions: {
-        '아침 독서': [1, 2, 3],
-        '야간 자율 학습': [1, 2, 3]
+      description: '수능일',
+      targets: {
+        morning: { grade1: false, grade2: false, grade3: false },
+        night: { grade1: false, grade2: false, grade3: false }
       }
     }
   ]);
 
-  const [weeklySchedule, setWeeklySchedule] = useState([
-    { morning: [1, 2], night: [1, 2, 3] }, // 월
-    { morning: [1, 2], night: [1, 2, 3] }, // 화
-    { morning: [1, 2], night: [1, 2, 3] }, // 수
-    { morning: [1, 2], night: [1, 2, 3] }, // 목
-    { morning: [1, 2], night: [] } // 금
-  ]);
+  const [weeklySchedule, setWeeklySchedule] = useState({
+    SUN: {
+      morning: { grade1: true, grade2: true, grade3: false },
+      night: { grade1: false, grade2: false, grade3: true }
+    },
+    MON: {
+      morning: { grade1: true, grade2: false, grade3: true },
+      night: { grade1: false, grade2: true, grade3: false }
+    },
+    TUES: {
+      morning: { grade1: true, grade2: true, grade3: true },
+      night: { grade1: false, grade2: false, grade3: false }
+    },
+    WED: {
+      morning: { grade1: true, grade2: true, grade3: false },
+      night: { grade1: true, grade2: false, grade3: true }
+    },
+    THUR: {
+      morning: { grade1: false, grade2: true, grade3: true },
+      night: { grade1: true, grade2: false, grade3: false }
+    },
+    FRI: {
+      morning: { grade1: true, grade2: false, grade3: true },
+      night: { grade1: false, grade2: true, grade3: true }
+    },
+    SAT: {
+      morning: { grade1: false, grade2: true, grade3: false },
+      night: { grade1: true, grade2: false, grade3: true }
+    }
+  });
 
   return (
     <>
