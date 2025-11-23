@@ -1,29 +1,42 @@
 import React, { useState } from 'react';
 import { Clock, ChevronDown } from 'lucide-react';
 import dayjs from 'dayjs';
+import timezone from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
 
-// day js 객체
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
 export default function TimePicker({ title, value, onChange }) {
-  const [h, m, A] = dayjs
-    .tz(dayjs().format('YYYY-MM-DD') + ' ' + value, 'YYYY-MM-DD HH:mm:ss', 'Asia/Seoul')
-    .format('hh:mm:A')
-    .split(':');
+  // value: "HH:mm:ss" 형식
+  const time = value
+    ? dayjs.tz(`${dayjs().format('YYYY-MM-DD')} ${value}`, 'YYYY-MM-DD HH:mm:ss', 'Asia/Seoul')
+    : dayjs().tz('Asia/Seoul'); // value 없으면 현재 시간
+  const [hour, setHour] = useState(time.format('hh')); // 12시간제
+  const [minute, setMinute] = useState(time.format('mm'));
+  const [period, setPeriod] = useState(time.format('A')); // AM/PM
   const [isOpen, setIsOpen] = useState(false);
-  const [hour, setHour] = useState(h);
-  const [minute, setMinute] = useState(m);
-  const [period, setPeriod] = useState(A);
 
   const hours = Array.from({ length: 12 }, (_, i) => (i + 1).toString().padStart(2, '0'));
   const minutes = Array.from({ length: 60 }, (_, i) => i.toString().padStart(2, '0'));
-
   const displayTime = `${hour}:${minute} ${period}`;
 
+  // 시간을 24시간제로 변환
+  const getHour24 = () => {
+    const h = parseInt(hour, 10);
+    if (period === 'AM') return h === 12 ? 0 : h;
+    return h === 12 ? 12 : h + 12;
+  };
+
   const close = () => {
+    const hour24 = getHour24();
+    const minuteNum = parseInt(minute, 10);
+
     onChange(
       dayjs()
         .tz('Asia/Seoul')
-        .hour(hour + (period === 'PM' ? 12 : 0))
-        .minute(minute)
+        .hour(hour24)
+        .minute(minuteNum)
         .second(0)
         .millisecond(0)
         .format('HH:mm:ss')

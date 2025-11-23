@@ -163,12 +163,8 @@ export class ScheduleService {
   }
 
   async updateOverrideSchedule(updatedOverrideDto: UpdateOverrideScheduleDto) {
-    const {
-      date,
-      add = [],
-      remove = [],
-      targets,
-    }: UpdateOverrideScheduleDto = updatedOverrideDto;
+    const { date, descriptions, targets }: UpdateOverrideScheduleDto =
+      updatedOverrideDto;
 
     // 날짜에 맞는 모든 엔티티 불러오기
     const schedules = await this.overrideScheduleRepo.find({ where: { date } });
@@ -176,17 +172,13 @@ export class ScheduleService {
     const updatedSchedules: OverrideSchedule[] = [];
 
     for (const schedule of schedules) {
-      // remove 처리
-      remove.forEach((desc) => {
-        const index = schedule.descriptions.indexOf(desc);
-        if (index !== -1) schedule.descriptions.splice(index, 1);
-      });
+      // descriptions 완전 교체
+      schedule.descriptions = descriptions;
 
-      // add 처리
-      schedule.descriptions.push(...add);
-
+      // isOpen 업데이트
       schedule.isOpen = targets[schedule.studyType][`grade${schedule.grade}`];
 
+      // descriptions가 비어있으면 삭제
       if (schedule.descriptions.length === 0) {
         await this.overrideScheduleRepo.remove(schedule);
       } else {
@@ -198,5 +190,7 @@ export class ScheduleService {
     return await this.overrideScheduleRepo.save(updatedSchedules);
   }
 
-  async deleteOverrideSchedule() {}
+  async deleteOverrideSchedule(date: string): Promise<DeleteResult> {
+    return await this.overrideScheduleRepo.delete({ date });
+  }
 }

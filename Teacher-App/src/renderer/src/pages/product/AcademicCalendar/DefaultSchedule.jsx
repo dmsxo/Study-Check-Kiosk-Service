@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import LayoutContainer from '../../../components/UI/LayoutContainer';
+import { UpdateDefaultSchedule } from '../../../api/AcademicCalendarAPI';
+import { Loader2 } from 'lucide-react';
 
 function DefaultSchedule({ weeklySchedule, setWeeklySchedule }) {
   const weekDays = ['MON', 'TUES', 'WED', 'THUR', 'FRI']; // 키 이름으로 변경
@@ -72,6 +74,18 @@ function DefaultSchedule({ weeklySchedule, setWeeklySchedule }) {
     return weeklySchedule[dayKey]?.[period]?.[grade.key] || false;
   };
 
+  const [isSaving, setIsSaveing] = useState(false);
+
+  const saveSchedule = () => {
+    if (isChanged) {
+      setIsSaveing(true);
+      UpdateDefaultSchedule(weeklySchedule).then(() => {
+        setIsSaveing(false);
+        setIsChanged(false);
+      });
+    }
+  };
+
   return (
     <LayoutContainer className="mb-5 space-y-5 flex-6 min-w-lg">
       <h2 className="font-semibold text-2xl">요일별 기본 운영</h2>
@@ -115,8 +129,10 @@ function DefaultSchedule({ weeklySchedule, setWeeklySchedule }) {
       </div>
 
       <button
-        className={`w-full ${isChanged ? 'bg-gray-900' : 'bg-gray-400'} text-white rounded-xl p-2`}
+        className={`flex items-center justify-center w-full ${isChanged ? 'bg-gray-900' : 'bg-gray-400'} text-white rounded-xl p-2 gap-2`}
+        onClick={saveSchedule}
       >
+        {isSaving && <Loader2 className="h-5 w-5 animate-spin" />}
         저장하기
       </button>
     </LayoutContainer>

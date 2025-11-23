@@ -1,23 +1,28 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import CalendarUI from '../../../components/Calendar';
 import ToggleGroup from '../../../components/AcademicCalendar/Toggles';
 import LayoutContainer from '../../../components/UI/LayoutContainer';
 import PeriodManagement from './PeriodManagement';
 import OverrideSchedule from './OverrideSchedule';
 import DefaultSchedule from './DefaultSchedule';
+import {
+  getOverrideSchedulesByGroup,
+  getPeriodsByGroup,
+  getTransformedDefaultSchedule
+} from '../../../helpers/AcademicCalendar.helper';
 
 function AcademicCalendar() {
   const [schedules, setSchedules] = useState([
     {
       id: 1,
-      term_id: 1,
-      type: 'night',
+      termId: 1,
+      studyType: 'night',
       grades: [
         { grade: 1, capacity: 30 },
         { grade: 2, capacity: 20 },
         { grade: 3, capacity: 20 }
       ],
-      application: {
+      registration: {
         start: '2025-03-01',
         end: '2025-03-07'
       },
@@ -29,7 +34,7 @@ function AcademicCalendar() {
         start: '18:00:00',
         end: '21:00:00'
       },
-      additionalApplications: []
+      additionalRegistration: []
     }
   ]);
 
@@ -37,7 +42,7 @@ function AcademicCalendar() {
     {
       id: 1,
       date: '2025-05-15',
-      description: '중간고사',
+      descriptions: ['중간고사'],
       targets: {
         morning: { grade1: false, grade2: false, grade3: false },
         night: { grade1: false, grade2: false, grade3: false }
@@ -46,7 +51,7 @@ function AcademicCalendar() {
     {
       id: 2,
       date: '2025-11-13',
-      description: '수능일',
+      descriptions: ['수능일'],
       targets: {
         morning: { grade1: false, grade2: false, grade3: false },
         night: { grade1: false, grade2: false, grade3: false }
@@ -56,34 +61,68 @@ function AcademicCalendar() {
 
   const [weeklySchedule, setWeeklySchedule] = useState({
     SUN: {
-      morning: { grade1: true, grade2: true, grade3: false },
-      night: { grade1: false, grade2: false, grade3: true }
+      morning: { grade1: false, grade2: false, grade3: false },
+      night: { grade1: false, grade2: false, grade3: false }
     },
     MON: {
-      morning: { grade1: true, grade2: false, grade3: true },
-      night: { grade1: false, grade2: true, grade3: false }
+      morning: { grade1: false, grade2: false, grade3: false },
+      night: { grade1: false, grade2: false, grade3: false }
     },
     TUES: {
-      morning: { grade1: true, grade2: true, grade3: true },
+      morning: { grade1: false, grade2: false, grade3: false },
       night: { grade1: false, grade2: false, grade3: false }
     },
     WED: {
-      morning: { grade1: true, grade2: true, grade3: false },
-      night: { grade1: true, grade2: false, grade3: true }
+      morning: { grade1: false, grade2: false, grade3: false },
+      night: { grade1: false, grade2: false, grade3: false }
     },
     THUR: {
-      morning: { grade1: false, grade2: true, grade3: true },
-      night: { grade1: true, grade2: false, grade3: false }
+      morning: { grade1: false, grade2: false, grade3: false },
+      night: { grade1: false, grade2: false, grade3: false }
     },
     FRI: {
-      morning: { grade1: true, grade2: false, grade3: true },
-      night: { grade1: false, grade2: true, grade3: true }
+      morning: { grade1: false, grade2: false, grade3: false },
+      night: { grade1: false, grade2: false, grade3: false }
     },
     SAT: {
-      morning: { grade1: false, grade2: true, grade3: false },
-      night: { grade1: true, grade2: false, grade3: true }
+      morning: { grade1: false, grade2: false, grade3: false },
+      night: { grade1: false, grade2: false, grade3: false }
     }
   });
+  getOverrideSchedulesByGroup();
+
+  useEffect(() => {
+    async function loadPeriods() {
+      try {
+        const data = await getPeriodsByGroup();
+        setSchedules(data);
+        console.log(schedules);
+      } catch (error) {
+        console.error('Failed to load periods:', error);
+      }
+    }
+
+    async function loadDefaultSchedule(params) {
+      try {
+        const data = await getTransformedDefaultSchedule();
+        setWeeklySchedule(data);
+      } catch (error) {
+        console.error('Failed to load default schedule:', error);
+      }
+    }
+
+    async function loadOverrideSchedules() {
+      try {
+        const data = await getOverrideSchedulesByGroup();
+        setOverrides(data);
+      } catch (error) {
+        console.error('Failed to load override schedule:', error);
+      }
+    }
+    loadPeriods();
+    loadDefaultSchedule();
+    loadOverrideSchedules();
+  }, []);
 
   return (
     <>

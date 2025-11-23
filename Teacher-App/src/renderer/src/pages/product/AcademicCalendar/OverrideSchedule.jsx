@@ -15,7 +15,7 @@ function OverrideSchedule({ overrides, setOverrides }) {
     const newOverride = {
       id: overrides.length + 1,
       date: '',
-      description: '',
+      descriptions: '',
       targets: {
         morning: { grade1: true, grade2: true, grade3: true },
         night: { grade1: true, grade2: true, grade3: true }
@@ -25,6 +25,7 @@ function OverrideSchedule({ overrides, setOverrides }) {
   };
 
   const saveOverride = (override) => {
+    console.log(override);
     if (override.id && overrides.find((o) => o.id === override.id)) {
       setOverrides(overrides.map((o) => (o.id === override.id ? override : o)));
     } else {
@@ -61,13 +62,13 @@ function OverrideSchedule({ overrides, setOverrides }) {
         >
           {Number(date.split('-')[2])}
         </p>
-        {currentOverrides.map((override) => (
+        {currentOverrides[0]?.descriptions?.map((reason, idx) => (
           <div
-            key={override.id}
+            key={idx}
             className="bg-amber-100 text-amber-800 text-xs px-2 py-1 rounded mb-1 font-medium truncate"
-            title={override.description}
+            title={reason}
           >
-            {override.description}
+            {reason}
           </div>
         ))}
       </div>
@@ -116,7 +117,9 @@ function OverrideSchedule({ overrides, setOverrides }) {
                   className="bg-amber-50 border border-amber-200 rounded-lg p-4"
                 >
                   <div className="flex justify-between items-start mb-2">
-                    <span className="font-semibold text-gray-900">{override.description}</span>
+                    <span className="font-semibold text-gray-900">
+                      {override.descriptions.join(' / ')}
+                    </span>
                     <div className="flex gap-2">
                       <button
                         onClick={() => setEditingOverride(override)}

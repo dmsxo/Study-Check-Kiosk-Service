@@ -12,18 +12,20 @@ const PeriodEditModal = ({ schedule, onSave, onClose }) => {
   const addAdditionalApplication = () => {
     setEditingSchedule({
       ...editingSchedule,
-      additionalApplications: [...editingSchedule.additionalApplications, { start: '', end: '' }]
+      additionalRegistration: [...editingSchedule.additionalRegistration, { start: '', end: '' }]
     });
   };
 
   const removeAdditionalApplication = (index) => {
     setEditingSchedule({
       ...editingSchedule,
-      additionalApplications: editingSchedule.additionalApplications.filter(
+      additionalRegistration: editingSchedule.additionalRegistration.filter(
         (_, idx) => idx !== index
       )
     });
   };
+
+  console.log(editingSchedule);
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -44,18 +46,20 @@ const PeriodEditModal = ({ schedule, onSave, onClose }) => {
             <Dropdown
               title="학기"
               options={['1학기', '2학기']}
-              placeholder={`${editingSchedule.term_id}학기`}
-              onChange={(e) => setEditingSchedule({ ...editingSchedule, term_id: Number(e[0]) })}
+              placeholder={`${editingSchedule.termId}학기`}
+              onChange={(e) =>
+                setEditingSchedule({ ...editingSchedule, termId: Number(e[0].replace('학기', '')) })
+              }
               multiSelect={false}
             />
             <Dropdown
               title="종류"
               options={['아침 독서', '야간 자율 학습']}
-              placeholder={editingSchedule.type === 'night' ? '야간 자율 학습' : '아침 독서'}
+              placeholder={editingSchedule.studyType === 'night' ? '야간 자율 학습' : '아침 독서'}
               onChange={(e) =>
                 setEditingSchedule({
                   ...editingSchedule,
-                  type: e === '아침독서' ? 'morning' : 'night'
+                  studyType: e[0].trim() === '아침 독서'.trim() ? 'morning' : 'night'
                 })
               }
               multiSelect={false}
@@ -93,12 +97,12 @@ const PeriodEditModal = ({ schedule, onSave, onClose }) => {
           <div className="grid grid-cols-2 gap-4 mb-4">
             <DateSelecter
               title={'신청 시작일'}
-              value={editingSchedule.application.start}
+              value={editingSchedule.registration.start}
               onChange={(e) =>
                 setEditingSchedule({
                   ...editingSchedule,
-                  application: {
-                    ...editingSchedule.application,
+                  registration: {
+                    ...editingSchedule.registration,
                     start: e.target.value
                   }
                 })
@@ -106,12 +110,12 @@ const PeriodEditModal = ({ schedule, onSave, onClose }) => {
             />
             <DateSelecter
               title={'신청 종료일'}
-              value={editingSchedule.application.end}
+              value={editingSchedule.registration.end}
               onChange={(e) =>
                 setEditingSchedule({
                   ...editingSchedule,
-                  application: {
-                    ...editingSchedule.application,
+                  registration: {
+                    ...editingSchedule.registration,
                     end: e.target.value
                   }
                 })
@@ -188,26 +192,26 @@ const PeriodEditModal = ({ schedule, onSave, onClose }) => {
                 추가
               </button>
             </div>
-            {editingSchedule.additionalApplications.length > 0 ? (
+            {editingSchedule.additionalRegistration.length > 0 ? (
               <>
-                {editingSchedule.additionalApplications.map((app, idx) => (
+                {editingSchedule.additionalRegistration.map((app, idx) => (
                   <div key={idx} className="grid grid-cols-[1fr_1fr_auto] gap-2">
                     <DateSelecter
                       title={''}
                       value={app.start}
                       onChange={(e) => {
-                        const newApps = [...editingSchedule.additionalApplications];
+                        const newApps = [...editingSchedule.additionalRegistration];
                         newApps[idx].start = e.target.value;
-                        setEditingSchedule({ ...editingSchedule, additionalApplications: newApps });
+                        setEditingSchedule({ ...editingSchedule, additionalRegistration: newApps });
                       }}
                     />
                     <DateSelecter
                       title={''}
                       value={app.end}
                       onChange={(e) => {
-                        const newApps = [...editingSchedule.additionalApplications];
+                        const newApps = [...editingSchedule.additionalRegistration];
                         newApps[idx].end = e.target.value;
-                        setEditingSchedule({ ...editingSchedule, additionalApplications: newApps });
+                        setEditingSchedule({ ...editingSchedule, additionalRegistration: newApps });
                       }}
                     />
                     <button
