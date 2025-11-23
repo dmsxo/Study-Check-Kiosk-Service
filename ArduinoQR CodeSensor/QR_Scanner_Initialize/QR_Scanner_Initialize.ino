@@ -117,7 +117,7 @@ void factoryReset()
 // Init Values
 // ───────────────────────────────────────────────
 
-const uint8_t INIT_MODE_SILENCE_CMD = 0x05;
+const uint8_t INIT_MODE_SILENCE_CMD = 0x01;
 const uint8_t INIT_SINGLE_SCAN_TIME = 0x64;
 const uint8_t INIT_QR_ENABLE = 0x01;
 const uint8_t INIT_WHOLE_AREA = 0x01;
