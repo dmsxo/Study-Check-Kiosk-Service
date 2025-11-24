@@ -4,6 +4,11 @@ import dayjs from 'dayjs';
 import { useState } from 'react';
 import { Plus, X, Edit2, Trash2 } from 'lucide-react';
 import OverrideEditModal from './Modals/OverrideEditModal';
+import {
+  CreateOverrideSchedule,
+  DeleteOverrideScedule,
+  UpdateOverrideSchedule
+} from '../../../api/AcademicCalendarAPI';
 
 function OverrideSchedule({ overrides, setOverrides }) {
   const [selectedDate, setSelectedDate] = useState(null);
@@ -15,7 +20,7 @@ function OverrideSchedule({ overrides, setOverrides }) {
     const newOverride = {
       id: overrides.length + 1,
       date: '',
-      descriptions: '',
+      descriptions: [],
       targets: {
         morning: { grade1: true, grade2: true, grade3: true },
         night: { grade1: true, grade2: true, grade3: true }
@@ -26,16 +31,20 @@ function OverrideSchedule({ overrides, setOverrides }) {
 
   const saveOverride = (override) => {
     console.log(override);
-    if (override.id && overrides.find((o) => o.id === override.id)) {
+    if (overrides.find((o) => o.id === override.id)) {
       setOverrides(overrides.map((o) => (o.id === override.id ? override : o)));
+      UpdateOverrideSchedule(override);
     } else {
       setOverrides([...overrides, override]);
+      CreateOverrideSchedule(override);
     }
     setEditingOverride(null);
   };
 
   const deleteOverride = (id) => {
     if (confirm('이 예외 일정을 삭제하시겠습니까?')) {
+      const scedule = overrides.find((o) => o.id === id);
+      DeleteOverrideScedule(scedule.date);
       setOverrides(overrides.filter((o) => o.id !== id));
     }
   };

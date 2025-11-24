@@ -2,6 +2,7 @@ import api from "./Instance";
 
 // Periods
 export async function CreatePeriod(period){
+  console.log("create period");
   const periodWithoutId = (({ id, ...rest }) => rest)(period);
   try{
     return await api.post('/study-period', periodWithoutId);
@@ -12,6 +13,7 @@ export async function CreatePeriod(period){
 }
 
 export async function UpdatePeriod(period){
+  console.log("update period");
   const periodWithoutId = (({ id, ...rest }) => rest)(period);
   try{
     return await api.patch('/study-period', periodWithoutId);
@@ -60,6 +62,7 @@ export async function UpdateDefaultSchedule(schedule){
 
 //Override Schedule
 export async function CreateOverrideSchedule(schedule){
+  console.log("update override");
   const scheduleWithoutId = (({ id, ...rest }) => rest)(schedule);
   try{
     return await api.post('/schedule/override', scheduleWithoutId)
@@ -70,6 +73,7 @@ export async function CreateOverrideSchedule(schedule){
 }
 
 export async function UpdateOverrideSchedule(schedule){
+  console.log("update override");
   const scheduleWithoutId = (({ id, ...rest }) => rest)(schedule);
   try{
     return await api.patch('/schedule/override', scheduleWithoutId)
