@@ -1,5 +1,5 @@
-import { Link, Outlet } from 'react-router-dom';
-import { CalendarCheck, ChartLine, UserRound } from 'lucide-react';
+import { Link, Outlet } from "react-router-dom";
+import { CalendarCheck, ChartLine, UserRound, FilePenLine } from "lucide-react";
 
 function MainLayout() {
   return (
@@ -9,7 +9,7 @@ function MainLayout() {
       </main>
 
       <nav className="shrink-0 border-t-2 border-gray-200">
-        <div className="grid h-full grid-cols-3">
+        <div className="grid h-full grid-cols-4">
           <Link to="/" className="flex flex-col items-center py-2">
             <CalendarCheck className="mb-1 text-gray-500" />
             <span className="text-xs text-gray-500">출석 체크</span>
@@ -17,6 +17,10 @@ function MainLayout() {
           <Link to="/stat" className="flex flex-col items-center py-2">
             <ChartLine className="mb-1 text-gray-500" />
             <span className="text-xs text-gray-500">출석 현황</span>
+          </Link>
+          <Link to="/application" className="flex flex-col items-center py-2">
+            <FilePenLine className="mb-1 text-gray-500" />
+            <span className="text-xs text-gray-500">나의 신청</span>
           </Link>
           <Link to="/mypage" className="flex flex-col items-center py-2">
             <UserRound className="mb-1 text-gray-500" />

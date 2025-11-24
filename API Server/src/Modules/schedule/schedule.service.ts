@@ -140,7 +140,7 @@ export class ScheduleService {
       filter;
     const query = this.overrideScheduleRepo.createQueryBuilder('override');
 
-    console.log(grade, study_type, date_from, date_to);
+    // console.log(grade, study_type, date_from, date_to, "test");
 
     if (filter.date_from !== undefined) {
       query.andWhere('override.date >= :dateFrom', { dateFrom: date_from });

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { X, Camera, UserRound, Loader2 } from "lucide-react";
-import api from "../../api/AttendanceAPI";
+import api from "../../api/Instance";
 import { useAuth } from "../../contexts/AuthContext";
 
 const ProfileEditModal = ({ isOpen, onClose, initialData }) => {

@@ -31,6 +31,20 @@ analysis.module.ts : 통계, 레포트 모듈
 -레포트 생성 및 다운로드
 */
 
+import os from 'os';
+
+function getLocalIp() {
+  const interfaces = os.networkInterfaces();
+  for (const name of Object.keys(interfaces)) {
+    for (const iface of interfaces[name]!) {
+      if (iface.family === 'IPv4' && !iface.internal) {
+        return iface.address;
+      }
+    }
+  }
+  return 'localhost';
+}
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const options = new DocumentBuilder()
@@ -89,6 +103,13 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api', app, document);
 
-  await app.listen(process.env.PORT ?? 3000);
+  const server = app.getHttpServer();
+  const address = server.address();
+
+  await app.listen(process.env.PORT ?? 3000, '0.0.0.0');
+
+  const ip = getLocalIp();
+
+  console.log(`🚀 Nest server running: http://${ip}:${3000}`);
 }
 bootstrap();

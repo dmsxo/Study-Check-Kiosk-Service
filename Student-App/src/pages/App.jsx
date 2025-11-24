@@ -1,18 +1,19 @@
-import { useState, useEffect } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import MainLayout from './products/MainLayout';
-import Login from './auth/Login';
-import QRView from './products/HomePages/QRView';
-import StatView from './products/StatView';
-import MyView from './products/MyView';
-import KeyInputView from './products/KeyInputView';
-import ProtectedRoute from '../routes/ProtectedRoute';
-import PublicRoute from '../routes/PublicRoute';
-import Home from './products/HomeVeiw';
-import CheckoutModal from '../components/HomeComponenets/CheckoutModal';
-import { AuthProvider } from '../contexts/AuthContext';
-import ServerNotConnected from './products/ServerNotConnected';
-import LoginViewForEventsOnly from './auth/LoginViewForEventsOnly';
+import { useState, useEffect } from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import MainLayout from "./products/MainLayout";
+import Login from "./auth/Login";
+import QRView from "./products/HomePages/QRView";
+import StatView from "./products/StatView";
+import MyView from "./products/MyView";
+import KeyInputView from "./products/KeyInputView";
+import ProtectedRoute from "../routes/ProtectedRoute";
+import PublicRoute from "../routes/PublicRoute";
+import Home from "./products/HomeVeiw";
+import CheckoutModal from "../components/HomeComponenets/CheckoutModal";
+import { AuthProvider } from "../contexts/AuthContext";
+import ServerNotConnected from "./products/ServerNotConnected";
+import LoginViewForEventsOnly from "./auth/LoginViewForEventsOnly";
+import ApplicationView from "./products/ApplicationView";
 
 function App() {
   return (
@@ -41,8 +42,9 @@ function App() {
             <Route index element={<Home />} />
             <Route path="/key" element={<KeyInputView />} />
             <Route path="/checkout" element={<CheckoutModal />} />
-            <Route path="stat" element={<StatView />} />
-            <Route path="mypage" element={<MyView />} />
+            <Route path="/stat" element={<StatView />} />
+            <Route path="/application" element={<ApplicationView />} />
+            <Route path="/mypage" element={<MyView />} />
           </Route>
         </Routes>
       </AuthProvider>

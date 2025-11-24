@@ -1,21 +1,21 @@
-import React, { useState } from 'react';
-import { User, Camera, ChevronDown, LogIn, Loader2, X } from 'lucide-react';
-import api from '../../api/AttendanceAPI';
-import { useAuth } from '../../contexts/AuthContext';
+import React, { useState } from "react";
+import { User, Camera, ChevronDown, LogIn, Loader2, X } from "lucide-react";
+import api from "../../api/Instance";
+import { useAuth } from "../../contexts/AuthContext";
 
 export default function LoginViewForEventsOnly() {
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
-    name: '',
-    grade: '',
-    studentId: '',
-    description: '',
+    name: "",
+    grade: "",
+    studentId: "",
+    description: "",
     profileImage: null,
   });
-  const [loginStudentId, setLoginStudentId] = useState('');
+  const [loginStudentId, setLoginStudentId] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
   const [errors, setErrors] = useState({});
-  const [startButtonState, setStartButtonState] = useState('writing'); // writing, creating_user, Logging
+  const [startButtonState, setStartButtonState] = useState("writing"); // writing, creating_user, Logging
 
   const { login } = useAuth();
 
@@ -24,14 +24,14 @@ export default function LoginViewForEventsOnly() {
     if (file) {
       // 파일 형식 체크
       const allowedTypes = [
-        'image/jpeg',
-        'image/jpg',
-        'image/png',
-        'image/webp',
+        "image/jpeg",
+        "image/jpg",
+        "image/png",
+        "image/webp",
       ];
       if (!allowedTypes.includes(file.type)) {
-        alert('JPG, PNG, WebP 형식의 이미지만 업로드 가능합니다.');
-        e.target.value = '';
+        alert("JPG, PNG, WebP 형식의 이미지만 업로드 가능합니다.");
+        e.target.value = "";
         return;
       }
 
@@ -42,7 +42,7 @@ export default function LoginViewForEventsOnly() {
       };
       reader.readAsDataURL(file);
     }
-    e.target.value = '';
+    e.target.value = "";
   };
 
   const handleImageRemove = () => {
@@ -64,11 +64,11 @@ export default function LoginViewForEventsOnly() {
     const newErrors = {};
 
     if (!formData.name.trim()) {
-      newErrors.name = '이름을 입력해주세요';
+      newErrors.name = "이름을 입력해주세요";
     }
 
     if (!formData.grade) {
-      newErrors.grade = '학년을 선택해주세요';
+      newErrors.grade = "학년을 선택해주세요";
     }
 
     setErrors(newErrors);
@@ -79,7 +79,7 @@ export default function LoginViewForEventsOnly() {
     const newErrors = {};
 
     if (!loginStudentId.trim()) {
-      newErrors.studentId = '학번을 입력해주세요';
+      newErrors.studentId = "학번을 입력해주세요";
     }
 
     setErrors(newErrors);
@@ -88,21 +88,21 @@ export default function LoginViewForEventsOnly() {
 
   const handleSignup = () => {
     if (validateSignupForm()) {
-      setStartButtonState('creating_user');
+      setStartButtonState("creating_user");
       const body = new FormData();
-      body.append('name', formData.name);
-      body.append('studentId', formData.studentId);
-      if (formData.description !== '')
-        body.append('description', formData.description);
-      if (formData.profileImage) body.append('image', formData.profileImage);
+      body.append("name", formData.name);
+      body.append("studentId", formData.studentId);
+      if (formData.description !== "")
+        body.append("description", formData.description);
+      if (formData.profileImage) body.append("image", formData.profileImage);
       api
-        .post('/users', body, {
+        .post("/users", body, {
           headers: {
-            'Content-Type': 'multipart/form-data',
+            "Content-Type": "multipart/form-data",
           },
         })
         .then((res) => {
-          setStartButtonState('Logging');
+          setStartButtonState("Logging");
           login(Number(formData.studentId));
         });
     }
@@ -110,7 +110,7 @@ export default function LoginViewForEventsOnly() {
 
   const handleLogin = () => {
     if (validateLoginForm()) {
-      setStartButtonState('Logging');
+      setStartButtonState("Logging");
       login(Number(loginStudentId));
     }
   };
@@ -122,7 +122,7 @@ export default function LoginViewForEventsOnly() {
 
   const renderSignUpButton = () => {
     switch (startButtonState) {
-      case 'writing':
+      case "writing":
         return (
           <button
             onClick={handleSignup}
@@ -131,14 +131,14 @@ export default function LoginViewForEventsOnly() {
             시작하기
           </button>
         );
-      case 'creating_user':
+      case "creating_user":
         return (
           <div className="flex items-center justify-center gap-2 w-full bg-black text-white py-5 rounded-2xl font-bold text-lg hover:bg-gray-800 transition shadow-lg hover:shadow-xl active:scale-98">
             <Loader2 className="size-4 animate-spin" />
             유저 생성중...
           </div>
         );
-      case 'Logging':
+      case "Logging":
         return (
           <div className="flex items-center justify-center gap-2 w-full bg-black text-white py-5 rounded-2xl font-bold text-lg hover:bg-gray-800 transition shadow-lg hover:shadow-xl active:scale-98">
             <Loader2 className="size-4 animate-spin" />
@@ -150,7 +150,7 @@ export default function LoginViewForEventsOnly() {
 
   const renderLoginButton = () => {
     switch (startButtonState) {
-      case 'writing':
+      case "writing":
         return (
           <button
             onClick={handleLogin}
@@ -159,7 +159,7 @@ export default function LoginViewForEventsOnly() {
             로그인
           </button>
         );
-      case 'Logging':
+      case "Logging":
         return (
           <div className="flex items-center justify-center gap-2 w-full bg-black text-white py-5 rounded-2xl font-bold text-lg hover:bg-gray-800 transition shadow-lg hover:shadow-xl active:scale-98">
             <Loader2 className="size-4 animate-spin" />
@@ -175,10 +175,10 @@ export default function LoginViewForEventsOnly() {
         {/* 헤더 */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-3">
-            {isLogin ? '로그인' : '프로필 만들기'}
+            {isLogin ? "로그인" : "프로필 만들기"}
           </h1>
           <p className="text-gray-500 text-lg">
-            {isLogin ? '학번으로 로그인하세요' : '나를 표현해보세요'}
+            {isLogin ? "학번으로 로그인하세요" : "나를 표현해보세요"}
           </p>
         </div>
 
@@ -200,7 +200,7 @@ export default function LoginViewForEventsOnly() {
                 value={loginStudentId}
                 onChange={(e) => setLoginStudentId(e.target.value)}
                 className={`w-full px-5 py-4 rounded-2xl border-2 ${
-                  errors.studentId ? 'border-red-500' : 'border-gray-200'
+                  errors.studentId ? "border-red-500" : "border-gray-200"
                 } focus:outline-none focus:border-black transition text-lg text-center tracking-wider`}
                 placeholder="20129"
               />
@@ -215,7 +215,7 @@ export default function LoginViewForEventsOnly() {
 
             <div className="text-center pt-4">
               <p className="text-gray-500 text-sm">
-                처음이신가요?{' '}
+                처음이신가요?{" "}
                 <button
                   onClick={toggleMode}
                   className="text-black font-semibold hover:underline"
@@ -297,7 +297,7 @@ export default function LoginViewForEventsOnly() {
                   setFormData({ ...formData, name: e.target.value })
                 }
                 className={`w-full px-5 py-4 rounded-2xl border-2 ${
-                  errors.name ? 'border-red-500' : 'border-gray-200'
+                  errors.name ? "border-red-500" : "border-gray-200"
                 } focus:outline-none focus:border-black transition text-lg`}
                 placeholder="이름 또는 별명"
               />
@@ -316,7 +316,7 @@ export default function LoginViewForEventsOnly() {
                   value={formData.grade}
                   onChange={handleGradeChange}
                   className={`w-full px-5 py-4 rounded-2xl border-2 ${
-                    errors.grade ? 'border-red-500' : 'border-gray-200'
+                    errors.grade ? "border-red-500" : "border-gray-200"
                   } focus:outline-none focus:border-black transition bg-white text-lg appearance-none cursor-pointer`}
                 >
                   <option value="">학년 선택</option>
@@ -366,7 +366,7 @@ export default function LoginViewForEventsOnly() {
 
             <div className="text-center pt-4">
               <p className="text-gray-500 text-sm">
-                이미 프로필이 있나요?{' '}
+                이미 프로필이 있나요?{" "}
                 <button
                   onClick={toggleMode}
                   className="text-black font-semibold hover:underline"
@@ -381,8 +381,8 @@ export default function LoginViewForEventsOnly() {
         {/* 푸터 */}
         <p className="text-center text-gray-400 text-sm mt-8">
           {isLogin
-            ? '학번을 잊어버렸다면 관리자에게 문의하세요'
-            : '언제든지 프로필을 수정할 수 있어요'}
+            ? "학번을 잊어버렸다면 관리자에게 문의하세요"
+            : "언제든지 프로필을 수정할 수 있어요"}
         </p>
       </div>
     </div>

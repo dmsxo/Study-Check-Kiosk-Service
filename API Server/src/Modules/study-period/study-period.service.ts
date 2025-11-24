@@ -36,7 +36,9 @@ export class StudyPeriodService {
     return await this.periodRepo.save(newPeriods);
   }
 
-  async getPeriodsByFilter(filter: QueryPeriodDto): Promise<StudyPeriod[]> {
+  async getPeriodsByFilter(
+    filter: Partial<QueryPeriodDto>,
+  ): Promise<StudyPeriod[]> {
     const { term_id, study_type, grade } = filter;
     const query = await this.periodRepo.createQueryBuilder('period');
 

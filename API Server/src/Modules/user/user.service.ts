@@ -5,6 +5,7 @@ import { ILike, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ImagesService } from '../images/images.service';
+import { Registration } from '../registration/entities/registration.entity';
 
 @Injectable()
 export class UserService {
@@ -42,6 +43,19 @@ export class UserService {
       throw new NotFoundException(`User with studentId ${studentId} not found`);
     }
     return student;
+  }
+
+  async get_registrations(studentId: number): Promise<Registration[]> {
+    const student = await this.userRepo
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.registrations', 'registration')
+      .leftJoinAndSelect('registration.period', 'period')
+      .where('user.studentId = :id', { id: studentId })
+      .getOne();
+    if (!student) {
+      throw new NotFoundException(`User with studentId ${studentId} not found`);
+    }
+    return student.registrations ?? [];
   }
 
   async update_user(

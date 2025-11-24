@@ -19,6 +19,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { ResponseUserDto } from './dto/response-user.dto';
 import { plainToInstance } from 'class-transformer';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Registration } from '../registration/entities/registration.entity';
 
 @Controller('users')
 export class UserController {

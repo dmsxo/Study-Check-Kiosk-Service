@@ -25,6 +25,11 @@ import { CheckOutDto } from './dto/check-out.dto';
 import { RegistrationValidation } from './interface/validate-registration.interface';
 import { InjectQueue } from '@nestjs/bull';
 import type { Queue } from 'bull';
+import { Registration } from '../registration/entities/registration.entity';
+import { StudyPeriodService } from '../study-period/study-period.service';
+import { QueryPeriodDto } from '../study-period/dto/query-period.dto';
+import { Period } from 'aws-sdk/clients/cloudwatch';
+import { StudyPeriod } from '../study-period/entities/period.entity';
 dayjs.extend(utc);
 dayjs.extend(minMax);
 dayjs.extend(timezone);
@@ -36,6 +41,7 @@ export class StudentService {
     private readonly userService: UserService,
     private readonly attendanceService: AttendanceService,
     private readonly registrationService: RegistrationService,
+    private readonly periodService: StudyPeriodService,
 
     @InjectQueue('auto-checkout')
     private readonly autoCheckoutQueue: Queue,
@@ -71,6 +77,19 @@ export class StudentService {
     return plainToInstance(ResponseAttendanceDto, attendances, {
       excludeExtraneousValues: true,
     });
+  }
+
+  async getRegistrations(studentId): Promise<Registration[]> {
+    const registrations = this.userService.get_registrations(studentId);
+    return registrations;
+  }
+
+  async getPeriods(studentId): Promise<StudyPeriod[]> {
+    const filter: Partial<QueryPeriodDto> = {
+      grade: parseInt((studentId / 10000).toString()),
+    };
+    const periods = await this.periodService.getPeriodsByFilter(filter);
+    return periods;
   }
 
   // 인증후 스터디 타입 반환, 아니면 에러 내기

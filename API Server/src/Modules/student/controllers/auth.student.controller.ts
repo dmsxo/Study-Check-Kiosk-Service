@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   ParseEnumPipe,
   ParseIntPipe,
 } from '@nestjs/common';
@@ -16,6 +17,9 @@ import { StudyTypePipe } from 'src/common/pipe/study-type.pipe';
 import { CheckInDto } from '../dto/check-in.dto';
 import { CheckOutDto } from '../dto/check-out.dto';
 import { StudyCacheStatus } from 'src/Modules/attendance/interface/study-cache-status.interface';
+import { Registration } from 'src/Modules/registration/entities/registration.entity';
+import { Period } from 'aws-sdk/clients/cloudwatch';
+import { StudyPeriod } from 'src/Modules/study-period/entities/period.entity';
 
 @Controller('me')
 @UseGuards(AuthGuard)
@@ -62,5 +66,19 @@ export class AuthStudentController {
       req.session.user!.id,
       checkOutDto,
     );
+  }
+
+  @Get('registrations')
+  async getRegistrations(@Req() req: Request): Promise<Registration[]> {
+    const registrations = await this.studentService.getRegistrations(
+      req.session.user!.id,
+    );
+    return registrations;
+  }
+
+  @Get('periods')
+  async getPeriods(@Req() req: Request): Promise<StudyPeriod[]> {
+    const periods = await this.studentService.getPeriods(req.session.user!.id);
+    return periods;
   }
 }

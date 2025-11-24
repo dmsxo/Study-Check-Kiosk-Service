@@ -1,10 +1,11 @@
-import { createContext, useContext, useState, useEffect } from 'react';
-import api, {
+import { createContext, useContext, useState, useEffect } from "react";
+import {
   checkSession,
   logout_session,
   login_session,
-} from '../api/AttendanceAPI';
-import { useNavigate } from 'react-router-dom';
+} from "../api/AttendanceAPI";
+import api from "../api/Instance";
+import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext(null);
 
@@ -20,7 +21,7 @@ export function AuthProvider({ children }) {
       setUser(res);
       const profile = res.profileImageFilename;
       console.log(profile);
-      if (profile && profile != 'null') {
+      if (profile && profile != "null") {
         const preSignedURL = await api.get(`/images/presigned/${profile}`);
         setProfileURL(preSignedURL.data.url);
       } else setProfileURL(null);
@@ -44,7 +45,7 @@ export function AuthProvider({ children }) {
     setIsLoggedIn(true);
     setUser(res);
     await refetchUser();
-    navigate('/', { replace: true });
+    navigate("/", { replace: true });
   };
 
   const logout = async () => {
@@ -52,7 +53,7 @@ export function AuthProvider({ children }) {
     setIsLoggedIn(false);
     setUser(null);
     await refetchUser();
-    navigate('/login', { replace: true });
+    navigate("/login", { replace: true });
   };
 
   return (

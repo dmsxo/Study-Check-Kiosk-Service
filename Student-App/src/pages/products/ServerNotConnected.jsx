@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { WifiOff, RefreshCw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import api from '../../api/AttendanceAPI';
+import api from '../../api/Instance';
 
 export default function ServerNotConnected() {
   const [isRetrying, setIsRetrying] = useState(false);

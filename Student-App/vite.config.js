@@ -86,8 +86,9 @@ export default defineConfig({
     allowedHosts: ['palaeozoological-mickie-snoopily.ngrok-free.dev'],
     proxy: {
       '/api': {
-        target: 'http://localhost:3000',
+        target: `http://localhost:3000`,
         changeOrigin: true,
+        allowedHosts: 'all',
         rewrite: (path) => path.replace(/^\/api/, '') // /api 제거 후 로컬 서버로 전달
       }
     }

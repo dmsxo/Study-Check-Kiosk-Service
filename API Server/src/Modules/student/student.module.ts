@@ -6,11 +6,13 @@ import { AttendanceModule } from '../attendance/attendance.module';
 import { RegistrationModule } from '../registration/registration.module';
 import { BullModule } from '@nestjs/bull';
 import { AutoCheckoutProcessor } from './auto-checkout.processor';
+import { StudyPeriodModule } from '../study-period/study-period.module';
 
 @Module({
   imports: [
     AttendanceModule,
     RegistrationModule,
+    StudyPeriodModule,
     BullModule.registerQueue({ name: 'auto-checkout' }),
   ],
   controllers: [StudentController, AuthStudentController],
