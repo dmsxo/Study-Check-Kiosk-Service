@@ -84,6 +84,13 @@ export class StudentService {
     return registrations;
   }
 
+  async application(studentId, periodId): Promise<Registration> {
+    return await this.registrationService.createRegisration({
+      studentId,
+      periodId,
+    });
+  }
+
   async getPeriods(studentId): Promise<StudyPeriod[]> {
     const filter: Partial<QueryPeriodDto> = {
       grade: parseInt((studentId / 10000).toString()),

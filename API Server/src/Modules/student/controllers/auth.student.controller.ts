@@ -68,6 +68,17 @@ export class AuthStudentController {
     );
   }
 
+  @Post('application/:id')
+  async application(
+    @Req() req: Request,
+    @Param('id') periodId: number,
+  ): Promise<Registration> {
+    return await this.studentService.application(
+      req.session.user!.id,
+      periodId,
+    );
+  }
+
   @Get('registrations')
   async getRegistrations(@Req() req: Request): Promise<Registration[]> {
     const registrations = await this.studentService.getRegistrations(

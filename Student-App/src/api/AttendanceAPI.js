@@ -1,3 +1,4 @@
+import { getCurrentPeriodId } from '../helpers/application.helper';
 import api from './Instance'
 
 export async function getCode(studentId) {
@@ -71,7 +72,8 @@ export async function checkSession() {
   }
 }
 
-export async function check_in(periodId) {
+export async function check_in() {
+  const periodId = await getCurrentPeriodId();
   try {
     return await api.post(`/me/attendances/check-in`, {periodId});
   } catch (error) {

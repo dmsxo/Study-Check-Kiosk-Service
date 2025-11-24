@@ -1,5 +1,11 @@
 import { Type } from 'class-transformer';
-import { IsEnum, IsInt, IsOptional } from 'class-validator';
+import {
+  IsBoolean,
+  IsDateString,
+  IsEnum,
+  IsInt,
+  IsOptional,
+} from 'class-validator';
 import { StudyType } from 'src/common/enums/study-type.enum';
 
 export class QueryPeriodDto {
@@ -11,6 +17,19 @@ export class QueryPeriodDto {
   @IsOptional()
   @IsEnum(StudyType)
   study_type: StudyType;
+
+  @IsOptional()
+  @Type(() => Boolean)
+  @IsBoolean()
+  relation: boolean;
+
+  @IsOptional()
+  @IsDateString()
+  active_from: string;
+
+  @IsOptional()
+  @IsDateString()
+  active_to: string;
 
   @IsOptional()
   @Type(() => Number)

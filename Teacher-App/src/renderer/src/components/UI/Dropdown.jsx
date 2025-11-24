@@ -70,7 +70,7 @@ function Dropdown({
 
       {/* 드롭다운 메뉴 */}
       {isOpen && (
-        <div className="absolute w-full mt-1 bg-white border border-gray-300 rounded-xl overflow-hidden z-10">
+        <div className="absolute w-full mt-2 bg-white border border-gray-300 rounded-xl overflow-hidden z-10">
           {options.map((option, index) => (
             <button
               key={index}

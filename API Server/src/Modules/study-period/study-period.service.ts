@@ -39,8 +39,14 @@ export class StudyPeriodService {
   async getPeriodsByFilter(
     filter: Partial<QueryPeriodDto>,
   ): Promise<StudyPeriod[]> {
-    const { term_id, study_type, grade } = filter;
+    const { term_id, study_type, grade, active_from, active_to, relation } =
+      filter;
     const query = await this.periodRepo.createQueryBuilder('period');
+
+    if (!!relation)
+      query
+        .leftJoinAndSelect('period.registrations', 'registrations')
+        .leftJoinAndSelect('registrations.student', 'student');
 
     if (term_id !== undefined)
       query.andWhere('period.termId = :termId', { termId: term_id });
@@ -48,6 +54,16 @@ export class StudyPeriodService {
     if (study_type !== undefined)
       query.andWhere('period.studyType = :studyType', {
         studyType: study_type,
+      });
+
+    if (active_from !== undefined)
+      query.andWhere('NOT(period.operation.start > :activeTo)', {
+        activeTo: active_to,
+      });
+
+    if (active_to !== undefined)
+      query.andWhere('NOT(period.operation.end < :activeFrom)', {
+        activeFrom: active_from,
       });
 
     if (grade !== undefined)

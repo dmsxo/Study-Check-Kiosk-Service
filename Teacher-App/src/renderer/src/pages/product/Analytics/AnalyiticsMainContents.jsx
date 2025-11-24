@@ -2,6 +2,7 @@ import { useState } from 'react';
 import LayoutContainer from '../../../components/UI/LayoutContainer';
 import Dropdown from '../../../components/UI/Dropdown';
 import MonthSelecter from '../../../components/AcademicCalendar/MonthSelecter';
+import StudentTreeDropdown from '../../../components/UI/StudentTreeDropdown';
 
 function AnalyticsMainContents({ setSelectedStudent, selectedMonth, setSelectedMonth }) {
   // filter options
@@ -31,6 +32,9 @@ function AnalyticsMainContents({ setSelectedStudent, selectedMonth, setSelectedM
     { studentId: 20118, name: '김동훈', info: '26/30', hour: 150, rate: '90%' },
     { studentId: 20119, name: '박현재', info: '26/30', hour: 150, rate: '90%' }
   ];
+
+  const [selected, setSelected] = useState(new Set());
+
   return (
     <>
       <div className="flex justify-between items-center mb-5">
@@ -42,31 +46,27 @@ function AnalyticsMainContents({ setSelectedStudent, selectedMonth, setSelectedM
       <LayoutContainer className="mb-5 min-w-fit">
         <h2 className="text-2xl font-semibold mb-3 text-gray-900">조회 필터</h2>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-5 gap-y-15">
-          <Dropdown
-            title="학년"
-            options={grades}
-            onChange={(e) => console.log(e)}
-            placeholder="학년 선택"
-            multiSelect={true}
-          />
-          <Dropdown
-            title="반"
-            options={classes}
-            onChange={(e) => console.log(e)}
-            placeholder="반 선택"
-            multiSelect={true}
-          />
-          <Dropdown
-            title="공부 유형"
-            options={types}
-            onChange={(e) => console.log(e)}
-            placeholder="공부 유형 선택"
-            multiSelect={false}
-          />
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">월 선택</label>
-            <MonthSelecter selectedMonth={selectedMonth} setSelectedMonth={setSelectedMonth} />
+        <div className="flex flex-col lg:grid lg:grid-cols-2 gap-5">
+          <div className="grid grid-cols-2 gap-x-5 gap-y-15">
+            <Dropdown
+              title="공부 유형"
+              options={types}
+              onChange={(e) => console.log(e)}
+              placeholder="공부 유형 선택"
+              multiSelect={false}
+            />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">월 선택</label>
+              <MonthSelecter selectedMonth={selectedMonth} setSelectedMonth={setSelectedMonth} />
+            </div>
+          </div>
+          <div className="relative w-full">
+            <label className="block text-sm font-medium text-gray-700 mb-2">학생 선택</label>
+            <StudentTreeDropdown
+              students={list}
+              selected={selected}
+              onSelectedChange={setSelected}
+            />
           </div>
         </div>
       </LayoutContainer>
