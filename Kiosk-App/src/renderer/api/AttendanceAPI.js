@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const address = "http://localhost:3000";
+const address = import.meta.env.VITE_API_BASE;
 
 export async function getCode(){
   const response = await axios.post(`${address}/auth/checkin/code`, {
