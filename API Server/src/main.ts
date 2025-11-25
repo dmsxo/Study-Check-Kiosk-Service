@@ -71,6 +71,7 @@ async function bootstrap() {
       saveUninitialized: false,
       rolling: true,
       cookie: {
+        domain: 'palaeozoological-mickie-snoopily.ngrok-free.dev',
         httpOnly: true,
         secure: true, // https 쓸 땐 true
         sameSite: 'none', // cross-site 요청에서 쿠키 허용
@@ -89,6 +90,7 @@ async function bootstrap() {
       'http://localhost:5000',
     ],
     credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   });
   app.useGlobalPipes(
     new ValidationPipe({

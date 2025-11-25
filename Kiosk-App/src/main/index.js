@@ -109,13 +109,15 @@ function createWindow() {
     shell.openExternal(details.url)
     return { action: 'deny' }
   })
-
+  
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
   } else {
-    mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
+    // 빌드 환경에서는 파일 경로를 사용해야 합니다.
+    // 이 부분이 잘못되어 있을 가능성이 높습니다.
+    mainWindow.loadFile(path.join(__dirname, '../renderer/index.html')) 
   }
 }
 
