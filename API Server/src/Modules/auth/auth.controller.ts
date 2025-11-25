@@ -7,6 +7,7 @@ import {
   Req,
   Res,
   UseGuards,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
@@ -37,6 +38,9 @@ export class AuthController {
   @Get('me')
   @UseGuards(AuthGuard)
   getMe(@Req() req: Request) {
+    if (!req.session.user) {
+      throw new UnauthorizedException('No session');
+    }
     return req.session.user;
   }
 

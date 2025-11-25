@@ -9,6 +9,23 @@ import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext(null);
 
+export async function waitForCookie(maxWaitMs = 3000, intervalMs = 200) {
+  const start = Date.now();
+
+  while (Date.now() - start < maxWaitMs) {
+    try {
+      await api.get("/auth/session"); // 쿠키 붙으면 성공함
+      // 성공 → 서버가 쿠키 인식 → 세션 존재 → 끝!
+      return true;
+    } catch (err) {
+      // 아직 쿠키 안 붙음 → 조금 더 기다림
+      await new Promise((res) => setTimeout(res, intervalMs));
+    }
+  }
+
+  return false; // 제한 시간 넘김
+}
+
 export function AuthProvider({ children }) {
   const [isLoggedIn, setIsLoggedIn] = useState(null);
   const [user, setUser] = useState(null);
@@ -44,6 +61,9 @@ export function AuthProvider({ children }) {
     const res = await login_session(/*email*/ studentId);
     setIsLoggedIn(true);
     setUser(res);
+
+    await waitForCookie();
+
     await refetchUser();
     navigate("/", { replace: true });
   };
@@ -52,7 +72,6 @@ export function AuthProvider({ children }) {
     await logout_session();
     setIsLoggedIn(false);
     setUser(null);
-    await refetchUser();
     navigate("/login", { replace: true });
   };
 

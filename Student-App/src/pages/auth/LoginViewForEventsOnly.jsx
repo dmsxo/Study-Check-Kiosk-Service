@@ -102,6 +102,7 @@ export default function LoginViewForEventsOnly() {
           },
         })
         .then((res) => {
+          console.log(res);
           setStartButtonState("Logging");
           login(Number(formData.studentId));
         });
