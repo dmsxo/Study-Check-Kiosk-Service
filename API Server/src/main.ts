@@ -77,7 +77,7 @@ async function bootstrap() {
       rolling: true,
       cookie: {
         httpOnly: true,
-        secure: false, // https 쓸 땐 true
+        secure: true, // https 쓸 땐 true
         maxAge: 1000 * 60 * 60 * 24 * 2, // 2일
       },
     }),
