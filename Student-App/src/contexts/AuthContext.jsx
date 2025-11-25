@@ -14,7 +14,7 @@ export async function waitForCookie(maxWaitMs = 3000, intervalMs = 200) {
 
   while (Date.now() - start < maxWaitMs) {
     try {
-      await api.get("/auth/session"); // 쿠키 붙으면 성공함
+      await api.get("/auth/me"); // 쿠키 붙으면 성공함
       // 성공 → 서버가 쿠키 인식 → 세션 존재 → 끝!
       return true;
     } catch (err) {
