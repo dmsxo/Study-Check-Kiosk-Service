@@ -23,13 +23,6 @@ export default defineConfig({
     server: {
       host:true,
       port: 4000, // 프론트 포트
-      proxy: {
-        '/api': {
-        target: "http://172.17.80.1:3000", // NestJS 서버
-        changeOrigin: true,
-        secure: false,
-      },
     },
-  },
   }
 })

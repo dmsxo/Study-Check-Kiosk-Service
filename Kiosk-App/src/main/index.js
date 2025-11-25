@@ -84,22 +84,22 @@ function createWindow() {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
       nodeIntegration: true,
-    contextIsolation: false,
-    webSecurity: false,          // 외부 요청 허용
-    allowRunningInsecureContent: true
+      contextIsolation: true,
+      webSecurity: true,
+      allowRunningInsecureContent: false,
     }
   })
 
   mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
-  callback({
-    responseHeaders: {
-      ...details.responseHeaders,
-      "Content-Security-Policy": [
-        "default-src 'self'; connect-src 'self' http://localhost:3000 http://127.0.0.1:3000 ws:; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval';"
-      ]
-    }
+    callback({
+      responseHeaders: {
+        ...details.responseHeaders,
+        'Content-Security-Policy': [
+          "default-src 'self'; connect-src 'self' http://localhost:3000 http://192.168.124.101:3000 ws:; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval';"
+        ]
+      }
+    });
   });
-});
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
@@ -117,7 +117,7 @@ function createWindow() {
   } else {
     // 빌드 환경에서는 파일 경로를 사용해야 합니다.
     // 이 부분이 잘못되어 있을 가능성이 높습니다.
-    mainWindow.loadFile(path.join(__dirname, '../renderer/index.html')) 
+    mainWindow.loadFile(join(__dirname, '../renderer/index.html')) 
   }
 }
 
