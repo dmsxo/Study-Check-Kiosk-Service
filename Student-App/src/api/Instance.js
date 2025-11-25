@@ -18,11 +18,11 @@ api.interceptors.response.use(
         window.location.href = '/server-not-connected';
       }
     } else {
-      if (err.response.status === 401) {
-        if (window.location.pathname !== '/login')
-          window.location.href = '/login';
-        return;
-      }
+      // if (err.response.status === 401) {
+      //   if (window.location.pathname !== '/login')
+      //     window.location.href = '/login';
+      //   return;
+      // }
     }
     return Promise.reject(err);
   }

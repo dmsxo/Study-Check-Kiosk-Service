@@ -47,11 +47,6 @@ function getLocalIp() {
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const options = new DocumentBuilder()
-    .setTitle('School Self-Study Kiosk API')
-    .setDescription('API documentation for the School Self-Study Kiosk system')
-    .setVersion('1.0')
-    .build();
 
   // Redis Session 사용
   const redisClient = createClient({
@@ -102,6 +97,12 @@ async function bootstrap() {
       transform: true, // 자동으로 타입 변환
     }),
   );
+
+  const options = new DocumentBuilder()
+    .setTitle('School Self-Study Kiosk API')
+    .setDescription('API documentation for the School Self-Study Kiosk system')
+    .setVersion('1.0')
+    .build();
 
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api', app, document);
