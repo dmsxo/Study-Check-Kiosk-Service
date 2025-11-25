@@ -86,6 +86,7 @@ async function bootstrap() {
   // CORS
   app.enableCors({
     origin: [
+      'https://student-app-puce.vercel.app',
       'http://localhost:5173',
       'http://localhost:4000',
       'http://localhost:5000',

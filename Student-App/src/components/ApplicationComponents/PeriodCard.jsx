@@ -1,10 +1,9 @@
-import React from 'react';
-import dayjs from 'dayjs';
-import LayoutContainer from '../UIComponents/LayoutContainer';
-import { applicationPeriod } from '../../api/applicationAPI';
+import React from "react";
+import dayjs from "dayjs";
+import LayoutContainer from "../UIComponents/LayoutContainer";
+import { applicationPeriod } from "../../api/applicationAPI";
 
-const PeriodCard = ({ period }) => {
-  console.log(period);
+const PeriodCard = ({ period, onChange }) => {
   const {
     id,
     termId,
@@ -21,13 +20,13 @@ const PeriodCard = ({ period }) => {
   const regEnd = dayjs(registration.end);
 
   const isRegistrationOpen =
-    today.isAfter(regStart.subtract(1, 'day')) &&
-    today.isBefore(regEnd.add(1, 'day'));
+    today.isAfter(regStart.subtract(1, "day")) &&
+    today.isBefore(regEnd.add(1, "day"));
 
   // 제목 생성
   const studyTypeMap = {
-    day: '아침 독서',
-    night: '야간 자율 학습',
+    day: "아침 독서",
+    night: "야간 자율 학습",
   };
   const title = `${termId}학기 ${studyTypeMap[studyType]}`;
 
@@ -38,13 +37,13 @@ const PeriodCard = ({ period }) => {
       <div className="mb-4 space-y-2">
         <div>
           <span className="font-semibold">신청 기간: </span>
-          {dayjs(registration.start).format('YYYY.MM.DD')} ~{' '}
-          {dayjs(registration.end).format('YYYY.MM.DD')}
+          {dayjs(registration.start).format("YYYY.MM.DD")} ~{" "}
+          {dayjs(registration.end).format("YYYY.MM.DD")}
         </div>
         <div>
           <span className="font-semibold">운영 기간: </span>
-          {dayjs(operation.start).format('YYYY.MM.DD')} ~{' '}
-          {dayjs(operation.end).format('YYYY.MM.DD')}
+          {dayjs(operation.start).format("YYYY.MM.DD")} ~{" "}
+          {dayjs(operation.end).format("YYYY.MM.DD")}
         </div>
         <div>
           <span className="font-semibold">운영 시간: </span>
@@ -59,7 +58,11 @@ const PeriodCard = ({ period }) => {
           </button>
         ) : isRegistrationOpen ? (
           <button
-            onClick={() => applicationPeriod(id)}
+            onClick={() =>
+              applicationPeriod(id).then((e) => {
+                onChange(e.data.status === "active");
+              })
+            }
             className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition"
           >
             신청하기
