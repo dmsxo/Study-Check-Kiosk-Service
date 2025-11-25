@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const address = "http://localhost:3000";
+const address = "/api";
 
 export async function getCode(){
   const response = await axios.post(`${address}/auth/checkin/code`, {
