@@ -84,6 +84,7 @@ async function bootstrap() {
     origin: [
       'http://localhost:5173',
       'http://localhost:4000',
+      'http://localhost:5000',
       'http://172.17.80.1:5173',
       'http://192.168.1.133:4000',
       'http://192.168.1.126:5173',
