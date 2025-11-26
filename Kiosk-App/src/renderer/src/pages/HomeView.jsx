@@ -1,19 +1,22 @@
 import { Info } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import Carousel from '../components/Carousel';
 
 function HomeView() {
   return (
     <div className="h-screen flex flex-col gap-4 p-4">
-      <div className="flex flex-1 justify-center items-center text-7xl font-black">대충 홍보물</div>
+      <div className="flex-1 flex items-center justify-center overflow-hidden">
+        <Carousel />
+      </div>
       <div className="grid grid-cols-2 gap-2">
         <button
-          onClick={() => (window.location.href = '/qr')}
+          onClick={() => (window.location.href = '#/qr')}
           className="flex border border-slate-200 rounded-2xl h-20 p-4 items-center justify-center"
         >
           <p className="font-semibold">QR로 체크인</p>
         </button>
         <button
-          onClick={() => (window.location.href = '/key')}
+          onClick={() => (window.location.href = '#/key')}
           className="flex border border-slate-200 rounded-2xl h-20 p-4 items-center justify-center"
         >
           <p className="font-semibold">발급 키로 체크인</p>
@@ -21,7 +24,7 @@ function HomeView() {
       </div>
 
       <button
-        onClick={() => (window.location.href = '/guide')}
+        onClick={() => (window.location.href = '#/guide')}
         className="flex items-center justify-center"
       >
         <span className="flex items-center align-middle gap-2">

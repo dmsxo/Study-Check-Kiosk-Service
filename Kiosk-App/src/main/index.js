@@ -95,7 +95,7 @@ function createWindow() {
       responseHeaders: {
         ...details.responseHeaders,
         'Content-Security-Policy': [
-          "default-src 'self'; connect-src 'self' http://localhost:3000 http://192.168.124.101:3000 ws:; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval';"
+          `default-src 'self'; connect-src 'self' http://localhost:3000 ${import.meta.env.VITE_API_URL} ws:; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval';`
         ]
       }
     });
@@ -119,6 +119,8 @@ function createWindow() {
     // 이 부분이 잘못되어 있을 가능성이 높습니다.
     mainWindow.loadFile(join(__dirname, '../renderer/index.html')) 
   }
+  
+  mainWindow.webContents.openDevTools();
 }
 
 // This method will be called when Electron has finished

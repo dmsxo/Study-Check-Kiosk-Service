@@ -1,165 +1,157 @@
 #include <SoftwareSerial.h>
+SoftwareSerial scanner(9, 8);  // ← 여기만 당신 핀으로 바꾸세요
 
-// Wiring
-SoftwareSerial scanner(9, 8);
-
-// ───────────────────────────────────────────────
-// Utils
-// ───────────────────────────────────────────────
-
-// 버퍼 비우기 (안전성 증가)
-void clearSerial(SoftwareSerial &s)
-{
-  while (s.available())
-    s.read();
-  delay(3);
+// 매뉴얼에 있는 C 코드 100% 그대로 복사한 CRC-CCITT
+uint16_t crc16_ccitt(const uint8_t *data, size_t len) {
+    uint16_t crc = 0;
+    while (len--) {
+        uint8_t x = (crc >> 8) ^ *data++;
+        x ^= x >> 4;
+        crc = (crc << 8) ^ (x << 12) ^ (x << 5) ^ x;
+    }
+    return crc;
 }
 
-void sendBytes(const uint8_t *p, size_t n)
-{
-  clearSerial(scanner); // 이전 패킷 잔여 삭제
-  scanner.write(p, n);
-  scanner.flush();
+// 간단한 헥사 출력 함수 (printf 대신)
+void printHex(const uint8_t *buf, size_t len) {
+    for (size_t i = 0; i < len; i++) {
+        if (buf[i] < 0x10) Serial.print("0");
+        Serial.print(buf[i], HEX);
+        Serial.print(" ");
+    }
+    Serial.println();
 }
 
-// ───────────────────────────────────────────────
-// WRITE (완전 안전 버전)
-// ───────────────────────────────────────────────
-// 공식 포맷: 7E 00 08 LEN ADDRH ADDRL DATA CRC CRC
-void writeReg(uint16_t addr, uint8_t val)
-{
-  uint8_t pkt[] = {
-      0x7E, 0x00,
-      0x08,
-      0x01, // 1 byte write
-      (uint8_t)(addr >> 8), (uint8_t)(addr & 0xFF),
-      val,
-      0xAB, 0xCD};
+// 1바이트 읽기 (매뉴얼 77~79페이지 예시랑 100% 동일)
+bool scannerReadByte(uint16_t addr, uint8_t &value) {
+    uint8_t cmd[9] = {0x7E, 0x00, 0x07, 0x01, highByte(addr), lowByte(addr), 0x01};
+    uint16_t crc = crc16_ccitt(&cmd[2], 5);
+    cmd[7] = crc >> 8;
+    cmd[8] = crc & 0xFF;
 
-  sendBytes(pkt, sizeof(pkt));
-  delay(50); // ← 안정성을 위해 50ms 확보
-}
+    Serial.print("READ CMD  : ");
+    printHex(cmd, 9);
+    scanner.write(cmd, 9);
 
-// ───────────────────────────────────────────────
-// READ (완전 안전 버전)
-// ───────────────────────────────────────────────
-int readReg1(uint16_t addr)
-{
-  uint8_t pkt[] = {
-      0x7E, 0x00,
-      0x07, // READ
-      0x01,
-      (uint8_t)(addr >> 8), (uint8_t)(addr & 0xFF),
-      0x01, // read 1 byte
-      0xAB, 0xCD};
+    uint8_t resp[7];
+    unsigned long t = millis();
+    while (scanner.available() < 7 && millis() - t < 1000);  // 최대 1초 대기
 
-  sendBytes(pkt, sizeof(pkt));
-
-  uint8_t buf[20];
-  int idx = 0;
-  unsigned long t0 = millis();
-
-  // 타임아웃 300ms 증가
-  while (millis() - t0 < 300)
-  {
-    while (scanner.available())
-    {
-      if (idx < (int)sizeof(buf))
-        buf[idx++] = scanner.read();
+    if (scanner.available() < 7) {
+        Serial.println(">>> READ TIMEOUT");
+        return false;
     }
 
-    // 최소 응답 길이인 7바이트 도달 시 break
-    if (idx >= 7)
-      break;
-  }
+    for (int i = 0; i < 7; i++) resp[i] = scanner.read();
 
-  if (idx < 7)
-    return -1; // Timeout
-  if (buf[0] != 0x02 || buf[1] != 0x00)
-    return -2; // Bad header
-  if (buf[2] != 0x00)
-    return -3; // BAD read status
-  if (buf[3] != 0x01)
-    return -4; // Not length=1
+    Serial.print("READ RESP : ");
+    printHex(resp, 7);
 
-  return buf[4];
+    if (resp[0] != 0x02 || resp[1] != 0x00 || resp[2] != 0x00 || resp[3] != 0x01) {
+        Serial.println(">>> READ WRONG HEADER");
+        return false;
+    }
+    value = resp[4];
+    return true;
 }
 
-// ───────────────────────────────────────────────
-// SAVE to Flash (완전 안전)
-// ───────────────────────────────────────────────
-void saveToFlash()
-{
-  uint8_t pkt[] = {
-      0x7E, 0x00,
-      0x09,
-      0x01,
-      0x00, 0x00, 0x00,
-      0xDE, 0xC8};
-  sendBytes(pkt, sizeof(pkt));
+// 1바이트 쓰기
+bool scannerWriteByte(uint16_t addr, uint8_t value) {
+    uint8_t cmd[9] = {0x7E, 0x00, 0x08, 0x01, highByte(addr), lowByte(addr), value};
+    uint16_t crc = crc16_ccitt(&cmd[2], 5);
+    cmd[7] = crc >> 8;
+    cmd[8] = crc & 0xFF;
 
-  // Flash write time 최악값 여유 포함
-  delay(300); // 기존 60 → 최소 250 이상 필요. 300ms 안전.
+    Serial.print("WRITE CMD : ");
+    printHex(cmd, 9);
+    scanner.write(cmd, 9);
+
+    uint8_t ack[7];
+    unsigned long t = millis();
+    while (scanner.available() < 7 && millis() - t < 1000);
+
+    if (scanner.available() < 7) {
+        Serial.println(">>> WRITE TIMEOUT");
+        return false;
+    }
+
+    for (int i = 0; i < 7; i++) ack[i] = scanner.read();
+    Serial.print("WRITE ACK : ");
+    printHex(ack, 7);
+
+    return (ack[0] == 0x02 && ack[2] == 0x00 && ack[3] == 0x01 && ack[4] == 0x00);
 }
 
-// ───────────────────────────────────────────────
-// FACTORY RESET (가장 안전한 값)
-// ───────────────────────────────────────────────
-void factoryReset()
-{
-  writeReg(0x00D9, 0x50);
+// 플래시 저장
+bool scannerSave() {
+    uint8_t cmd[] = {0x7E, 0x00, 0x09, 0x01, 0x00, 0x00, 0x00, 0xDE, 0xC8};
+    Serial.print("SAVE CMD  : ");
+    printHex(cmd, 9);
+    scanner.write(cmd, 9);
 
-  // EEPROM 전체 리셋 + 내부 MCU 재초기화 여유
-  delay(1000);
+    uint8_t ack[7];
+    unsigned long t = millis();
+    while (scanner.available() < 7 && millis() - t < 1000);
+    if (scanner.available() < 7) {
+        Serial.println(">>> SAVE TIMEOUT");
+        return false;
+    }
+    for (int i = 0; i < 7; i++) ack[i] = scanner.read();
+    Serial.print("SAVE ACK  : ");
+    printHex(ack, 7);
+    return true;
 }
 
-// ───────────────────────────────────────────────
-// Init Values
-// ───────────────────────────────────────────────
-
-const uint8_t INIT_MODE_SILENCE_CMD = 0x01;
-const uint8_t INIT_SINGLE_SCAN_TIME = 0x64;
-const uint8_t INIT_QR_ENABLE = 0x01;
-const uint8_t INIT_WHOLE_AREA = 0x01;
-const uint8_t INIT_SCAN_ENHANCE = 0x01;
-
-// ───────────────────────────────────────────────
-// SETUP
-// ───────────────────────────────────────────────
-void setup()
-{
-  Serial.begin(115200);
-  delay(5000);
-  scanner.begin(9600);
-  delay(5000); // 기기 부팅 안정 구간
-
-  Serial.println(F("\n=== SAFE BARCODE INIT START ==="));
-
-  // 필요시
-   factoryReset();
-   delay(5000);
-
-  writeReg(0x0000, INIT_MODE_SILENCE_CMD);
-  writeReg(0x0006, INIT_SINGLE_SCAN_TIME);
-  writeReg(0x003F, INIT_QR_ENABLE);
-  writeReg(0x0120, INIT_WHOLE_AREA);
-  writeReg(0x0121, INIT_SCAN_ENHANCE);
-
-  saveToFlash();
-
-  // 검증
-  Serial.print(F("0x0000: "));
-  Serial.println(readReg1(0x0000), HEX);
-  Serial.print(F("0x0006: "));
-  Serial.println(readReg1(0x0006), HEX);
-  Serial.print(F("0x003F: "));
-  Serial.println(readReg1(0x003F), HEX);
-  Serial.print(F("0x0120: "));
-  Serial.println(readReg1(0x0120), HEX);
-  Serial.print(F("0x0121: "));
-  Serial.println(readReg1(0x0121), HEX);
-
-  Serial.println(F("=== SAFE INIT DONE ==="));
+void checkRegister(uint16_t addr) {
+    uint8_t val;
+    if (scannerReadByte(addr, val)) {
+        Serial.print("Register 0x");
+        if (addr < 0x100) Serial.print("0");
+        Serial.print(addr, HEX);
+        Serial.print(" = 0x");
+        if (val < 0x10) Serial.print("0");
+        Serial.println(val, HEX);
+    } else {
+        Serial.print(">>> FAILED 0x");
+        Serial.println(addr, HEX);
+    }
 }
 
-void loop() {}
+void setup() {
+    Serial.begin(115200);
+    scanner.begin(9600);
+    delay(1000);
+
+    Serial.println(F("\n=== WAVESHARE FINAL WORKING CODE ==="));
+
+    // 1. 공장 초기화 (이게 제일 중요!!!)
+    Serial.println("Factory reset...");
+    scannerWriteByte(0x00D9, 0x50);
+    scannerSave();
+    delay(3000);
+
+    // 2. 설정
+    scannerWriteByte(0x0000, 0x15);   // Continuous mode
+    scannerWriteByte(0x003F, 0x01);   // QR 코드 켜기
+    scannerWriteByte(0x0006, 0x64);   // 스캔 간격
+    scannerWriteByte(0x000E, 0x00); // HID 끄기
+    scannerWriteByte(0x000D, 0x00); // Virtual keyboard 끄기
+    scannerWriteByte(0x0060, 0x03); // Enable Suffix
+
+    Serial.println("Saving...");
+    scannerSave();
+    delay(2000);
+
+    // 3. 확인
+    Serial.println("Reading registers...");
+    checkRegister(0x0000);
+    checkRegister(0x0006);
+    checkRegister(0x003F);
+    checkRegister(0x000E);
+    checkRegister(0x000D);
+    checkRegister(0x0060);
+}
+
+void loop() {
+    // if (scanner.available()) Serial.write(scanner.read());
+}

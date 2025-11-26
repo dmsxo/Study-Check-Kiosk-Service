@@ -14,7 +14,7 @@ export default function HomeTimer() {
   }, []);
 
   useEffect(() => {
-    if (time <= 0) window.location.href = '/';
+    if (time <= 0) window.location.href = '#/';
   }, [time]);
 
   return (

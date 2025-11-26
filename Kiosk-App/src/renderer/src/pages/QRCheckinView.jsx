@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { QrCode, LoaderCircle } from 'lucide-react';
-import { check_in, verifyCode, getUser } from '../../api/AttendanceAPI';
+import { check_in, verifyCode, getUser } from '../api/AttendanceAPI';
 import CheckinComplete from '../components/ResultsScreens/CheckInComplete';
 import TimeOut from '../components/ResultsScreens/TimeOut';
 import VerificationFailed from '../components/ResultsScreens/VerificationFailed';
