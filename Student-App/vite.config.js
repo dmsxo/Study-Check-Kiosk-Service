@@ -85,7 +85,7 @@ export default defineConfig({
     port: 5173, // 프론트 포트
     proxy: {
       '/api': {
-        target: "http://192.168.124.101:3000", // NestJS 서버
+        target: "http://192.168.219.104:3000", // NestJS 서버
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path.replace(/^\/api/, '')

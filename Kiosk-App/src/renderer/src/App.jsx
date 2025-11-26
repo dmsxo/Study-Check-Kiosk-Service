@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, HashRouter, Route, Routes } from 'react-router-dom';
 import HomeView from './pages/HomeView';
 import KeyChekinView from './pages/KeyCheckinView';
 import QRCheckinView from './pages/QRCheckinView';
@@ -20,15 +20,15 @@ function App() {
   // }, []);
 
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
-        <Route path="/" element={<HomeView />} />
-        <Route path="/qr" element={<QRCheckinView />} />
-        <Route path="/key" element={<KeyChekinView />} />
-        <Route path="/guide" element={<GuideView />} />
-        <Route path="/non-connection-serial" element={<NonConnectionSerialPort />} />
+        <Route index element={<HomeView />} />
+        <Route path="qr" element={<QRCheckinView />} />
+        <Route path="key" element={<KeyChekinView />} />
+        <Route path="guide" element={<GuideView />} />
+        <Route path="non-connection-serial" element={<NonConnectionSerialPort />} />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 

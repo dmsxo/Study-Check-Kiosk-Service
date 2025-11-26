@@ -11,14 +11,8 @@ files:
 asarUnpack:
   - resources/**
 
-# 💻 Windows 서명 비활성화 설정
 win:
   executableName: kiosk-app
-  # 서명 파일을 찾지 못하더라도 빌드를 강제로 진행하도록 dummy 인증서 설정을 추가
-  sign: false
-  certificateSubjectName: 'CN=Unknown'
-  certificateSha1: '00' # 이 값을 설정하면 서명을 시도하지 않습니다.
-  publisherName: 'Unknown Publisher' # Windows 사용자에게 표시될 게시자 이름
 
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
@@ -26,11 +20,7 @@ nsis:
   uninstallDisplayName: ${productName}
   createDesktopShortcut: always
 
-# 🍎 macOS 서명 비활성화 설정
 mac:
-  # 서명(identity)을 명시적으로 null로 설정하여 서명 단계를 건너뜁니다.
-  identity: null
-  hardenedRuntime: false # 서명 없이는 보안 강화 런타임을 비활성화해야 합니다.
   entitlementsInherit: build/entitlements.mac.plist
   extendInfo:
     - NSCameraUsageDescription: Application requests access to the device's camera.

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getCode, getUser, ping } from '../../api/AttendanceAPI';
+import { getCode, getUser, ping } from '../api/AttendanceAPI';
 import { Clock } from 'lucide-react';
 import CheckinComplete from '../components/ResultsScreens/CheckInComplete';
 import TimeOut from '../components/ResultsScreens/TimeOut';
@@ -33,10 +33,10 @@ function KeyChekinView() {
           if (res) {
             getUser(res).then((user) => {
               console.log(user);
-                setIssuer(user.name);
-                setState('success');
-              });
-            }
+              setIssuer(user.name);
+              setState('success');
+            });
+          }
         });
       }, 1000);
 
