@@ -71,10 +71,7 @@ async function bootstrap() {
       saveUninitialized: false,
       rolling: true,
       cookie: {
-        domain: 'palaeozoological-mickie-snoopily.ngrok-free.dev',
-        httpOnly: true,
-        secure: true, // https 쓸 땐 true
-        sameSite: 'none', // cross-site 요청에서 쿠키 허용
+        secure: false, // https 쓸 땐 true
         maxAge: 1000 * 60 * 60 * 24 * 2, // 2일
       },
     }),
