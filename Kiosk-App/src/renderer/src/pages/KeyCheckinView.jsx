@@ -20,7 +20,7 @@ function KeyChekinView() {
       };
       run();
       //타이머 시작
-      setRemain(15);
+      setRemain(20);
       const timer = setInterval(() => {
         setRemain((prev) => {
           if (prev === 0) {
@@ -72,7 +72,7 @@ function KeyChekinView() {
     <div className="min-h-screen flex flex-col justify-center items-center bg-white p-8">
       {renderContent()}
 
-      {(!remain || remain <= 5) && <HomeButton />}
+      {(remain != null || remain <= 15) && <HomeButton />}
     </div>
   );
 }

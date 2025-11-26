@@ -1,12 +1,12 @@
 // Home.jsx
-import { useState, useEffect } from "react";
-import QRView from "./HomePages/QRView";
-import StudyView from "./HomePages/StudyView";
-import { getStatus, getCode } from "../../api/AttendanceAPI";
-import { useAuth } from "../../contexts/AuthContext";
+import { useState, useEffect } from 'react';
+import QRView from './HomePages/QRView';
+import StudyView from './HomePages/StudyView';
+import { getStatus, getCode } from '../../api/AttendanceAPI';
+import { useAuth } from '../../contexts/AuthContext';
 
 function Home() {
-  const [code, setCode] = useState("");
+  const [code, setCode] = useState('');
   const [isStudying, setIsStudying] = useState(false);
 
   const { user } = useAuth();

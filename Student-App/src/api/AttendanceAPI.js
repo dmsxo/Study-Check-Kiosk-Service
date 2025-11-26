@@ -2,9 +2,10 @@ import { getCurrentPeriodId } from '../helpers/application.helper';
 import api from './Instance'
 
 export async function getCode(studentId) {
+  const periodId = await getCurrentPeriodId();
   try {
     const response = await api.post(`/auth/checkin/code`, {
-      issuer: `student:${studentId}`,
+      issuer: `student:${studentId}:${periodId}`,
       ttl: 10000
     });
     return response.data;

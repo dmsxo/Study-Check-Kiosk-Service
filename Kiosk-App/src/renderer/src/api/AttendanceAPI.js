@@ -5,7 +5,7 @@ const address = import.meta.env.VITE_API_URL;
 export async function getCode(){
   const response = await axios.post(`${address}/auth/checkin/code`, {
       issuer: "kiosk:1", // or "kiosk"
-      ttl: 15000
+      ttl: 20000
     });
     return response.data; // { code, expiresIn }
 }
@@ -27,8 +27,8 @@ export async function ping(kioksId=1){ // 임시 값
   return res.data;
 }
 
-export async function check_in(studentId){
-  await axios.post(`${address}/users/${studentId}/attendances/check-in`, {periodId: 1});
+export async function check_in(studentId, periodId){
+  await axios.post(`${address}/users/${studentId}/attendances/check-in`);
 }
 
 // export async function getStatus(studentId, type) {

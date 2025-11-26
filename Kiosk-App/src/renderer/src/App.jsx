@@ -7,17 +7,17 @@ import { useEffect, useState } from 'react';
 import NonConnectionSerialPort from './components/ResultsScreens/NonConnectionSerialPort';
 
 function App() {
-  // const [portStatus, setPortStatus] = useState('disconnected');
+  const [portStatus, setPortStatus] = useState('disconnected');
 
-  // useEffect(() => {
-  //   const unsubscribeStatus = window.serialAPI.onPortStatus((status) => {
-  //     setPortStatus(status);
-  //     if (status === 'disconnected') window.location.href = '/non-connection-serial';
-  //     else if (status === 'connected') window.location.href = '/';
-  //   });
+  useEffect(() => {
+    const unsubscribeStatus = window.serialAPI.onPortStatus((status) => {
+      setPortStatus(status);
+      if (status === 'disconnected') window.location.href = '#/non-connection-serial';
+      else if (status === 'connected') window.location.href = '#/';
+    });
 
-  //   return () => unsubscribeStatus();
-  // }, []);
+    return () => unsubscribeStatus();
+  }, []);
 
   return (
     <HashRouter>

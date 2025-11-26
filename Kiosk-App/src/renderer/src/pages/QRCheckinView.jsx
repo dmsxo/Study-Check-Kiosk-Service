@@ -39,12 +39,12 @@ function QRCheckinView() {
       const verify = async () => {
         try {
           const res = await verifyCode(qrValue);
-          const [issuerType, detail] = res.split(':');
+          const [issuerType, studentId, periodId] = res.split(':');
           if (issuerType === 'student') {
-            const user = await getUser(detail);
+            const user = await getUser(studentId);
             console.log(user);
             setIssuer(user.name);
-            await check_in(user.studentId);
+            await check_in(user.studentId, periodId);
             setState('success');
           }
         } catch (err) {
