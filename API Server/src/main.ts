@@ -71,10 +71,9 @@ async function bootstrap() {
       saveUninitialized: false,
       rolling: true,
       cookie: {
-        domain: 'palaeozoological-mickie-snoopily.ngrok-free.dev',
         httpOnly: true,
-        secure: true, // https 쓸 땐 true
-        sameSite: 'none', // cross-site 요청에서 쿠키 허용
+        secure: false, // https 쓸 땐 true
+        sameSite: 'lax', // cross-site 요청에서 쿠키 허용
         maxAge: 1000 * 60 * 60 * 24 * 2, // 2일
       },
     }),
@@ -82,7 +81,13 @@ async function bootstrap() {
 
   // CORS
   app.enableCors({
-    origin: true,
+    origin: [
+      'http://localhost:5173',
+      'http://localhost:4000',
+      'http://172.17.80.1:5173',
+      'http://192.168.1.133:4000',
+      'http://192.168.1.126:5173',
+    ],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   });
