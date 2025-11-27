@@ -111,8 +111,8 @@ function StudyView() {
   else
     return (
       <ScreenFrame>
-        <div className="flex justify-center items-center">
-          <LayoutContainer>
+        <div className="h-full flex flex-col justify-center items-center gap-2">
+          <LayoutContainer className='w-full'>
             <div className="flex gap-1.5 mb-2">
               <Clock className="w-3.5 h-3.5 text-sky-500" />
               <div className="text-xs text-gray-600 font-medium">
@@ -130,7 +130,7 @@ function StudyView() {
               </div>
             </div>
           </LayoutContainer>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="w-full grid grid-cols-2 gap-2">
             <StatCard
               title={'연속 출석일'}
               Icon={Flame}
@@ -164,7 +164,7 @@ function StudyView() {
           {isAutoCheckout ? (
             <>시간이 지나면 자동으로 체크아웃 됩니다.</>
           ) : (
-            <LayoutContainer className="text-center">
+            <LayoutContainer className="w-full text-center">
               <button
                 onClick={() => {
                   navigate('/checkout');

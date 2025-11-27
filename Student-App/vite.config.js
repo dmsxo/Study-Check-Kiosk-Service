@@ -80,16 +80,9 @@ export default defineConfig({
     })
   ],
 
-  // server: {
-  //   host:true,
-  //   port: 5173, // 프론트 포트
-  //   proxy: {
-  //     '/api': {
-  //       target: "http://localhost:3000", // NestJS 서버
-  //       changeOrigin: true,
-  //       secure: false,
-  //       rewrite: (path) => path.replace(/^\/api/, '')
-  //     },
-  //   },
-  // },
+  server: {
+    host:true,
+    port: 5173, // 프론트 포트
+    allowedHosts: ["daein.mcv.kr"]
+  },
 })
