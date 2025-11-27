@@ -24,7 +24,7 @@ interface CachedUrl {
 export class ImagesService {
   private s3 = new S3Client({
     region: 'ap-northeast-2',
-    endpoint: 'http://localhost:9000',
+    endpoint: 'http://daein.mcv.kr:9000',
     credentials: { accessKeyId: 'admin', secretAccessKey: 'password123' },
     forcePathStyle: true,
   });
