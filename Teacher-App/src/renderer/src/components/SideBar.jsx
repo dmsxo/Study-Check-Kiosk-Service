@@ -24,11 +24,11 @@ function SideBar() {
   const menuItems = [
     { id: 'Dashboard', icon: Monitor, label: '오늘의 출석', route: '/' },
     { id: 'Analytics', icon: TrendingUp, label: '출결 현황', route: '/analytics' },
-    { id: 'AcademicCalendar', icon: Calendar, label: '학사 일정 관리', route: '/calendar' },
+    { id: 'AcademicCalendar', icon: Calendar, label: '학사 일정 관리', route: '/calendar' }
     // { id: 'projects', icon: FolderOpen, label: '과제 내기' },
-    { id: 'TeacherList', icon: Users, label: '선생님 관리', route: '/teachers' },
+    // { id: 'TeacherList', icon: Users, label: '선생님 관리', route: '/teachers' },
     // { id: 'reset', icon: RotateCcw, label: '재설정' },
-    { id: 'PosterList', icon: Image, label: '홍보물 관리', route: '/posters' }
+    // { id: 'PosterList', icon: Image, label: '홍보물 관리', route: '/posters' }
     // { id: 'Settings', icon: Settings, label: '설정' }
   ];
 
@@ -96,7 +96,7 @@ function SideBar() {
       </nav>
 
       {/* User Profile */}
-      <div className="h-16 flex items-center px-2 border-t border-gray-200">
+      {/* <div className="h-16 flex items-center px-2 border-t border-gray-200">
         <div className="w-10 h-10 flex items-center justify-center shrink-0">
           <div className="w-8 h-8 bg-linear-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
             <span className="text-white font-semibold text-xs">A</span>
@@ -108,7 +108,7 @@ function SideBar() {
             <p className="text-xs text-gray-500 truncate">sumi@gmail.com</p>
           </div>
         )}
-      </div>
+      </div> */}
     </div>
   );
 }

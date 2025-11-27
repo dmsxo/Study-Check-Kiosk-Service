@@ -76,13 +76,9 @@ function Dashboard() {
     }
   ]);
 
-  const studentMap = useMemo(() => {
-    return new Map(studentList.map((s) => [s.studentId, s]));
-  }, [studentList]);
-
   const [studyType, setStudyType] = useState('');
   const [selected, setSelected] = useState(new Set());
-  const [status, setStatus] = useState([]);
+  const [status, setStatus] = useState(states);
 
   useEffect(() => {
     async function getStudents(type) {
@@ -99,6 +95,10 @@ function Dashboard() {
       });
     }
   }, [studyType]);
+
+  const studentMap = useMemo(() => {
+    return new Map(studentList.map((s) => [s.studentId, s]));
+  }, [studentList]);
 
   return (
     <div className="space-y-5 min-w-fit">
@@ -128,6 +128,7 @@ function Dashboard() {
           <Dropdown
             title="상태"
             options={states}
+            value={status}
             onChange={setStatus}
             placeholder="상태 선택"
             multiSelect={true}

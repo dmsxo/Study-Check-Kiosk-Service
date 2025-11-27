@@ -3,8 +3,15 @@ import LayoutContainer from '../../../components/UI/LayoutContainer';
 import Dropdown from '../../../components/UI/Dropdown';
 import MonthSelecter from '../../../components/AcademicCalendar/MonthSelecter';
 import StudentTreeDropdown from '../../../components/UI/StudentTreeDropdown';
+import dayjs from 'dayjs';
 
-function AnalyticsMainContents({ setSelectedStudent, selectedMonth, setSelectedMonth }) {
+function AnalyticsMainContents({
+  studyType,
+  setStudyType,
+  setSelectedStudent,
+  selectedMonth,
+  setSelectedMonth
+}) {
   const types = ['아침 독서', '야간 자율 학습'];
   const [list, setList] = useState([
     { studentId: 20129, name: '황은태', info: '26/30', hour: 150, rate: '90%' },
@@ -34,11 +41,35 @@ function AnalyticsMainContents({ setSelectedStudent, selectedMonth, setSelectedM
 
   const [selected, setSelected] = useState(new Set());
 
+  useEffect(() => {
+    async function getStudents(type) {
+      console.log(type);
+      const year = selectedMonth.year();
+      const month = selectedMonth.month();
+
+      const startOfMonth = dayjs(`${year}-${month}-01`).startOf('day');
+      const endOfMonth = dayjs(`${year}-${month}-01`).endOf('month');
+      return await getUserByFilter(
+        type,
+        startOfMonth.format('YYYY-MM-DD'),
+        endOfMonth.format('YYYY-MM-DD')
+      );
+    }
+    if (studyType[0] === '아침 독서' || studyType[0] === '야간 자율 학습') {
+      getStudents(studyType[0] === '아침 독서' ? 'morning' : 'night').then((res) => {
+        setList(res);
+        console.log(res);
+        setSelected(new Set(res.map((s) => s.studentId)));
+        console.log(selected);
+      });
+    }
+  }, [studyType]);
+
   return (
     <>
       <div className="flex justify-between items-center mb-5">
         <h1 className="font-semibold text-3xl text-gray-900">출결 현황</h1>
-        <button className="bg-green-800 px-4 py-2 rounded-xl text-white">EXEL로 내보내기</button>
+        {/* <button className="bg-green-800 px-4 py-2 rounded-xl text-white">EXEL로 내보내기</button> */}
       </div>
 
       {/* 조건 선택 */}
