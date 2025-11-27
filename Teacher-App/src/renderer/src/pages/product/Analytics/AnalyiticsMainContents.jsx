@@ -1,16 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import LayoutContainer from '../../../components/UI/LayoutContainer';
 import Dropdown from '../../../components/UI/Dropdown';
 import MonthSelecter from '../../../components/AcademicCalendar/MonthSelecter';
 import StudentTreeDropdown from '../../../components/UI/StudentTreeDropdown';
 
 function AnalyticsMainContents({ setSelectedStudent, selectedMonth, setSelectedMonth }) {
-  // filter options
-  const grades = ['1학년', '2학년', '3학년'];
-  const classes = ['1반', '2반', '3반', '4반', '5반', '6반', '7반', '8반', '9반', '10반'];
-
   const types = ['아침 독서', '야간 자율 학습'];
-  const list = [
+  const [list, setList] = useState([
     { studentId: 20129, name: '황은태', info: '26/30', hour: 150, rate: '90%' },
     { studentId: 20101, name: '박지원', info: '26/30', hour: 150, rate: '90%' },
     { studentId: 20102, name: '김한율', info: '26/30', hour: 150, rate: '90%' },
@@ -31,7 +27,10 @@ function AnalyticsMainContents({ setSelectedStudent, selectedMonth, setSelectedM
     { studentId: 20117, name: '안재원', info: '26/30', hour: 150, rate: '90%' },
     { studentId: 20118, name: '김동훈', info: '26/30', hour: 150, rate: '90%' },
     { studentId: 20119, name: '박현재', info: '26/30', hour: 150, rate: '90%' }
-  ];
+  ]);
+  const studentMap = useMemo(() => {
+    return new Map(list.map((s) => [s.studentId, s]));
+  }, [list]);
 
   const [selected, setSelected] = useState(new Set());
 
@@ -91,7 +90,8 @@ function AnalyticsMainContents({ setSelectedStudent, selectedMonth, setSelectedM
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-200">
-            {list.map((student) => {
+            {[...selected].map((id) => {
+              const student = studentMap.get(id);
               return (
                 <tr key={student.studentId} onClick={() => setSelectedStudent(student)}>
                   <th className="whitespace-nowrap px-5 py-3 text-left text-sm">

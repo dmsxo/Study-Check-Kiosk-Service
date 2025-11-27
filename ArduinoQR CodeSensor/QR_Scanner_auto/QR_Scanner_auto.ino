@@ -1,86 +1,81 @@
 #include <SoftwareSerial.h>
-SoftwareSerial scanner(9, 8);
+SoftwareSerial scanner(9, 8);  // RX, TX ← 그대로
 
-#define SCANNER_BAUD 9600
+// 정답 패킷 (CRC 무시하고 0xABCD 때려박기)
+const uint8_t SCAN_START[]  = {0x7E, 0x00, 0x08, 0x01, 0x00, 0x02, 0x01, 0xAB, 0xCD};
+const uint8_t SCAN_STOP[]   = {0x7E, 0x00, 0x08, 0x01, 0x00, 0x02, 0x00, 0xAB, 0xCD};
+const uint8_t ACK[] = {0x02, 0x00, 0x00, 0x01, 0x00, 0x33, 0x31};
 
-bool readPacket(uint8_t *buf, size_t &len, unsigned long timeout = 500) {
-  unsigned long t0 = millis();
-  size_t idx = 0;
+String result = "";
+bool scanning = false;
+unsigned long startTime = 0;
+const unsigned long TIMEOUT = 10000;  // 10초
 
-  while (millis() - t0 < timeout) {
-    while (scanner.available()) {
-      uint8_t b = scanner.read();
+void clearBuffer() {
+  while (scanner.available()) scanner.read();
+}
 
-      // 시작바이트 0x02
-      if (idx == 0 && b != 0x02) continue;
-
-      buf[idx++] = b;
-
-      // 길이 정보 확보
-      if (idx == 4) {
-        uint8_t L = buf[3];
-        len = 4 + L + 2;
-      }
-
-      if (idx > 4 && idx == len) return true;
-
-      if (idx >= 200) return false;
-    }
+void discardAck() {
+  unsigned long t = millis();
+  int idx = 0;
+  while (millis() - t < 200 && idx < 7) {
+    if (scanner.available() && scanner.read() == ACK[idx]) idx++;
+    else idx = 0;
   }
-  return false;
-}
-
-void triggerScan() {
-  uint8_t cmd[] = {0x7E,0x00,0x08,0x01,0x00,0x02,0x01,0xAB,0xCD};
-  scanner.write(cmd, sizeof(cmd));
-}
-
-void cancelScan() {
-  uint8_t cmd[] = {0x7E,0x00,0x08,0x01,0x00,0x02,0x00,0xAB,0xCD};
-  scanner.write(cmd, sizeof(cmd));
-}
-
-bool scanOnce(String &result) {
-  triggerScan();
-
-  uint8_t pkt[200];
-  size_t pktLen;
-
-  unsigned long t0 = millis();
-  while (millis() - t0 < 8000) {
-
-    if (readPacket(pkt, pktLen, 50)) {
-      if (pkt[0] == 0x02 && pkt[1] == 0x00) {
-        uint8_t L = pkt[3];
-        result = "";
-        for (int i = 0; i < L; i++) {
-          result += (char)pkt[4+i];
-        }
-        return true;
-      }
-    }
-  }
-
-  cancelScan();
-  return false;
 }
 
 void setup() {
   Serial.begin(115200);
-  scanner.begin(SCANNER_BAUD);
-  Serial.println("Scanner Ready. Press 's' to scan.");
+  scanner.begin(9600);
+  delay(500);
 }
 
 void loop() {
+  // s 누르면 시작
   if (Serial.available()) {
-    if (Serial.read() == 's') {
-      String out;
-      Serial.println("Scanning...");
-
-      if (scanOnce(out))
-        Serial.println("RESULT = " + out);
-      else
-        Serial.println("Fail.");
+    char cmd = Serial.read();
+    if (cmd == 's' || cmd == 'S') {
+      if (scanning) return;
+      scanning = true;
+      startTime = millis();
+      result = "";
+      
+      clearBuffer();
+      scanner.write(SCAN_START, 9);
+      discardAck();
     }
+    
+    if (cmd == 'c' || cmd == 'C') {
+      if (scanning) {
+        scanner.write(SCAN_STOP, 9);
+        scanning = false;
+        if (result.length() == 0) Serial.println("404");
+        else Serial.println(result);
+        result = "";
+      }
+    }
+  }
+
+  // 스캐너에서 데이터 읽기
+  while (scanner.available() && scanning) {
+  char c = scanner.read();
+//  Serial.print(c);
+
+  if (c == '\n') {
+    scanning = false;
+    Serial.println(result);
+    scanner.write(SCAN_STOP, 9);
+    result = "";
+  } else if (c != '\r') {
+    result += c;
+  }
+}
+
+  // 10초 타임아웃
+  if (scanning && millis() - startTime > TIMEOUT) {
+    scanning = false;
+    scanner.write(SCAN_STOP, 9);
+    Serial.println("404");
+    result = "";
   }
 }

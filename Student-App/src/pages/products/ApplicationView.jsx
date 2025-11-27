@@ -1,9 +1,9 @@
-import ScreenFrame from "./../../components/UIComponents/ScreenFrame";
-import LayoutContainer from "./../../components/UIComponents/LayoutContainer";
-import React, { useEffect, useState } from "react";
-import { Calendar, Clock, Users } from "lucide-react";
-import { transformPeriods } from "../../helpers/application.helper";
-import PeriodCard from "../../components/ApplicationComponents/PeriodCard";
+import ScreenFrame from './../../components/UIComponents/ScreenFrame';
+import LayoutContainer from './../../components/UIComponents/LayoutContainer';
+import React, { useEffect, useState } from 'react';
+import { Calendar, Clock, Users } from 'lucide-react';
+import { transformPeriods } from '../../helpers/application.helper';
+import PeriodCard from '../../components/ApplicationComponents/PeriodCard';
 
 function ApplicationView() {
   const [studyPrograms, setStudyPrograms] = useState([]);
@@ -22,6 +22,11 @@ function ApplicationView() {
       <h1 className="font-semibold text-gray-900 text-xl mb-4">나의 신청</h1>
       <LayoutContainer>
         <h3 className="font-semibold text-gray-900 mb-2">프로그램 리스트</h3>
+        {studyPrograms.length == 0 && (
+          <div className="w-full h-20 bg-gray-100 flex justify-center items-center rounded-xl text-gray-600">
+            현재 운영중인 자율학습이 존재하지 않습니다.
+          </div>
+        )}
         {studyPrograms.length > 0 &&
           studyPrograms?.map((program) => {
             return (
