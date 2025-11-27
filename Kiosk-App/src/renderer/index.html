@@ -4,14 +4,15 @@
     <meta charset="UTF-8" />
     <title>Electron</title>
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta http-equiv="Content-Security-Policy" 
-    content="
-      default-src 'self';
-      script-src 'self';
-      connect-src 'self' http://192.168.219.104:3000 ws://localhost:3000;
-      style-src 'self' 'unsafe-inline';
-      img-src 'self' data:;
-    ">
+    <meta http-equiv="Content-Security-Policy"
+  content="
+    default-src 'self';
+    script-src 'self';
+    connect-src 'self' http://192.168.1.126:3000 ws://192.168.1.126:3000;
+    style-src 'self' 'unsafe-inline';
+    img-src 'self' data:;
+  ">
+
   </head>
 
   <body>
