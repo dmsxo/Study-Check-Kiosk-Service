@@ -1,5 +1,11 @@
+import { ChevronLeft } from 'lucide-react';
+
 function GuideView() {
-  return <div className="flex justify-center items-center">하이</div>;
+  return (
+    <button className="text-gray-800 p-4" onClick={() => (window.location.href = '#/')}>
+      <ChevronLeft size={30} />
+    </button>
+  );
 }
 
 export default GuideView;

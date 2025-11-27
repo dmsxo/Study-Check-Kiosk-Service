@@ -4,7 +4,7 @@ import { Users, UserPen, UserX, LogOut } from 'lucide-react';
 import dayjs from 'dayjs';
 import Dropdown from '../../components/UI/Dropdown';
 import StudentTreeDropdown from '../../components/UI/StudentTreeDropdown';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { getUserByFilter } from '../../api/StudentManagementAPI';
 
 function Dashboard() {
@@ -32,52 +32,56 @@ function Dashboard() {
 
   // student list (dummy)
   const [studentList, setStudentList] = useState([
-    // {
-    //   studentId: 20129,
-    //   name: '황은태',
-    //   status: '공부중',
-    //   check_in_time: 'hh:mm:ss',
-    //   check_out_time: 'hh:mm:ss'
-    // },
-    // {
-    //   studentId: 20618,
-    //   name: '박지원',
-    //   status: '공부중',
-    //   check_in_time: 'hh:mm:ss',
-    //   check_out_time: 'hh:mm:ss'
-    // },
-    // {
-    //   studentId: 20701,
-    //   name: '김한율',
-    //   status: '퇴실',
-    //   check_in_time: 'hh:mm:ss',
-    //   check_out_time: 'hh:mm:ss'
-    // },
-    // {
-    //   studentId: 20319,
-    //   name: '정성훈',
-    //   status: '미참여',
-    //   check_in_time: 'hh:mm:ss',
-    //   check_out_time: 'hh:mm:ss'
-    // },
-    // {
-    //   studentId: 20105,
-    //   name: '문승준',
-    //   status: '퇴실',
-    //   check_in_time: 'hh:mm:ss',
-    //   check_out_time: 'hh:mm:ss'
-    // },
-    // {
-    //   studentId: 20619,
-    //   name: '박종석',
-    //   status: '미참여',
-    //   check_in_time: 'hh:mm:ss',
-    //   check_out_time: 'hh:mm:ss'
-    // }
+    {
+      studentId: 20129,
+      name: '황은태',
+      status: '공부중',
+      check_in_time: 'hh:mm:ss',
+      check_out_time: 'hh:mm:ss'
+    },
+    {
+      studentId: 20618,
+      name: '박지원',
+      status: '공부중',
+      check_in_time: 'hh:mm:ss',
+      check_out_time: 'hh:mm:ss'
+    },
+    {
+      studentId: 20701,
+      name: '김한율',
+      status: '퇴실',
+      check_in_time: 'hh:mm:ss',
+      check_out_time: 'hh:mm:ss'
+    },
+    {
+      studentId: 20319,
+      name: '정성훈',
+      status: '미참여',
+      check_in_time: 'hh:mm:ss',
+      check_out_time: 'hh:mm:ss'
+    },
+    {
+      studentId: 20105,
+      name: '문승준',
+      status: '퇴실',
+      check_in_time: 'hh:mm:ss',
+      check_out_time: 'hh:mm:ss'
+    },
+    {
+      studentId: 20619,
+      name: '박종석',
+      status: '미참여',
+      check_in_time: 'hh:mm:ss',
+      check_out_time: 'hh:mm:ss'
+    }
   ]);
 
+  const studentMap = useMemo(() => {
+    return new Map(studentList.map((s) => [s.studentId, s]));
+  }, [studentList]);
+
   const [studyType, setStudyType] = useState('');
-  const [selected, setSelected] = useState(new Set(studentList.map((s) => s.studentId)));
+  const [selected, setSelected] = useState(new Set());
   const [status, setStatus] = useState([]);
 
   useEffect(() => {
@@ -175,7 +179,9 @@ function Dashboard() {
               </tr>
             </thead>
             <tbody>
-              {studentList.map((student) => {
+              {[...selected].map((id) => {
+                const student = studentMap.get(id);
+                if (!status.includes(student.status)) return null;
                 return (
                   <tr key={student.studentId}>
                     <td className="whitespace-nowrap px-5 py-4 text-sm text-gray-900">
