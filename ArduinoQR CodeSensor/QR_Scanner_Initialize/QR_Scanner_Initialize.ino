@@ -136,7 +136,7 @@ void setup() {
     scannerWriteByte(0x0006, 0x64);   // 스캔 간격
     scannerWriteByte(0x000E, 0x00); // HID 끄기
     scannerWriteByte(0x000D, 0x00); // Virtual keyboard 끄기
-    scannerWriteByte(0x0060, 0x03); // Enable Suffix
+    scannerWriteByte(0x0060, 0x63); // Enable Suffix
 
     Serial.println("Saving...");
     scannerSave();
