@@ -11,12 +11,13 @@ function selectedMessege(options, option_cnt) {
 function Dropdown({
   title = '타이틀',
   options,
+  value = [],
   placeholder = '옵션을 선택하세요',
   onChange,
   multiSelect
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedItems, setSelectedItems] = useState([]);
+  const [selectedItems, setSelectedItems] = useState([...value]);
   const dropdownRef = useRef(null);
 
   useEffect(() => {
