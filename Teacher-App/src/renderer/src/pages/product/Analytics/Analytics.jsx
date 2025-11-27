@@ -91,6 +91,8 @@ function Analytics() {
         className="flex flex-col overflow-auto scrollbar-hide"
       >
         <AnalyticsMainContents
+          studyType={studyType}
+          setStudyType={setStudyType}
           setSelectedStudent={setSelectedStudent}
           selectedMonth={selectedMonth}
           setSelectedMonth={setSelectedMonth}
