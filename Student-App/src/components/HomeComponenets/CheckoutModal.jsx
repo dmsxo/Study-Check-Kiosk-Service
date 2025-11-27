@@ -111,8 +111,8 @@ export default function CheckoutModal() {
       )}
       {isCheckedOut && (
         <div className="flex justify-center items-center fixed inset-0 bg-white z-50 overflow-auto">
-          <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
-            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="bg-white rounded-2xl p-8 max-w-md w-full text-center">
+            <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="text-4xl">👋</span>
             </div>
             <h2 className="text-2xl font-bold text-gray-800 mb-2">
