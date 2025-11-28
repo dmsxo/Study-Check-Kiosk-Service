@@ -28,7 +28,7 @@ export async function ping(kioksId=1){ // 임시 값
 }
 
 export async function check_in(studentId, periodId){
-  await axios.post(`${address}/users/${studentId}/attendances/check-in`);
+  await axios.post(`${address}/users/${studentId}/attendances/check-in`, {periodId});
 }
 
 // export async function getStatus(studentId, type) {
