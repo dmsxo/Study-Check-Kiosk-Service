@@ -5,8 +5,8 @@ import isBetween from "dayjs/plugin/isBetween";
 dayjs.extend(isBetween); // 플러그인 확장
 export async function transformPeriods(){
   const registrations = await getMyRegistrations();
+  console.log(registrations);
   const periods = await getPrograms();
-
 
   const finalPeriods = periods.map(period => {
     const isParticipating = registrations.some(my => my.period.id === period.id);
@@ -20,6 +20,7 @@ export async function transformPeriods(){
 
 export async function getCurrentPeriodId() {
   const registrations = await getMyRegistrations();
+  console.log(registrations);
   const now = dayjs();
 
     for (const regi of registrations) {

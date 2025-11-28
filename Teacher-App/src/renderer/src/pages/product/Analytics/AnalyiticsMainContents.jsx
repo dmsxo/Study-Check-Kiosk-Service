@@ -55,8 +55,8 @@ function AnalyticsMainContents({
         endOfMonth.format('YYYY-MM-DD')
       );
     }
-    if (studyType[0] === '아침 독서' || studyType[0] === '야간 자율 학습') {
-      getStudents(studyType[0] === '아침 독서' ? 'morning' : 'night').then((res) => {
+    if (studyType === '아침 독서' || studyType === '야간 자율 학습') {
+      getStudents(studyType === '아침 독서' ? 'morning' : 'night').then((res) => {
         setList(res);
         console.log(res);
         setSelected(new Set(res.map((s) => s.studentId)));

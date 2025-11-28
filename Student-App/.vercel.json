@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+     {
+       "source": "/nest",
+       "destination": "http://daein.mcv.kr:3000*"
+     }
+  ]
+}
