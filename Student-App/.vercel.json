@@ -1,8 +1,8 @@
 {
   "rewrites": [
      {
-       "source": "/nest",
-       "destination": "http://daein.mcv.kr:3000*"
+       "source": "/nest/:path*",
+       "destination": "http://daein.mcv.kr:3000*/:path*"
      }
   ]
 }
