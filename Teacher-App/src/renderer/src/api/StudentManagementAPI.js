@@ -1,8 +1,9 @@
+import dayjs from 'dayjs';
 import api from './Instance';
 
 export async function getUserByFilter(studyType, activeFrom, activeTo){
   try{
-    const periods = await api.get(`study-period?study_type=${studyType}&active_from=${activeFrom}&active_to=${activeTo}&relation=true`)
+    const periods = await api.get(`/study-period?study_type=${studyType}&active_from=${activeFrom}&active_to=${activeTo}&relation=true`)
     
     const students = [];
 
@@ -21,4 +22,11 @@ export async function getUserByFilter(studyType, activeFrom, activeTo){
     console.log(e);
     return e;
   }
+}
+
+export async function getTodayAttendances(){
+  const today = dayjs().tz('Asia/Seoul');
+  const attendances = await api.get(`/attendances?date_from=${today.format("YYYY-MM-DD")}&date_to=${today.format("YYYY-MM-DD")}`)
+  console.log(attendances);
+  return attendances;
 }

@@ -5,7 +5,7 @@ import dayjs from 'dayjs';
 import Dropdown from '../../components/UI/Dropdown';
 import StudentTreeDropdown from '../../components/UI/StudentTreeDropdown';
 import { useEffect, useMemo, useState } from 'react';
-import { getUserByFilter } from '../../api/StudentManagementAPI';
+import { getTodayAttendances, getUserByFilter } from '../../api/StudentManagementAPI';
 
 function Dashboard() {
   // filter options
@@ -80,6 +80,7 @@ function Dashboard() {
   const [selected, setSelected] = useState(new Set());
   const [status, setStatus] = useState(states);
 
+  getTodayAttendances();
   useEffect(() => {
     async function getStudents(type) {
       console.log(type);
