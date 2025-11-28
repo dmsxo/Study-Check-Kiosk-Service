@@ -79,6 +79,7 @@ export class AttendanceService {
 
     const qb = this.attendanceRepo
       .createQueryBuilder('attendance')
+      .leftJoinAndSelect('attendance.studentId', 'student')
       .where('attendance.studentId = :studentId', {
         studentId: user.id,
       });

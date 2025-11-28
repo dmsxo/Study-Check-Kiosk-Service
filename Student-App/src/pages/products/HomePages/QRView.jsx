@@ -7,11 +7,10 @@ import { getStatus } from "../../../api/AttendanceAPI";
 import { useAuth } from "../../../contexts/AuthContext";
 import dayjs from "dayjs";
 
-function QRView({ code, getAuthCode, setIsStudying }) {
+function QRView({ code, getAuthCode, setIsStudying, user }) {
   const INTERVAL_SEC = 10; // 반복 주기 (초)
   const [remain, setRemain] = useState(INTERVAL_SEC);
   const [now, setNow] = useState(dayjs().tz("Asia/Seoul").startOf("minute"));
-  const { user } = useAuth();
 
   useEffect(() => {
     const updateTime = () => setNow(dayjs().tz("Asia/Seoul").startOf("minute"));

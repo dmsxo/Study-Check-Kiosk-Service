@@ -8,6 +8,6 @@ export const typeORMConfig: TypeOrmModuleOptions = {
   password: 'eunteapg',
   database: 'Study_Check_Data',
   entities: [__dirname + '/../**/*.entity.{js,ts}'],
-  synchronize: true,
-  dropSchema: true,
+  // synchronize: true,
+  // dropSchema: true,
 };

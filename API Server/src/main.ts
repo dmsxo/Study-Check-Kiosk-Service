@@ -82,7 +82,7 @@ async function bootstrap() {
   // CORS
   app.enableCors({
     origin: [
-      "http://daein.mcv.kr:5173"
+      "http://daein.mcv.kr:4173"
     ],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],

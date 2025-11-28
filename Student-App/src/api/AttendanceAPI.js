@@ -74,7 +74,7 @@ export async function checkSession() {
 }
 
 export async function check_in() {
-  const periodId = await getCurrentPeriodId();
+  const periodId = Number(await getCurrentPeriodId());
   try {
     return await api.post(`/me/attendances/check-in`, {periodId});
   } catch (error) {

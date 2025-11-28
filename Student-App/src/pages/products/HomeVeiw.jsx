@@ -11,6 +11,8 @@ function Home() {
 
   const { user } = useAuth();
 
+  console.log(user);
+
   const getAuthCode = async () => {
     const code = await getCode(user.studentId);
     setCode(code);
@@ -30,7 +32,7 @@ function Home() {
   } else {
     // console.log(isStudying);
     // return <CheckoutModal />;
-    return <QRView code={code} getAuthCode={getAuthCode} />;
+    return <QRView code={code} getAuthCode={getAuthCode} user={user} />;
   }
 }
 
