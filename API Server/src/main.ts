@@ -72,8 +72,8 @@ async function bootstrap() {
       rolling: true,
       cookie: {
         httpOnly: true,
-        secure: false, // https 쓸 땐 true
-        sameSite: 'lax', // cross-site 요청에서 쿠키 허용
+        secure: true, // https 쓸 땐 true
+        sameSite: 'none', // cross-site 요청에서 쿠키 허용
         maxAge: 1000 * 60 * 60 * 24 * 2, // 2일
       },
     }),
@@ -81,9 +81,7 @@ async function bootstrap() {
 
   // CORS
   app.enableCors({
-    origin: [
-      "http://daein.mcv.kr:4173"
-    ],
+    origin: ['http://daein.mcv.kr:4173'],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   });
