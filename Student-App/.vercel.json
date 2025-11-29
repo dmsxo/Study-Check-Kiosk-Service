@@ -2,7 +2,7 @@
   "rewrites": [
      {
        "source": "/nest/:path*",
-       "destination": "http://daein.mcv.kr:3000*/:path*"
+       "destination": "http://daein.mcv.kr:3000/:path*"
      }
   ]
 }
