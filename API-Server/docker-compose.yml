@@ -5,6 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    container_name: api-server
     ports:
       - "3000:3000"
     env_file:
@@ -12,35 +13,46 @@ services:
     restart: always
     depends_on:
       - postgres
-      - redis
-      - minio
+      - redis-cache
+      - minio-s3
   
   postgres:
     image: postgres:15
+    container_name: postgresDB
     environment:
-      - POSTGRES_USER=daein_postgres
-      - POSTGRES_PASSWORD=daein_dinoSuor08
-      - POSTGRES_DB=Study_Check_Data
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
     restart: always
 
   redis-cache:
-    image: redis:6-alpine
+    image: redis:7.4-alpine
+    container_name: redisCache
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT}:${REDIS_PORT}"
+    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}", "--appendonly", "yes"]
     restart: always
+    volumes:
+      - redis_data:/data
   minio-s3:
     image: minio/minio
+    container_name: minioS3
     environment:
-      - MINIO_ROOT_USER=minioadmin
-      - MINIO_ROOT_PASSWORD=minioadmin
+      - MINIO_ROOT_USER=${MINIO_ID}
+      - MINIO_ROOT_PASSWORD=${MINIO_KEY}
     command: server /data
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      - "${MINIO_PORT}:${MINIO_PORT}"
+      - "${MINIO_WEB_PORT}:${MINIO_WEB_PORT}"
     volumes:
       - miniodata:/data
     restart: always
+
+volumes:
+  pgdata:
+  redis_data:
+  miniodata:

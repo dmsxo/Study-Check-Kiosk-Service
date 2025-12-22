@@ -52,8 +52,7 @@ src/
         store: await redisStore({
           host: 'localhost',
           port: 6379,
-          db: 0,
-          keyPrefix: '',
+          password: process.env.REDIS_PASSWORD,
         }),
       }),
     }),

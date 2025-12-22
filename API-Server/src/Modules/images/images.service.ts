@@ -25,7 +25,10 @@ export class ImagesService {
   private s3 = new S3Client({
     region: 'ap-northeast-2',
     endpoint: 'http://daein.mcv.kr:9000',
-    credentials: { accessKeyId: 'admin', secretAccessKey: 'password123' },
+    credentials: {
+      accessKeyId: process.env.MINIO_ID!,
+      secretAccessKey: process.env.MINIO_KEY!,
+    },
     forcePathStyle: true,
   });
 
