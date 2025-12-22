@@ -51,9 +51,10 @@ async function bootstrap() {
   // Redis Session 사용
   const redisClient = createClient({
     socket: {
-      host: 'localhost',
-      port: 6379,
+      host: process.env.REDIS_HOST,
+      port: Number(process.env.REDIS_PORT),
     },
+    password: process.env.REDIS_PASSWORD,
   });
   await redisClient.connect();
 
