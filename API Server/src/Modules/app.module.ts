@@ -15,6 +15,7 @@ import { RegistrationModule } from './registration/registration.module';
 import { StudyPeriodModule } from './study-period/study-period.module';
 import { ScheduleModule } from './schedule/schedule.module';
 import { BullModule } from '@nestjs/bull';
+import { ConfigModule } from '@nestjs/config';
 /*
 src/
 ├─ auth/
@@ -40,6 +41,10 @@ src/
 @Module({
   imports: [
     TypeOrmModule.forRoot(typeORMConfig),
+
+    ConfigModule.forRoot({
+      isGlobal: true, // 전역 환경변수
+    }),
 
     CacheModule.registerAsync({
       isGlobal: true,
