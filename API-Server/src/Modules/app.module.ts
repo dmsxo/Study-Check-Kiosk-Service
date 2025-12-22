@@ -50,15 +50,19 @@ src/
       isGlobal: true,
       useFactory: async () => ({
         store: await redisStore({
-          host: 'localhost',
-          port: 6379,
+          host: process.env.REDIS_HOST,
+          port: Number(process.env.REDIS_PORT),
           password: process.env.REDIS_PASSWORD,
         }),
       }),
     }),
 
     BullModule.forRoot({
-      redis: { host: 'localhost', port: 6379 },
+      redis: {
+        host: process.env.REDIS_HOST,
+        port: Number(process.env.REDIS_PORT),
+        password: process.env.REDIS_PASSWORD,
+      },
       defaultJobOptions: {
         removeOnComplete: true,
         removeOnFail: true,
