@@ -131,12 +131,23 @@ void setup() {
     delay(3000);
 
     // 2. 설정
-    scannerWriteByte(0x0000, 0x15);   // Continuous mode
-    scannerWriteByte(0x003F, 0x01);   // QR 코드 켜기
-    scannerWriteByte(0x0006, 0x64);   // 스캔 간격
+    scannerWriteByte(0x0000, 0x15); // Continuous mode
+    scannerWriteByte(0x003F, 0x01); // QR 코드 켜기
+    scannerWriteByte(0x0006, 0x64); // 스캔 간격
     scannerWriteByte(0x000E, 0x00); // HID 끄기
     scannerWriteByte(0x000D, 0x00); // Virtual keyboard 끄기
     scannerWriteByte(0x0060, 0x63); // Enable Suffix
+//    scannerWriteByte(0x002C, 0x08); // whole Area
+    // 5. 반응성 + 인식 거리 극한 튜닝 (매뉴얼 p.86-96)
+    scannerWriteByte(0x000F, 0x80);   // Sensitivity 1 → 매우 높음 (기본 0x32)
+    scannerWriteByte(0x0010, 0x50);   // Sensitivity 2 → 높음 (기본 0x0A)
+    scannerWriteByte(0x0005, 0x00);   // 스캔 간격 최소 → 연사 모드
+    scannerWriteByte(0x0004, 0x03);   // 흔들림 보정 최소 → 빠른 반응
+    scannerWriteByte(0x0014, 0x00);   // 데이터 출력 지연 거의 없앰
+
+//    // 6. 조명 & 조준선 최대로 밝게 (매뉴얼 p.96)
+    scannerWriteByte(0x00A0, 0xFF);   // Aim light (조준 레이저) 최대 밝기
+    scannerWriteByte(0x00A1, 0xFF);   // Illumination (스캔 조명) 최대 밝기
 
     Serial.println("Saving...");
     scannerSave();
@@ -150,6 +161,16 @@ void setup() {
     checkRegister(0x000E);
     checkRegister(0x000D);
     checkRegister(0x0060);
+    
+//    checkRegister(0x002C);
+    checkRegister(0x000F);
+    checkRegister(0x0010);
+    checkRegister(0x0005);
+    checkRegister(0x0006);
+    checkRegister(0x0004);
+    checkRegister(0x0014);
+    checkRegister(0x00A0);
+    checkRegister(0x00A1);
 }
 
 void loop() {
