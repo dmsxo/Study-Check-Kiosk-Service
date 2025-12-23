@@ -60,6 +60,8 @@ services:
     volumes:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
       - ./logs/nginx:/var/log/nginx
+    networks:
+      - backend-network
     depends_on:
       - api-server       # API 서버가 먼저 실행된 후 NGINX 실행
 
