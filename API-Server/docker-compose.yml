@@ -56,6 +56,8 @@ services:
     image: minio/mc
     depends_on:
       - minio-s3
+    networks:
+      - backend-network
     entrypoint: >
       /bin/sh -c "
       /usr/bin/mc alias set myminio http://minio-s3:${MINIO_PORT} ${MINIO_ID} ${MINIO_KEY};
