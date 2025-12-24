@@ -86,6 +86,7 @@ services:
     image: portainer/portainer-ce:latest
     container_name: portainer
     restart: always
+    command: -H unix:///var/run/docker.sock --http-enabled
     networks:
       - backend-network
     security_opt:
