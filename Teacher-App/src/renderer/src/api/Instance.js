@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: 'http://daein.mcv.kr:3000',
+  baseURL: 'http://daein.mcv.kr',
   headers: {
     'Content-Type': 'application/json',
   },
