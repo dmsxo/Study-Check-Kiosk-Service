@@ -17,7 +17,7 @@ import ApplicationView from "./products/ApplicationView";
 import { getCurrentPeriodId } from "../helpers/application.helper";
 
 function App() {
-  console.log(import.meta.env.VITE_API_URL);
+  console.log("api:", import.meta.env.VITE_API_URL);
   return (
     <BrowserRouter>
       <AuthProvider>
