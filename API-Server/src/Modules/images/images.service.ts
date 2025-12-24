@@ -24,7 +24,7 @@ interface CachedUrl {
 export class ImagesService {
   private s3 = new S3Client({
     region: 'ap-northeast-2',
-    endpoint: `http://${process.env.MINIO_HOST}:${process.env.MINIO_PORT}`,
+    endpoint: 'http://minio-s3:9000',
     credentials: {
       accessKeyId: process.env.MINIO_ID!,
       secretAccessKey: process.env.MINIO_KEY!,
@@ -35,6 +35,7 @@ export class ImagesService {
   private bucketName = 'images';
 
   private presignedUrlCache = new Map<string, CachedUrl>(); // filename, url
+  private readonly externalEndpoint = 'https://s3.daein.mcv.kr';
 
   // 이미지 업로드 (새로 업로드/교체)
   async uploadImage(file: Express.Multer.File, existingFilename?: string) {
@@ -113,7 +114,12 @@ export class ImagesService {
       Key: filename,
     });
 
-    const url = await getSignedUrl(this.s3, command, { expiresIn });
+    const internalUrl = await getSignedUrl(this.s3, command, { expiresIn });
+
+    const url = internalUrl.replace(
+      'http://minio-s3:9000',
+      this.externalEndpoint,
+    );
 
     this.presignedUrlCache.set(filename, {
       url,
