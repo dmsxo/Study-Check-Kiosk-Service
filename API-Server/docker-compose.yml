@@ -60,6 +60,7 @@ services:
       - backend-network
     entrypoint: >
       /bin/sh -c "
+      sleep 5;
       /usr/bin/mc alias set myminio http://minio-s3:${MINIO_PORT} ${MINIO_ID} ${MINIO_KEY};
       /usr/bin/mc mb --ignore-existing myminio/images;
       /usr/bin/mc policy set public myminio/images;
