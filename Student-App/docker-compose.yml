@@ -1,0 +1,9 @@
+services:
+  frontend:
+    build: .  # 현재 폴더에 있는 Dockerfile을 사용해서 빌드해라!
+    container_name: student-app-prod
+    ports:
+      - "80:80"
+    restart: always
+    networks:
+      - backend-network
