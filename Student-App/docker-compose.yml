@@ -1,9 +1,11 @@
 services:
-  frontend:
-    build: .  # 현재 폴더에 있는 Dockerfile을 사용해서 빌드해라!
-    container_name: student-app-prod
-    ports:
-      - "80:80"
-    restart: always
-    networks:
-      - backend-network
+  builder:
+    image: your-builder-image-name  # 이미 빌드해둔 이미지 이름
+    volumes:
+      - student_dist_data:/app/output # 볼륨 연결
+    # 실행되자마자 dist 폴더 내용을 볼륨(/app/output)으로 복사하고 종료
+    command: sh -c "cp -r /app/dist/. /app/output/"
+    
+volumes:
+  student_dist_data:
+    external: true # 미리 만들어둔 외부 볼륨을 사용함

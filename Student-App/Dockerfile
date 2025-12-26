@@ -1,21 +1,13 @@
-# 1단계: 빌드 스테이지
-FROM node:20-alpine AS build-stage
+# 1. 빌드 환경 구성
+FROM node:20-alpine
 WORKDIR /app
 
-# 캐시 효율을 위해 package.json 먼저 복사
+# 2. 의존성 설치
 COPY package*.json ./
 RUN npm install
 
-# 전체 소스 복사 및 빌드
+# 3. 소스 복사 및 빌드 (dist 폴더 생성)
 COPY . .
 RUN npm run build
 
-# 2단계: 실행 스테이지 (Nginx)
-FROM nginx:stable-alpine
-# 1단계에서 빌드된 dist 폴더만 가져옴
-COPY --from=build-stage /app/dist /usr/share/nginx/html
-# 작성한 Nginx 설정 적용
-COPY default.conf /etc/nginx/conf.d/default.conf
-
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+# 실행용 서버(Nginx 등)가 없으므로 여기서 끝납니다.
