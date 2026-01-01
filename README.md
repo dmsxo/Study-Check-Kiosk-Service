@@ -27,6 +27,8 @@
 ### 데이터 분석 및 통계 제공
 
 ### 데이터베이스 설계 (ERD)
+>>출석 시스템은 `사용자(User)`, `신청(Registration)`, `출석 기록(Attendance)`을 중심으로 구성되어 있으며,
+자율학습 `운영 기간(StudyPeriod)`을 기준으로 `신청(Registration)`을 관리합니다. `출석(Attendance)`은 사용자 단위로 기록되며, 운영 일정은 `기본 일정(DefaultSchedule)`과 특정 날짜에 대한 `예외 일정(OverrideSchedule)`으로 분리하여 설계하였습니다. 이를 통해 학사 일정 변경에 유연하게 대응할 수 있도록 하였습니다.
 ```mermaid
 erDiagram
     USER ||--o{ REGISTRATION : applies
