@@ -12,7 +12,7 @@
 이 프로젝트는 이러한 문제를 해결하기 위해자율학습 시간의 출석체크를 자동화하고, 보다 정확하고 신뢰할 수 있는 출석 관리 환경을 제공하는 것을 목표로 합니다.
 
 ## 시스템 구조 및 주요 기능
-> 출결 데이터의 **신뢰성(Reliability)**과 **일관성(Consistency)**을 최우선으로 설계된 통합 시스템입니다.
+> 출결 데이터의 **신뢰성(Reliability)** 과 **일관성(Consistency)** 을 최우선으로 설계된 통합 시스템입니다.
 
 ### 시스템 구성 개요
 
@@ -21,21 +21,83 @@
 - 모든 출결 관련 요청은 **단일 API 서버**를 통해 처리되어 비즈니스 로직과 데이터 처리를 중앙에서 통제합니다.
 
 ### 체크인 파이프라인
-### 맞춤형 학사 관리 및 운영 제어
+
+### 맞춤형 학사일정 관리 및 운영 제어
+
 ### 데이터 분석 및 통계 제공
+
 ### 데이터베이스 설계 (ERD)
+```mermaid
+erDiagram
+    USER ||--o{ REGISTRATION : applies
+    USER ||--o{ ATTENDANCE : checks
+    STUDY_PERIOD ||--o{ REGISTRATION : has
+
+    STUDY_PERIOD {
+        int id PK
+        int termId
+        int grade
+        enum studyType
+        date registration_start
+        date registration_end
+        date operation_start
+        date operation_end
+        time daily_start
+        time daily_end
+        int capacity
+    }
+
+    USER {
+        int id PK
+        string name
+        int studentId
+        string description
+        string profileImageFilename
+    }
+
+    REGISTRATION {
+        int id PK
+        date applied_at
+        enum status
+    }
+
+    ATTENDANCE {
+        int id PK
+        enum type
+        date date
+        time check_in_time
+        time check_out_time
+        string description
+    }
+
+    DEFAULT_SCHEDULE {
+        int id PK
+        int grade
+        enum studyType
+        enum weekday
+        boolean isOpen
+    }
+
+    OVERRIDE_SCHEDULE {
+        int id PK
+        int grade
+        enum studyType
+        date date
+        boolean isOpen
+    }
+```
 
 
 ## 기술 스택
 > 다중 클라이언트 환경을 기반으로 한 통합 시스템 구성
 
-### 클라이언트 애플리케이션
+### 프론트 엔드
 
-**학생용 PWA**  
+**학생용 PWA 어플리케이션**  
 [![React][React.js]][React-url]
 [![Vite][Vite.js]][Vite-url]
 
-**선생님용 관리 데스크탑 앱**  
+**선생님용 관리 데스크탑 어플리케이션**  
 [![React][React.js]][React-url]
 [![Electron][Electron.js]][Electron-url]
 [![Vite][Vite.js]][Vite-url]
@@ -57,8 +119,8 @@
 
 ### 데이터베이스 & 스토리지
 
-[![PostgreSQL][Postgres]][Postgres-url]  
-[![Redis][Redis]][Redis-url]  
+[![PostgreSQL][Postgres]][Postgres-url] 
+[![Redis][Redis]][Redis-url] 
 [![MinIO][MinIO]][MinIO-url]
 
 ---
