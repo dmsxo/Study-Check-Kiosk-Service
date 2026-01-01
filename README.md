@@ -136,10 +136,16 @@ flowchart TB
 이를 통해 학교의 교육 일정 변화에 따라  
 출석 정책을 유연하게 조정할 수 있습니다.
 
-<p align="center" style="display: flex; justify-content: center; align-items: center; gap: 5px;">
-  <img src="docs/images/study-period.png" width="45%" />
-  <img src="docs/images/create-study-period.png" width="45%" />
-</p>
+<table align="center">
+  <tr>
+    <td align="center">
+      <img src="docs/images/study-period.png" />
+    </td>
+    <td align="center">
+      <img src="docs/images/create-study-period.png" />
+    </td>
+  </tr>
+</table>
 
 ---
 
