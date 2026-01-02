@@ -251,6 +251,33 @@ erDiagram
     }
 ```
 
+## 시스템 아키텍처
+>전체 서비스의 구성 요소와 이들 간의 상호작용을 도식화한 구조도입니다.
+```mermaid
+flowchart TB
+    %% Clients
+    Teacher["선생님 클라이언트<br/>(웹)"]
+    Student["학생 클라이언트<br/>(웹/앱)"]
+    Kiosk["자율학습 키오스크"]
+
+    %% API
+    API["API 서버"]
+
+    %% Databases
+    Postgres[(PostgreSQL<br/>주 데이터베이스)]
+    Redis[(Redis<br/>캐시 / 실시간 상태)]
+    MinIO[(MinIO<br/>파일 스토리지)]
+
+    %% Connections
+    Teacher -->|HTTPS| API
+    Student -->|HTTPS| API
+    Kiosk -->|HTTPS| API
+
+    API --> Postgres
+    API --> Redis
+    API --> MinIO
+```
+
 
 ## 기술 스택
 > 다중 클라이언트 환경을 기반으로 한 통합 시스템 구성
