@@ -19,6 +19,33 @@
 - 학생의 체크인은 **쉽고 빠르고 간편하며 신뢰성있는** 구조로 동작합니다.
 - 키오스크 애플리케이션, 학생용 PWA, 교사용 데스크탑 앱은 **직접 데이터베이스에 접근하지 않습니다.**
 - 모든 출결 관련 요청은 **단일 API 서버**를 통해 처리되어 비즈니스 로직과 데이터 처리를 중앙에서 통제합니다.
+  
+### 시스템 아키텍쳐
+>전체 서비스의 구성 요소와 이들 간의 상호작용을 도식화한 구조도입니다.
+```mermaid
+flowchart TB
+    %% Clients
+    Teacher["선생님 클라이언트<br/>(웹)"]
+    Student["학생 클라이언트<br/>(웹/앱)"]
+    Kiosk["자율학습 키오스크"]
+
+    %% API
+    API["API 서버"]
+
+    %% Databases
+    Postgres[(PostgreSQL<br/>주 데이터베이스)]
+    Redis[(Redis<br/>캐시 DB)]
+    MinIO[(MinIO<br/>파일 스토리지)]
+
+    %% Connections
+    Teacher -->|HTTPS| API
+    Student -->|HTTPS| API
+    Kiosk -->|HTTPS| API
+
+    API --> Postgres
+    API --> Redis
+    API --> MinIO
+```
 
 ### 체크인 파이프라인
 본 시스템의 체크인 기능은 **Issuer 기반 인증 구조**를 중심으로 설계되었습니다.  
@@ -27,37 +54,23 @@ QR 인증, 키 입력 등 다양한 인증 방식은 모두 공통된 Issuer 인
 
 #### Issuer 기반 인증
 
-- 서버는 6자리 인증 코드를 key로 하는 Issuer 객체를 Redis에 저장합니다.
+- 서버는 6자리 인증 코드를 key로 하는 Issuer 객체를 Redis(캐시용 DB)에 저장합니다.
 - Issuer는 짧은 TTL(Time To Live)을 가지며, 일회성 또는 단기 인증을 목적으로 사용됩니다.
-- 학생 또는 키오스크는 해당 인증 코드를 제출하여 인증을 시도합니다.
+- 학생 또는 키오스크는 해당 인증 코드를 서버에 검증 요청하여 인증을 시도합니다.
 - 서버는 Redis에서 코드를 조회하여 Issuer의 유효성을 검증합니다.
-- 인증에 성공하면 Issuer에 포함된 정보(studentId, periodId, action 등)를 기반으로
-  체크인 또는 체크아웃 로직을 수행합니다.
+- 인증에 성공하면 Issuer의 정보를 기반으로 체크인 또는 체크아웃 로직을 수행합니다.
 
 이를 통해 인증 수단(QR, 키 입력 등)은 서로 독립적으로 확장할 수 있으며,
 출석 처리 로직은 하나의 공통 파이프라인으로 유지됩니다.
 
-#### 체크인 처리 흐름
+#### QR을 통한 인증 방안
+학생 앱에서 인증 코드를 받은 QR을 띄우고 키오스크에서 아두이노를 이용한 바코드 스캐너를 통하여 물리적으로 키를 전달하는 방식입니다.
+![QR](/docs/images/QR.png)
 
-1. Issuer 인증 성공 후, 학생 ID와 스터디 기간 ID를 기반으로 등록 정보를 검증합니다.
-2. 등록 상태가 ACTIVE인지 확인하고, 운영 기간 및 일일 운영 시간 내인지 검증합니다.
-3. Redis를 통해 해당 학생이 이미 체크인 상태인지 확인합니다.
-4. 체크인 상태가 아니라면 Attendance 레코드를 생성합니다.
-5. Redis에 학습 상태(study)를 저장하여 체크인 세션을 관리합니다.
-6. 자동 체크아웃이 설정된 경우, 종료 시점에 맞춰 비동기 작업을 예약합니다.
+#### 발급 키를 통한 인증 방안
+키오스크에서 발급 키를 띄운뒤 학생 앱에서 키를 입력하여 인증하는 방식입니다.
+![key](/docs/images/key.png)
 
-Redis는 실시간 학습 상태를 관리하는 세션 저장소로 사용되며,
-데이터베이스는 출석 기록의 영속성을 보장하는 역할을 담당합니다.
-
-#### 체크아웃 처리 흐름
-1. Issuer 인증을 성공합니다.
-2. Redis에서 학생의 학습 상태를 조회합니다.
-3. 체크인 상태가 존재하지 않으면 체크아웃을 거부합니다.
-4. 현재 시간이 허용된 체크아웃 시간 범위 내인지 확인합니다.
-5. Attendance 레코드를 업데이트하여 체크아웃 시간을 기록합니다.
-6. Redis 상태를 갱신하여 학습 종료 상태를 반영합니다.
-
----
 
 #### 전체 체크인/아웃 흐름 다이어그램
 
@@ -251,38 +264,10 @@ erDiagram
     }
 ```
 
-## 시스템 아키텍처
->전체 서비스의 구성 요소와 이들 간의 상호작용을 도식화한 구조도입니다.
-```mermaid
-flowchart TB
-    %% Clients
-    Teacher["선생님 클라이언트<br/>(웹)"]
-    Student["학생 클라이언트<br/>(웹/앱)"]
-    Kiosk["자율학습 키오스크"]
-
-    %% API
-    API["API 서버"]
-
-    %% Databases
-    Postgres[(PostgreSQL<br/>주 데이터베이스)]
-    Redis[(Redis<br/>캐시 / 실시간 상태)]
-    MinIO[(MinIO<br/>파일 스토리지)]
-
-    %% Connections
-    Teacher -->|HTTPS| API
-    Student -->|HTTPS| API
-    Kiosk -->|HTTPS| API
-
-    API --> Postgres
-    API --> Redis
-    API --> MinIO
-```
-
-
 ## 기술 스택
-> 다중 클라이언트 환경을 기반으로 한 통합 시스템 구성
 
 ### 프론트 엔드
+> 사용자(학생, 선생님)과 키오스크에서 보이는 웹 기반 앱들
 
 **학생용 PWA 어플리케이션**  
 [![React][React.js]][React-url]
@@ -301,6 +286,7 @@ flowchart TB
 ---
 
 ### 백엔드
+> 출석부터 인증, 데이터 처리등을 전부 담당할 중앙 서버
 
 **API 서버**  
 [![NestJS][NestJS]][NestJS-url]
@@ -309,6 +295,7 @@ flowchart TB
 ---
 
 ### 데이터베이스 & 스토리지
+> 용도에 따라 다른 DB를 사용합니다.
 
 [![PostgreSQL][Postgres]][Postgres-url] 
 [![Redis][Redis]][Redis-url] 
@@ -317,6 +304,7 @@ flowchart TB
 ---
 
 ### 인프라 / 배포
+> 학교에 남는 컴퓨터에 리눅스를 깔아 24시간 돌아가는 서버를 구축하였습니다. CI/CD와 유지 보수를 위하여 Docker를 이용하여 서비스를 운영합니다.
 
 [![Docker][Docker]][Docker-url]
 [![DockerCompose][DockerCompose]][DockerCompose-url]
