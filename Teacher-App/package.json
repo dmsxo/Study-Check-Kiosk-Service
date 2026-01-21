@@ -1,49 +1,35 @@
 {
   "name": "teacher-app",
-  "version": "1.0.0",
-  "description": "An Electron application with React",
-  "main": "./out/main/index.js",
-  "author": "example.com",
-  "homepage": "https://electron-vite.org",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "format": "prettier --write .",
-    "lint": "eslint --cache .",
-    "start": "electron-vite preview",
-    "dev": "electron-vite dev",
-    "build": "electron-vite build",
-    "postinstall": "electron-builder install-app-deps",
-    "build:unpack": "npm run build && electron-builder --dir",
-    "build:win": "npm run build && electron-builder --win",
-    "build:mac": "npm run build && electron-builder --mac",
-    "build:linux": "npm run build && electron-builder --linux"
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
   },
   "dependencies": {
-    "@electron-toolkit/preload": "^3.0.2",
-    "@electron-toolkit/utils": "^4.0.0",
-    "@tailwindcss/vite": "^4.1.17",
+    "@tailwindcss/vite": "^4.1.18",
     "axios": "^1.13.2",
     "classnames": "^2.5.1",
     "dayjs": "^1.11.19",
-    "electron-updater": "^6.3.9",
-    "lucide-react": "^0.553.0",
-    "react-router-dom": "^7.9.5",
-    "tailwind-scrollbar-hide": "^4.0.0",
-    "tailwindcss": "^4.1.17"
-  },
-  "devDependencies": {
-    "@electron-toolkit/eslint-config": "^2.1.0",
-    "@electron-toolkit/eslint-config-prettier": "^3.0.0",
-    "@vitejs/plugin-react": "^5.0.3",
-    "electron": "^38.1.2",
-    "electron-builder": "^25.1.8",
-    "electron-vite": "^4.0.1",
-    "eslint": "^9.36.0",
-    "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-react-refresh": "^0.4.20",
-    "prettier": "^3.6.2",
+    "lucide-react": "^0.562.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
-    "vite": "^7.1.6"
+    "react-router-dom": "^7.12.0",
+    "tailwindcss": "^4.1.18"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@types/react": "^19.2.5",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.1",
+    "babel-plugin-react-compiler": "^1.0.0",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
+    "globals": "^16.5.0",
+    "vite": "^7.2.4"
   }
 }
