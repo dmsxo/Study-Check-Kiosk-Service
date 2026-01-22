@@ -12,7 +12,7 @@ import {
   RotateCcw,
   Monitor,
   Image,
-  TrendingUp
+  TrendingUp,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -23,13 +23,32 @@ function SideBar() {
 
   const menuItems = [
     { id: 'Dashboard', icon: Monitor, label: '오늘의 출석', route: '/' },
-    { id: 'Analytics', icon: TrendingUp, label: '출결 현황', route: '/analytics' },
-    { id: 'AcademicCalendar', icon: Calendar, label: '학사 일정 관리', route: '/calendar' }
-    // { id: 'projects', icon: FolderOpen, label: '과제 내기' },
-    // { id: 'TeacherList', icon: Users, label: '선생님 관리', route: '/teachers' },
-    // { id: 'reset', icon: RotateCcw, label: '재설정' },
-    // { id: 'PosterList', icon: Image, label: '홍보물 관리', route: '/posters' }
-    // { id: 'Settings', icon: Settings, label: '설정' }
+    {
+      id: 'Analytics',
+      icon: TrendingUp,
+      label: '출결 현황',
+      route: '/analytics',
+    },
+    {
+      id: 'AcademicCalendar',
+      icon: Calendar,
+      label: '학사 일정 관리',
+      route: '/calendar',
+    },
+    {
+      id: 'TeacherList',
+      icon: Users,
+      label: '선생님 관리',
+      route: '/teachers',
+    },
+    {
+      id: 'StudentList',
+      icon: Users,
+      label: '학생 관리',
+      route: '/students',
+    },
+    { id: 'PosterList', icon: Image, label: '홍보물 관리', route: '/posters' },
+    { id: 'Settings', icon: Settings, label: '설정', route: '/settings' },
   ];
 
   return (
@@ -74,16 +93,22 @@ function SideBar() {
                     navigate(item.route);
                   }}
                   className={`w-full h-10 flex items-center rounded-lg transition-colors ${
-                    isActive ? 'bg-gray-900 text-white' : 'text-gray-700 hover:bg-gray-100'
+                    isActive
+                      ? 'bg-gray-900 text-white'
+                      : 'text-gray-700 hover:bg-gray-100'
                   }`}
                   title={isCollapsed ? item.label : ''}
                 >
                   <div className="w-10 h-10 flex items-center justify-center shrink-0">
-                    <Icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-gray-500'}`} />
+                    <Icon
+                      className={`w-5 h-5 ${isActive ? 'text-white' : 'text-gray-500'}`}
+                    />
                   </div>
                   <span
                     className={`text-sm font-medium whitespace-nowrap transition-opacity duration-200 ${
-                      isCollapsed ? 'opacity-0 w-0 overflow-hidden' : 'opacity-100'
+                      isCollapsed
+                        ? 'opacity-0 w-0 overflow-hidden'
+                        : 'opacity-100'
                     }`}
                   >
                     {item.label}

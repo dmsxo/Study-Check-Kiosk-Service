@@ -5,20 +5,24 @@ import Analytics from './product/Analytics/Analytics';
 import Dashboard from './product/Dashboard';
 import PosterList from './product/PosterList';
 import TeacherList from './product/TeacherList';
+import StudentList from './product/StudentList';
+import Settings from './product/Settings';
 
 function App() {
   return (
-    <HashRouter>
+    <BrowserRouter>
       <Routes>
         <Route element={<MainLayout />}>
           <Route index element={<Dashboard />} />
-          <Route path="analytics" element={<Analytics />} />
-          <Route path="calendar" element={<AcademicCalendar />} />
-          <Route path="posters" element={<PosterList />} />
-          <Route path="teachers" element={<TeacherList />} />
+          <Route path="/analytics" element={<Analytics />} />
+          <Route path="/calendar" element={<AcademicCalendar />} />
+          <Route path="/posters" element={<PosterList />} />
+          <Route path="/teachers" element={<TeacherList />} />
+          <Route path="/students" element={<StudentList />} />
+          <Route path="/settings" element={<Settings />} />
         </Route>
       </Routes>
-    </HashRouter>
+    </BrowserRouter>
   );
 }
 
