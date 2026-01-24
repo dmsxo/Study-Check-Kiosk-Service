@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { DefaultSchedule } from './entities/default-schedule.entity';
+import { DefaultSchedule } from './entities/period-schedule.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OverrideSchedule } from './entities/override-schedule.entity';
 import { CreateDefaultScheduleDto } from './dto/default/create-default-schedule.dto';

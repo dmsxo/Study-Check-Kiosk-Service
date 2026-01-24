@@ -1,7 +1,8 @@
 import { DateRange } from 'src/common/entities/date-range.entity';
 import { TimeRange } from 'src/common/entities/time-range.entity';
-import { StudyType } from 'src/common/enums/study-type.enum';
 import { Registration } from 'src/Modules/registration/entities/registration.entity';
+import { PeriodSchedule } from 'src/Modules/schedule/entities/period-schedule.entity';
+import { OverrideSchedule } from 'src/Modules/schedule/entities/override-schedule.entity';
 import {
   Column,
   Entity,
@@ -16,14 +17,8 @@ export class StudyPeriod {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'int' })
-  termId: number; // 학기
-
-  @Column({ type: 'int' })
-  grade: number; // 학년
-
-  @Column({ type: 'enum', enum: StudyType })
-  studyType: StudyType; //야간, 자율
+  @Column()
+  name: string;
 
   @Column(() => DateRange)
   registration: DateRange;
@@ -42,4 +37,10 @@ export class StudyPeriod {
 
   @OneToMany(() => Registration, (registration) => registration.period)
   registrations?: Registration[];
+
+  @OneToMany(() => PeriodSchedule, (schedule) => schedule.period)
+  schedule?: PeriodSchedule[];
+
+  @OneToMany(() => OverrideSchedule, (override) => override.period)
+  override?: OverrideSchedule[];
 }

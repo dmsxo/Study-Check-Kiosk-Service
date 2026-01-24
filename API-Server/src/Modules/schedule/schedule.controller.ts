@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { ScheduleService } from './schedule.service';
 import { CreateDefaultScheduleDto } from './dto/default/create-default-schedule.dto';
-import { DefaultSchedule } from './entities/default-schedule.entity';
+import { DefaultSchedule } from './entities/period-schedule.entity';
 import { UpdateDefaultScheduleDto } from './dto/default/update-default-schedule.dto';
 import { CreateOverrideScheduleDto } from './dto/override/create-override-schedule.dto';
 import { UpdateOverrideScheduleDto } from './dto/override/update-override-schedule.dto';

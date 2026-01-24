@@ -6,7 +6,6 @@ import {
   IsEnum,
   IsInt,
 } from 'class-validator';
-import { StudyType } from 'src/common/enums/study-type.enum';
 
 export class CreateAttendanceDto {
   @IsNotEmpty()
@@ -14,8 +13,8 @@ export class CreateAttendanceDto {
   studentId: number;
 
   @IsNotEmpty()
-  @IsEnum(StudyType)
-  type: StudyType; // morning, evening
+  @IsInt()
+  scheduleId: number;
 
   @IsNotEmpty()
   @IsDateString()

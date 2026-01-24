@@ -6,16 +6,13 @@ import {
   Unique,
 } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
-import { StudyType } from 'src/common/enums/study-type.enum';
+import { PeriodSchedule } from 'src/Modules/schedule/entities/period-schedule.entity';
 
 @Entity('attendances')
 @Unique(['studentId', 'date', 'type'])
 export class Attendance {
   @PrimaryGeneratedColumn()
   id: number;
-
-  @Column({ type: 'enum', enum: Object.values(StudyType) })
-  type: StudyType; // morning, evning
 
   @Column({ type: 'date' })
   date: string; // YYYY-MM-DD
@@ -33,4 +30,9 @@ export class Attendance {
     onDelete: 'CASCADE',
   })
   studentId: User;
+
+  @ManyToOne(() => PeriodSchedule, (schedule) => schedule.attendances, {
+    onDelete: 'CASCADE',
+  })
+  schedule: PeriodSchedule;
 }
