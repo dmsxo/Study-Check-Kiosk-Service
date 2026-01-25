@@ -22,7 +22,7 @@ export class StudyPeriodController {
   @Post()
   async createPeriod(
     @Body() periodData: CreatePeriodDto,
-  ): Promise<StudyPeriod[]> {
+  ): Promise<StudyPeriod> {
     return await this.studyPeriodService.createPeriod(periodData);
   }
 
@@ -37,12 +37,12 @@ export class StudyPeriodController {
   }
 
   @Patch()
-  async updatePeriods(@Body() data: UpdatePeriodDto) {
-    return await this.studyPeriodService.updatePeriods(data);
+  async updatePeriods(@Param('id') id: number, @Body() data: UpdatePeriodDto) {
+    return await this.studyPeriodService.updatePeriods(id, data);
   }
 
-  @Delete()
-  async deletePeriods(@Query() filter: QueryPeriodDto): Promise<DeleteResult> {
-    return await this.studyPeriodService.deletePeriods(filter);
+  @Delete(':id')
+  async deletePeriods(@Param('id') id: number): Promise<DeleteResult> {
+    return await this.studyPeriodService.deletePeriods(id);
   }
 }

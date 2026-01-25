@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, DeleteResult, Repository } from 'typeorm';
 import { StudyPeriod } from './entities/period.entity';
@@ -6,6 +11,8 @@ import { CreatePeriodDto } from './dto/create-period.dto';
 import { QueryPeriodDto } from './dto/query-period.dto';
 import { UpdatePeriodDto } from './dto/update-period.dto';
 import { GradeCapacityPair } from './dto/grade-capacity.dto';
+import { GradeCapacity } from './entities/grade-capacity.entity';
+import { PeriodSchedule } from '../schedule/entities/period-schedule.entity';
 
 @Injectable()
 export class StudyPeriodService {
@@ -15,46 +22,62 @@ export class StudyPeriodService {
     private dataSource: DataSource,
   ) {}
 
-  async createPeriod(periodData: CreatePeriodDto): Promise<StudyPeriod[]> {
-    const newPeriods: StudyPeriod[] = [];
-
-    for (const grade of periodData.grades) {
+  async createPeriod(periodData: CreatePeriodDto): Promise<StudyPeriod> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
       const period = this.periodRepo.create({
-        termId: periodData.termId,
-        studyType: periodData.studyType,
-        grade: grade.grade,
+        name: periodData.name,
         registration: periodData.registration,
         additionalRegistration: periodData.additionalRegistration,
         operation: periodData.operation,
         dailyOperation: periodData.dailyOperation,
-        capacity: grade.capacity,
+      });
+      await this.periodRepo.save(period);
+
+      // Handle GradeCapacity
+      const capacities = periodData.capacities.map((g) => {
+        queryRunner.manager.create(GradeCapacity, {
+          grade: g.grade,
+          capacity: g.capacity,
+          periodId: period.id,
+        });
       });
 
-      newPeriods.push(period);
-    }
+      await queryRunner.manager.save(capacities);
 
-    return await this.periodRepo.save(newPeriods);
+      const schedules = periodData.schedules.map((s) => {
+        queryRunner.manager.create(PeriodSchedule, {
+          grade: s.grade,
+          weekday: s.weekday,
+          isOpen: s.isOpen,
+          periodId: period.id,
+        });
+      });
+
+      await queryRunner.manager.save(schedules);
+
+      await queryRunner.commitTransaction();
+      return period;
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      throw new InternalServerErrorException('Failed to create study period');
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async getPeriodsByFilter(
     filter: Partial<QueryPeriodDto>,
   ): Promise<StudyPeriod[]> {
-    const { term_id, study_type, grade, active_from, active_to, relation } =
-      filter;
+    const { grade, active_from, active_to, relation } = filter;
     const query = await this.periodRepo.createQueryBuilder('period');
 
     if (!!relation)
       query
         .leftJoinAndSelect('period.registrations', 'registrations')
         .leftJoinAndSelect('registrations.student', 'student');
-
-    if (term_id !== undefined)
-      query.andWhere('period.termId = :termId', { termId: term_id });
-
-    if (study_type !== undefined)
-      query.andWhere('period.studyType = :studyType', {
-        studyType: study_type,
-      });
 
     if (active_from !== undefined)
       query.andWhere('NOT(period.operation.start > :activeTo)', {
@@ -74,87 +97,65 @@ export class StudyPeriodService {
   async getPeriodById(id: number): Promise<StudyPeriod> {
     const period = await this.periodRepo.findOne({
       where: { id },
-      relations: ['registrations'],
     });
     if (!period)
       throw new NotFoundException(`study period with id:${id} is not founded`);
     return period;
   }
 
-  async updatePeriods(data: UpdatePeriodDto) {
-    const { termId, studyType, grades, ...shared } = data;
+  async updatePeriods(id: number, data: UpdatePeriodDto) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const period = await this.periodRepo.findOne({ where: { id } });
+      if (!period) throw new NotFoundException('Study period not found');
 
-    return this.dataSource.transaction(async (m) => {
-      const exist = await m.find(StudyPeriod, { where: { termId, studyType } });
+      queryRunner.manager.merge(StudyPeriod, period, {
+        name: data.name,
+        registration: data.registration,
+        additionalRegistration: data.additionalRegistration,
+        operation: data.operation,
+        dailyOperation: data.dailyOperation,
+      });
+      await queryRunner.manager.save(period);
 
-      const existMap = new Map<number, StudyPeriod>(
-        exist.map((p) => [p.grade, p]),
-      );
-      const dtoMap = new Map<number, GradeCapacityPair>(
-        grades.map((g) => [g.grade, g]),
-      );
-
-      const toInsert: StudyPeriod[] = [];
-      const toUpdate: StudyPeriod[] = [];
-      const toDelete: StudyPeriod[] = [];
-
-      // 삭제 + 수정
-      for (const [grade, period] of existMap.entries()) {
-        if (!dtoMap.has(grade)) {
-          toDelete.push(period);
-        } else {
-          const g = dtoMap.get(grade)!;
-
-          Object.assign(period, {
-            ...shared,
-            capacity: g.capacity ?? undefined,
-          });
-
-          toUpdate.push(period);
-        }
-      }
-      // 추가
-      for (const [grade, g] of dtoMap.entries()) {
-        if (!existMap.has(grade)) {
-          const newPeriod = m.create(StudyPeriod, {
-            ...shared,
-            termId,
-            studyType,
-            grade,
-            capacity: g.capacity ?? undefined,
-          });
-
-          toInsert.push(newPeriod);
-        }
+      if (data.capacities) {
+        await queryRunner.manager.delete(GradeCapacity, { periodId: id });
       }
 
-      if (toDelete.length) await m.remove(toDelete);
-      if (toUpdate.length) await m.save(toUpdate);
-      if (toInsert.length) await m.save(toInsert);
+      if (data.schedules) {
+        await queryRunner.manager.update(
+          PeriodSchedule,
+          { periodId: id, isOpen: true },
+          { isOpen: false },
+        );
 
-      return {
-        inserted: toInsert,
-        updated: toUpdate,
-        deleted: toDelete,
-      };
-    });
+        // [B] 새로운 스케줄 규칙들을 모두 새로 생성합니다.
+        const newSchedules: PeriodSchedule[] = [];
+        for (const s of data.schedules) {
+          newSchedules.push(
+            queryRunner.manager.create(PeriodSchedule, {
+              grade: s.grade,
+              weekday: s.weekday,
+              isOpen: s.isOpen,
+              periodId: id,
+            }),
+          );
+        }
+        await queryRunner.manager.save(PeriodSchedule, newSchedules);
+      }
+
+      await queryRunner.commitTransaction();
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      throw new InternalServerErrorException('Failed to update study period');
+    } finally {
+      await queryRunner.release();
+    }
   }
 
-  async deletePeriods(filter): Promise<DeleteResult> {
-    const { term_id, study_type, grade } = filter;
-    const query = this.periodRepo
-      .createQueryBuilder()
-      .delete()
-      .from('study_periods'); // 여기서 테이블 지정
-
-    if (term_id !== undefined)
-      query.where('termId = :termId', { termId: term_id });
-
-    if (study_type !== undefined)
-      query.andWhere('studyType = :studyType', { studyType: study_type });
-
-    if (grade !== undefined) query.andWhere('grade = :grade', { grade });
-
-    return query.execute();
+  async deletePeriods(periodId: number): Promise<DeleteResult> {
+    return await this.periodRepo.delete(periodId);
   }
 }

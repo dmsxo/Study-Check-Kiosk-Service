@@ -5,6 +5,7 @@ import { StudyPeriod } from 'src/Modules/study-period/entities/period.entity';
 import {
   Column,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -27,9 +28,13 @@ export class PeriodSchedule {
   @Column()
   isOpen: boolean;
 
+  @Column()
+  periodId: number;
+
   @ManyToOne(() => StudyPeriod, (period) => period.schedule, {
     onDelete: 'CASCADE',
   })
+  @JoinColumn({ name: 'periodId' })
   period: StudyPeriod;
 
   @OneToMany(() => Attendance, (attendance) => attendance.schedule)

@@ -12,8 +12,6 @@ import type { Request } from 'express';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { ResponseAttendanceDto } from '../../attendance/dto/response-attendance.dto';
 import { Post } from '@nestjs/common';
-import { StudyType } from 'src/common/enums/study-type.enum';
-import { StudyTypePipe } from 'src/common/pipe/study-type.pipe';
 import { CheckInDto } from '../dto/check-in.dto';
 import { CheckOutDto } from '../dto/check-out.dto';
 

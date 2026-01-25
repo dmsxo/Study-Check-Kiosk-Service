@@ -10,6 +10,7 @@ import {
   PrimaryGeneratedColumn,
   Unique,
 } from 'typeorm';
+import { GradeCapacity } from './grade-capacity.entity';
 
 @Entity('study_periods')
 @Unique(['termId', 'grade', 'studyType'])
@@ -32,8 +33,8 @@ export class StudyPeriod {
   @Column(() => TimeRange)
   dailyOperation: TimeRange;
 
-  @Column({ type: 'int', nullable: true })
-  capacity?: number;
+  @OneToMany(() => GradeCapacity, (capacity) => capacity.period)
+  capacity?: GradeCapacity[];
 
   @OneToMany(() => Registration, (registration) => registration.period)
   registrations?: Registration[];

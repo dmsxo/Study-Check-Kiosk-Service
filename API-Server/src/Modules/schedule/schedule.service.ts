@@ -1,33 +1,31 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { DefaultSchedule } from './entities/period-schedule.entity';
+import { PeriodSchedule } from './entities/period-schedule.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OverrideSchedule } from './entities/override-schedule.entity';
-import { CreateDefaultScheduleDto } from './dto/default/create-default-schedule.dto';
+import { CreatePeriodScheduleDto } from './dto/default/create-default-schedule.dto';
 import { Weekday } from 'src/common/enums/weekday.enum';
-import { StudyType } from 'src/common/enums/study-type.enum';
-import { UpdateDefaultScheduleDto } from './dto/default/update-default-schedule.dto';
+import { UpdatePeriodScheduleDto } from './dto/default/update-default-schedule.dto';
 import { CreateOverrideScheduleDto } from './dto/override/create-override-schedule.dto';
 import { DeleteResult } from 'typeorm/browser';
 import { UpdateOverrideScheduleDto } from './dto/override/update-override-schedule.dto';
-import { TypeSchedule } from './dto/type-schedule.dto';
 import { QueryOverrideScheduleDto } from './dto/override/query-override-schedule.dto';
 
 @Injectable()
 export class ScheduleService {
   constructor(
-    @InjectRepository(DefaultSchedule)
-    private readonly defaultScheduleRepo: Repository<DefaultSchedule>,
+    @InjectRepository(PeriodSchedule)
+    private readonly defaultScheduleRepo: Repository<PeriodSchedule>,
 
     @InjectRepository(OverrideSchedule)
     private readonly overrideScheduleRepo: Repository<OverrideSchedule>,
   ) {}
 
   // default schedule
-  async createDefaultSchedule(
-    weekSchedule: CreateDefaultScheduleDto,
-  ): Promise<DefaultSchedule[]> {
-    const newSchedules: DefaultSchedule[] = [];
+  async createPeriodSchedule(
+    weekSchedule: CreatePeriodScheduleDto,
+  ): Promise<PeriodSchedule[]> {
+    const newSchedules: PeriodSchedule[] = [];
 
     return await this.defaultScheduleRepo.manager.transaction(
       async (manager) => {
@@ -51,16 +49,16 @@ export class ScheduleService {
     );
   }
 
-  async getDefaultSchedule(): Promise<DefaultSchedule[]> {
+  async getPeriodSchedule(): Promise<PeriodSchedule[]> {
     return await this.defaultScheduleRepo.find();
   }
 
-  async updateDefaultSchedule(
-    weekSchedule: UpdateDefaultScheduleDto,
-  ): Promise<DefaultSchedule[]> {
+  async updatePeriodSchedule(
+    weekSchedule: UpdatePeriodScheduleDto,
+  ): Promise<PeriodSchedule[]> {
     return await this.defaultScheduleRepo.manager.transaction(
       async (manager) => {
-        const updated: DefaultSchedule[] = [];
+        const updated: PeriodSchedule[] = [];
 
         for (const weekday of Object.values(Weekday)) {
           const dayDto = weekSchedule[weekday];
@@ -73,14 +71,14 @@ export class ScheduleService {
             for (const grade of [1, 2, 3]) {
               const isOperating = typeDto[`grade${grade}`];
 
-              let existing = await manager.findOne(DefaultSchedule, {
+              let existing = await manager.findOne(PeriodSchedule, {
                 where: { weekday, studyType, grade },
               });
 
               if (existing) {
                 existing.isOpen = isOperating;
               } else {
-                existing = manager.create(DefaultSchedule, {
+                existing = manager.create(PeriodSchedule, {
                   weekday,
                   studyType,
                   grade,
@@ -97,7 +95,7 @@ export class ScheduleService {
     );
   }
 
-  async deleteDefaultSchedule(id: number): Promise<DeleteResult> {
+  async deletePeriodSchedule(id: number): Promise<DeleteResult> {
     const result = await this.defaultScheduleRepo.delete(id);
 
     if (result.affected === 0) {

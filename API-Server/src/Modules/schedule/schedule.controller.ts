@@ -9,9 +9,9 @@ import {
   Query,
 } from '@nestjs/common';
 import { ScheduleService } from './schedule.service';
-import { CreateDefaultScheduleDto } from './dto/default/create-default-schedule.dto';
-import { DefaultSchedule } from './entities/period-schedule.entity';
-import { UpdateDefaultScheduleDto } from './dto/default/update-default-schedule.dto';
+import { CreatePeriodScheduleDto } from './dto/default/create-default-schedule.dto';
+import { PeriodSchedule } from './entities/period-schedule.entity';
+import { UpdatePeriodScheduleDto } from './dto/default/update-default-schedule.dto';
 import { CreateOverrideScheduleDto } from './dto/override/create-override-schedule.dto';
 import { UpdateOverrideScheduleDto } from './dto/override/update-override-schedule.dto';
 import { QueryOverrideScheduleDto } from './dto/override/query-override-schedule.dto';
@@ -23,23 +23,23 @@ export class ScheduleController {
 
   // default schedule
   @Post('default')
-  async createDefaultSchedule(@Body() weekSchedule: CreateDefaultScheduleDto) {
-    return await this.scheduleService.createDefaultSchedule(weekSchedule);
+  async createPeriodSchedule(@Body() weekSchedule: CreatePeriodScheduleDto) {
+    return await this.scheduleService.createPeriodSchedule(weekSchedule);
   }
 
   @Get('default')
-  async getDefaultSchedule(): Promise<DefaultSchedule[]> {
-    return await this.scheduleService.getDefaultSchedule();
+  async getPeriodSchedule(): Promise<PeriodSchedule[]> {
+    return await this.scheduleService.getPeriodSchedule();
   }
 
   @Patch('default')
-  async updateDefaultSchedule(@Body() weekSchedule: UpdateDefaultScheduleDto) {
-    return await this.scheduleService.updateDefaultSchedule(weekSchedule);
+  async updatePeriodSchedule(@Body() weekSchedule: UpdatePeriodScheduleDto) {
+    return await this.scheduleService.updatePeriodSchedule(weekSchedule);
   }
 
   @Delete('default/:id')
-  async deleteDefaultSchedule(@Param('id') id: number) {
-    return await this.scheduleService.deleteDefaultSchedule(id);
+  async deletePeriodSchedule(@Param('id') id: number) {
+    return await this.scheduleService.deletePeriodSchedule(id);
   }
 
   // override schedule

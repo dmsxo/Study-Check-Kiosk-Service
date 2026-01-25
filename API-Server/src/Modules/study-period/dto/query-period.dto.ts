@@ -5,18 +5,13 @@ import {
   IsEnum,
   IsInt,
   IsOptional,
+  IsString,
 } from 'class-validator';
-import { StudyType } from 'src/common/enums/study-type.enum';
 
 export class QueryPeriodDto {
   @IsOptional()
-  @Type(() => Number)
-  @IsInt()
-  term_id: number;
-
-  @IsOptional()
-  @IsEnum(StudyType)
-  study_type: StudyType;
+  @IsString()
+  name: string;
 
   @IsOptional()
   @Type(() => Boolean)
