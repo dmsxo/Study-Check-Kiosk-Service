@@ -8,7 +8,7 @@ import {
 import { Type } from 'class-transformer';
 import { BasePeriodDto } from './base-period.dto';
 import { GradeCapacityPair } from './grade-capacity.dto';
-import { CreatePeriodScheduleDto } from 'src/Modules/schedule/dto/default/create-default-schedule.dto';
+import { CreatePeriodScheduleDto } from 'src/Modules/study-period/dto/default/create-default-schedule.dto';
 
 export class CreatePeriodDto extends BasePeriodDto {
   @IsNotEmpty()

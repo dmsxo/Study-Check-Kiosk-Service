@@ -3,19 +3,27 @@ import {
   IsArray,
   IsDateString,
   ValidateNested,
+  IsInt,
+  IsOptional,
+  IsBoolean,
 } from 'class-validator';
-import { TypeSchedule } from '../type-schedule.dto';
 import { Type } from 'class-transformer';
 
 export class CreateOverrideScheduleDto {
+  @IsInt()
+  grade: number;
+
   @IsDateString()
-  date: string; // YYYY-MM-DD
+  date: string; // "2026-05-15"
+
+  @IsBoolean()
+  isOpen: boolean;
 
   @IsArray()
   @IsString({ each: true })
-  descriptions: string[];
+  @IsOptional()
+  descriptions?: string[];
 
-  @ValidateNested()
-  @Type(() => TypeSchedule)
-  targets: TypeSchedule;
+  @IsInt()
+  periodId: number;
 }

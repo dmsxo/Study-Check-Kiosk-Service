@@ -1,8 +1,8 @@
 import { DateRange } from 'src/common/entities/date-range.entity';
 import { TimeRange } from 'src/common/entities/time-range.entity';
 import { Registration } from 'src/Modules/registration/entities/registration.entity';
-import { PeriodSchedule } from 'src/Modules/schedule/entities/period-schedule.entity';
-import { OverrideSchedule } from 'src/Modules/schedule/entities/override-schedule.entity';
+import { PeriodSchedule } from 'src/Modules/study-period/entities/period-schedule.entity';
+import { OverrideSchedule } from 'src/Modules/study-period/entities/override-schedule.entity';
 import {
   Column,
   Entity,

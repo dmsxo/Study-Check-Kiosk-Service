@@ -2,13 +2,14 @@ import { StudyPeriod } from 'src/Modules/study-period/entities/period.entity';
 import {
   Column,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   Unique,
 } from 'typeorm';
 
 @Entity('override_schedules')
-@Unique(['grade', 'studyType', 'date'])
+@Unique(['grade', 'periodId', 'date'])
 export class OverrideSchedule {
   @PrimaryGeneratedColumn()
   id: number;
@@ -25,8 +26,12 @@ export class OverrideSchedule {
   @Column()
   isOpen: boolean;
 
+  @Column()
+  periodId: number;
+
   @ManyToOne(() => StudyPeriod, (period) => period.schedule, {
     onDelete: 'CASCADE',
   })
+  @JoinColumn({ name: 'periodId' })
   period: StudyPeriod;
 }

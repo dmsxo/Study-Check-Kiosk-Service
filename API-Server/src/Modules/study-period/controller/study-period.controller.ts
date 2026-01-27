@@ -8,12 +8,12 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { StudyPeriodService } from './study-period.service';
-import { CreatePeriodDto } from './dto/create-period.dto';
-import { StudyPeriod } from './entities/period.entity';
-import { QueryPeriodDto } from './dto/query-period.dto';
+import { StudyPeriodService } from '../service/study-period.service';
+import { CreatePeriodDto } from '../dto/create-period.dto';
+import { StudyPeriod } from '../entities/period.entity';
+import { QueryPeriodDto } from '../dto/query-period.dto';
 import { DeleteResult } from 'typeorm';
-import { UpdatePeriodDto } from './dto/update-period.dto';
+import { UpdatePeriodDto } from '../dto/update-period.dto';
 
 @Controller('study-period')
 export class StudyPeriodController {

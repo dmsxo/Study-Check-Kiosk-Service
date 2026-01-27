@@ -9,7 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { UpdateRegistrationDto } from './dto/update-registration.dto';
 import { UserService } from './../user/user.service';
-import { StudyPeriodService } from '../study-period/study-period.service';
+import { StudyPeriodService } from '../study-period/service/study-period.service';
 import { QueryRegistrationDto } from './dto/query-registration.dto';
 import { User } from '../user/entities/user.entity';
 import { StudyPeriod } from '../study-period/entities/period.entity';

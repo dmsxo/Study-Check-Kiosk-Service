@@ -26,7 +26,7 @@ import { RegistrationValidation } from './interface/validate-registration.interf
 import { InjectQueue } from '@nestjs/bull';
 import type { Queue } from 'bull';
 import { Registration } from '../registration/entities/registration.entity';
-import { StudyPeriodService } from '../study-period/study-period.service';
+import { StudyPeriodService } from '../study-period/service/study-period.service';
 import { QueryPeriodDto } from '../study-period/dto/query-period.dto';
 import { Period } from 'aws-sdk/clients/cloudwatch';
 import { StudyPeriod } from '../study-period/entities/period.entity';

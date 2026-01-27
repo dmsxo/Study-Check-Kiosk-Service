@@ -6,7 +6,7 @@ import {
   Unique,
 } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
-import { PeriodSchedule } from 'src/Modules/schedule/entities/period-schedule.entity';
+import { PeriodSchedule } from 'src/Modules/study-period/entities/period-schedule.entity';
 
 @Entity('attendances')
 @Unique(['studentId', 'date', 'type'])

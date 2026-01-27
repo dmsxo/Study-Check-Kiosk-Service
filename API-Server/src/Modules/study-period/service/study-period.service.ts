@@ -6,13 +6,13 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, DeleteResult, Repository } from 'typeorm';
-import { StudyPeriod } from './entities/period.entity';
-import { CreatePeriodDto } from './dto/create-period.dto';
-import { QueryPeriodDto } from './dto/query-period.dto';
-import { UpdatePeriodDto } from './dto/update-period.dto';
-import { GradeCapacityPair } from './dto/grade-capacity.dto';
-import { GradeCapacity } from './entities/grade-capacity.entity';
-import { PeriodSchedule } from '../schedule/entities/period-schedule.entity';
+import { StudyPeriod } from '../entities/period.entity';
+import { CreatePeriodDto } from '../dto/create-period.dto';
+import { QueryPeriodDto } from '../dto/query-period.dto';
+import { UpdatePeriodDto } from '../dto/update-period.dto';
+import { GradeCapacityPair } from '../dto/grade-capacity.dto';
+import { GradeCapacity } from '../entities/grade-capacity.entity';
+import { PeriodSchedule } from '../entities/period-schedule.entity';
 
 @Injectable()
 export class StudyPeriodService {
@@ -122,28 +122,59 @@ export class StudyPeriodService {
 
       if (data.capacities) {
         await queryRunner.manager.delete(GradeCapacity, { periodId: id });
+        const capacityEntities = data.capacities.map((c) =>
+          queryRunner.manager.create(GradeCapacity, { ...c, periodId: id }),
+        );
+        await queryRunner.manager.save(GradeCapacity, capacityEntities);
       }
 
-      if (data.schedules) {
-        await queryRunner.manager.update(
+      if (data.schedules && data.schedules?.length > 0) {
+        const existingSchedules = await queryRunner.manager.findBy(
           PeriodSchedule,
-          { periodId: id, isOpen: true },
-          { isOpen: false },
+          {
+            periodId: id,
+          },
         );
 
-        // [B] 새로운 스케줄 규칙들을 모두 새로 생성합니다.
-        const newSchedules: PeriodSchedule[] = [];
         for (const s of data.schedules) {
-          newSchedules.push(
-            queryRunner.manager.create(PeriodSchedule, {
-              grade: s.grade,
-              weekday: s.weekday,
-              isOpen: s.isOpen,
-              periodId: id,
-            }),
+          // [비교] 같은 학년, 같은 요일인 기존 데이터가 있는지 확인
+          const existing = existingSchedules.find(
+            (ex) => ex.grade === s.grade && ex.weekday === s.weekday,
+          );
+
+          if (existing) {
+            // [수정] 이미 존재한다면 ID를 유지한 채 시간과 isOpen만 업데이트
+            await queryRunner.manager.update(PeriodSchedule, existing.id, {
+              isOpen: true, // 목록에 있으니 활성화
+            });
+          } else {
+            // [추가] 이번에 새로 들어온 요일/학년이라면 신규 생성
+            await queryRunner.manager.save(
+              queryRunner.manager.create(PeriodSchedule, {
+                ...s,
+                periodId: id,
+                isOpen: true,
+              }),
+            );
+          }
+        }
+
+        // [비활성화] DTO에는 없는데 DB에는 'isOpen: true'로 되어 있는 것들을 찾아 끕니다.
+        const incomingKeys = data.schedules.map(
+          (s) => `${s.grade}-${s.weekday}`,
+        );
+        const toDisable = existingSchedules.filter(
+          (ex) =>
+            ex.isOpen && !incomingKeys.includes(`${ex.grade}-${ex.weekday}`),
+        );
+
+        if (toDisable.length > 0) {
+          await queryRunner.manager.update(
+            PeriodSchedule,
+            toDisable.map((d) => d.id),
+            { isOpen: false },
           );
         }
-        await queryRunner.manager.save(PeriodSchedule, newSchedules);
       }
 
       await queryRunner.commitTransaction();
