@@ -11,14 +11,14 @@ import {
   Unique,
 } from 'typeorm';
 import { GradeCapacity } from './grade-capacity.entity';
+import { PeriodOverrideMap } from './period-override-map.entity';
 
 @Entity('study_periods')
-@Unique(['termId', 'grade', 'studyType'])
 export class StudyPeriod {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ unique: true })
   name: string;
 
   @Column(() => DateRange)
@@ -42,6 +42,6 @@ export class StudyPeriod {
   @OneToMany(() => PeriodSchedule, (schedule) => schedule.period)
   schedule?: PeriodSchedule[];
 
-  @OneToMany(() => OverrideSchedule, (override) => override.period)
-  override?: OverrideSchedule[];
+  @OneToMany(() => PeriodOverrideMap, (override) => override.period)
+  override?: PeriodOverrideMap[];
 }

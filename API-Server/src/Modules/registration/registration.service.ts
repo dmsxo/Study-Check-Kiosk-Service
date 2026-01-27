@@ -12,8 +12,7 @@ import { UserService } from './../user/user.service';
 import { StudyPeriodService } from '../study-period/service/study-period.service';
 import { QueryRegistrationDto } from './dto/query-registration.dto';
 import { User } from '../user/entities/user.entity';
-import { StudyPeriod } from '../study-period/entities/period.entity';
-
+import { GradeCapacity } from '../study-period/entities/grade-capacity.entity';
 @Injectable()
 export class RegistrationService {
   constructor(
@@ -23,19 +22,18 @@ export class RegistrationService {
     private readonly periodService: StudyPeriodService,
   ) {}
 
-  validateRegistration(student: User, period: StudyPeriod) {
-    if (Number(String(student.studentId)[0]) !== period.grade) {
-      throw new ConflictException(
-        'Your grade level does not match the eligibility requirements.',
-      );
-    }
-
-    if (
-      period.capacity != null &&
-      (period.registrations?.length ?? 0 >= period.capacity)
-    ) {
-      throw new ConflictException('Registration capacity reached.');
-    }
+  validateRegistration(student: User, period: GradeCapacity) {
+    // if (Number(String(student.studentId)[0]) !== period.grade) {
+    //   throw new ConflictException(
+    //     'Your grade level does not match the eligibility requirements.',
+    //   );
+    // }
+    // if (
+    //   period.capacity != null &&
+    //   (period.registrations?.length ?? 0 >= period.capacity)
+    // ) {
+    //   throw new ConflictException('Registration capacity reached.');
+    // }
   }
 
   async createRegisration(registration: CreateRegistrationDto) {

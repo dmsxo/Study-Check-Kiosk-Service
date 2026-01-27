@@ -1,7 +1,17 @@
-import { Column, JoinColumn, ManyToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { StudyPeriod } from './period.entity';
 
+@Entity('grade_capacitys')
 export class GradeCapacity {
+  @PrimaryGeneratedColumn()
+  id: number;
+
   @Column({ type: 'int' })
   grade: number;
 

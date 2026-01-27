@@ -36,7 +36,7 @@ export class StudyPeriodController {
     return await this.studyPeriodService.getPeriodById(id);
   }
 
-  @Patch()
+  @Patch(':id')
   async updatePeriods(@Param('id') id: number, @Body() data: UpdatePeriodDto) {
     return await this.studyPeriodService.updatePeriods(id, data);
   }

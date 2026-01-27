@@ -14,7 +14,7 @@ import {
 
 // limit = 7*3*2 = 42 Rows
 @Entity('period_schedules')
-@Unique(['grade', 'studyType', 'weekday'])
+@Unique(['grade', 'periodId', 'weekday'])
 export class PeriodSchedule {
   @PrimaryGeneratedColumn()
   id: number;

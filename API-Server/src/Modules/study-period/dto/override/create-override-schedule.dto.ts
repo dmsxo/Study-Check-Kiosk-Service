@@ -9,21 +9,29 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
-export class CreateOverrideScheduleDto {
-  @IsInt()
-  grade: number;
-
+export class CreateOverrideBatchDto {
   @IsDateString()
-  date: string; // "2026-05-15"
-
-  @IsBoolean()
-  isOpen: boolean;
+  date: string;
 
   @IsArray()
   @IsString({ each: true })
   @IsOptional()
   descriptions?: string[];
 
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => OverrideTargetDto)
+  @IsOptional()
+  targets: OverrideTargetDto[];
+}
+
+export class OverrideTargetDto {
   @IsInt()
   periodId: number;
+
+  @IsInt()
+  grade: number;
+
+  @IsBoolean()
+  isOpen: boolean;
 }

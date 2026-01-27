@@ -17,7 +17,6 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import minMax from 'dayjs/plugin/minMax';
-import { StudyType } from 'src/common/enums/study-type.enum';
 import { RegistrationService } from '../registration/registration.service';
 import { RegistrationStatus } from 'src/common/enums/registration-status.enum';
 import { CheckInDto } from './dto/check-in.dto';
@@ -144,7 +143,7 @@ export class StudentService {
     }
 
     return {
-      type: registration.period.studyType,
+      // type: registration.period.studyType,
       startTimeStr: startTime.format('HH:mm:ss'),
       endTimeStr: endTime.format('HH:mm:ss'),
     };
@@ -158,10 +157,8 @@ export class StudentService {
   ): Promise<ResponseAttendanceDto | null> {
     const { periodId, isAutoCheckOut } = checkInDto;
     // period 검증
-    const { type, startTimeStr, endTimeStr } = await this.validateRegistration(
-      studentId,
-      periodId,
-    );
+    const { /*type,*/ startTimeStr, endTimeStr } =
+      await this.validateRegistration(studentId, periodId);
     // Redis에서 현재 공부중인지 확인
     const exists = await this.cacheManager.get<StudyCacheStatus>(
       `study:${studentId}`,
@@ -176,7 +173,8 @@ export class StudentService {
     const check_in_time = dayjs.max(now, startTime).format('HH:mm:ss');
     const attendanceDto: CreateAttendanceDto = {
       studentId,
-      type,
+      // type,
+      scheduleId: 0,
       date: now.format('YYYY-MM-DD'),
       check_in_time,
     };

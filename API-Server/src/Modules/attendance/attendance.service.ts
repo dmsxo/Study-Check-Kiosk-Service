@@ -84,9 +84,9 @@ export class AttendanceService {
         studentId: user.id,
       });
 
-    if (query?.type) {
-      qb.andWhere('attendance.type = :type', { type: query.type });
-    }
+    // if (query?.type) {
+    //   qb.andWhere('attendance.type = :type', { type: query.type });
+    // }
 
     if (query?.date_from && query?.date_to) {
       qb.andWhere('attendance.date BETWEEN :from AND :to', {
@@ -106,9 +106,9 @@ export class AttendanceService {
       .createQueryBuilder('attendance')
       .leftJoinAndSelect('attendance.studentId', 'student');
 
-    if (query?.type) {
-      qb.andWhere('attendance.type = :type', { type: query.type });
-    }
+    // if (query?.type) {
+    //   qb.andWhere('attendance.type = :type', { type: query.type });
+    // }
 
     if (query?.date_from && query?.date_to) {
       qb.andWhere('attendance.date BETWEEN :from AND :to', {

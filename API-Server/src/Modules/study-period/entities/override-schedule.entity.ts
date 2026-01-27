@@ -4,34 +4,23 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   Unique,
 } from 'typeorm';
+import { PeriodOverrideMap } from './period-override-map.entity';
 
 @Entity('override_schedules')
-@Unique(['grade', 'periodId', 'date'])
 export class OverrideSchedule {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'int' })
-  grade: number; // 1, 2, 3
-
-  @Column({ type: 'date' })
+  @Column({ type: 'date', unique: true })
   date: string;
 
   @Column({ type: 'text', array: true, nullable: true })
   descriptions: string[];
 
-  @Column()
-  isOpen: boolean;
-
-  @Column()
-  periodId: number;
-
-  @ManyToOne(() => StudyPeriod, (period) => period.schedule, {
-    onDelete: 'CASCADE',
-  })
-  @JoinColumn({ name: 'periodId' })
-  period: StudyPeriod;
+  @OneToMany(() => PeriodOverrideMap, (map) => map.event, { cascade: true })
+  mappings: PeriodOverrideMap[];
 }

@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { Module } from '@nestjs/common';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
@@ -13,7 +14,6 @@ import { HealthModule } from './health/health.module';
 import { ImagesModule } from 'src/Modules/images/images.module';
 import { RegistrationModule } from './registration/registration.module';
 import { StudyPeriodModule } from './study-period/study-period.module';
-import { ScheduleModule } from './schedule/schedule.module';
 import { BullModule } from '@nestjs/bull';
 import { ConfigModule } from '@nestjs/config';
 /*
@@ -40,11 +40,12 @@ src/
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot(typeORMConfig),
-
     ConfigModule.forRoot({
       isGlobal: true, // 전역 환경변수
+      envFilePath: '.env',
     }),
+
+    TypeOrmModule.forRoot(typeORMConfig),
 
     CacheModule.registerAsync({
       isGlobal: true,
@@ -79,7 +80,6 @@ src/
     ImagesModule,
     RegistrationModule,
     StudyPeriodModule,
-    ScheduleModule,
   ],
 })
 export class AppModule {}

@@ -34,27 +34,27 @@ export class StudyPeriodService {
         operation: periodData.operation,
         dailyOperation: periodData.dailyOperation,
       });
-      await this.periodRepo.save(period);
+      await queryRunner.manager.save(period);
 
       // Handle GradeCapacity
-      const capacities = periodData.capacities.map((g) => {
+      const capacities = periodData.capacities.map((g) =>
         queryRunner.manager.create(GradeCapacity, {
           grade: g.grade,
           capacity: g.capacity,
           periodId: period.id,
-        });
-      });
+        }),
+      );
 
       await queryRunner.manager.save(capacities);
 
-      const schedules = periodData.schedules.map((s) => {
+      const schedules = periodData.schedules.map((s) =>
         queryRunner.manager.create(PeriodSchedule, {
           grade: s.grade,
           weekday: s.weekday,
           isOpen: s.isOpen,
           periodId: period.id,
-        });
-      });
+        }),
+      );
 
       await queryRunner.manager.save(schedules);
 
@@ -77,7 +77,9 @@ export class StudyPeriodService {
     if (!!relation)
       query
         .leftJoinAndSelect('period.registrations', 'registrations')
-        .leftJoinAndSelect('registrations.student', 'student');
+        .leftJoinAndSelect('registrations.student', 'student')
+        .leftJoinAndSelect('period.capacity', 'capacity')
+        .leftJoinAndSelect('period.schedule', 'schedule');
 
     if (active_from !== undefined)
       query.andWhere('NOT(period.operation.start > :activeTo)', {
