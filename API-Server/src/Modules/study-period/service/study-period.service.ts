@@ -29,6 +29,7 @@ export class StudyPeriodService {
     try {
       const period = this.periodRepo.create({
         name: periodData.name,
+        description: periodData.description,
         registration: periodData.registration,
         additionalRegistration: periodData.additionalRegistration,
         operation: periodData.operation,
@@ -78,8 +79,8 @@ export class StudyPeriodService {
       query
         .leftJoinAndSelect('period.registrations', 'registrations')
         .leftJoinAndSelect('registrations.student', 'student')
-        .leftJoinAndSelect('period.capacity', 'capacity')
-        .leftJoinAndSelect('period.schedule', 'schedule');
+        .leftJoinAndSelect('period.capacities', 'capacities')
+        .leftJoinAndSelect('period.schedules', 'schedules');
 
     if (active_from !== undefined)
       query.andWhere('NOT(period.operation.start > :activeTo)', {
@@ -115,6 +116,7 @@ export class StudyPeriodService {
 
       queryRunner.manager.merge(StudyPeriod, period, {
         name: data.name,
+        description: data.description,
         registration: data.registration,
         additionalRegistration: data.additionalRegistration,
         operation: data.operation,

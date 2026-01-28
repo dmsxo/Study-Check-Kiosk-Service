@@ -26,7 +26,7 @@ function MyView() {
 
   const user = useAuth().user;
   const { logout, profileURL } = useAuth();
-  const { name, studentId, description /*, email*/ } = user; // api로 대체
+  const { name, studentId, description, email } = user; // api로 대체
   const { grade, classNum, num } = parseStudentID(studentId);
 
   return (
@@ -43,7 +43,7 @@ function MyView() {
         <div className="flex-1 min-w-0">
           <h2 className="font-semibold text-gray-900 mb-1 truncate">{name}</h2>
           <p className="text-gray-500 text-sm">{`${grade}학년 ${classNum}반 ${num}번`}</p>
-          {/* <p className="text-gray-500 text-sm mb-2">{email}</p> */}
+          <p className="text-gray-500 text-sm mb-2">{email}</p>
           <p className="font-serif text-gray-900 bg-amber-50 rounded-lg px-3 py-2 text-sm">
             {description}
           </p>

@@ -27,11 +27,10 @@ export async function verifyCode(code) {
   }
 }
 
-export async function login_session(/*email */studentId) {
+export async function login_session(email) {
   try {
     const response = await api.post(`/auth/login`, {
-      // email: email
-      studentId: studentId
+      email: email
     });
     return response.data;
   } catch (error) {
@@ -39,18 +38,6 @@ export async function login_session(/*email */studentId) {
     throw error;
   }
 }
-
-// export async function login_session(email) {
-//   try {
-//     const response = await api.post(`/auth/login`, {
-//       email: email
-//     });
-//     return response.data;
-//   } catch (error) {
-//     console.error("Login failed", error);
-//     throw error;
-//   }
-// }
 
 export async function logout_session() {
   try {

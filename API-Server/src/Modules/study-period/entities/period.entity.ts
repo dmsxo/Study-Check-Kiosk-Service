@@ -2,7 +2,7 @@ import { DateRange } from 'src/common/entities/date-range.entity';
 import { TimeRange } from 'src/common/entities/time-range.entity';
 import { Registration } from 'src/Modules/registration/entities/registration.entity';
 import { PeriodSchedule } from 'src/Modules/study-period/entities/period-schedule.entity';
-import { OverrideSchedule } from 'src/Modules/study-period/entities/override-schedule.entity';
+
 import {
   Column,
   Entity,
@@ -21,6 +21,9 @@ export class StudyPeriod {
   @Column({ unique: true })
   name: string;
 
+  @Column({ type: 'text', nullable: true })
+  description: string;
+
   @Column(() => DateRange)
   registration: DateRange;
 
@@ -33,14 +36,14 @@ export class StudyPeriod {
   @Column(() => TimeRange)
   dailyOperation: TimeRange;
 
-  @OneToMany(() => GradeCapacity, (capacity) => capacity.period)
-  capacity?: GradeCapacity[];
+  @OneToMany(() => GradeCapacity, (capacities) => capacities.period)
+  capacities?: GradeCapacity[];
 
   @OneToMany(() => Registration, (registration) => registration.period)
   registrations?: Registration[];
 
-  @OneToMany(() => PeriodSchedule, (schedule) => schedule.period)
-  schedule?: PeriodSchedule[];
+  @OneToMany(() => PeriodSchedule, (schedules) => schedules.period)
+  schedules?: PeriodSchedule[];
 
   @OneToMany(() => PeriodOverrideMap, (override) => override.period)
   override?: PeriodOverrideMap[];

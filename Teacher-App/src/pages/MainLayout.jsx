@@ -6,7 +6,7 @@ function MainLayout() {
     <div className="flex h-screen">
       <SideBar />
       <div className="flex-1 bg-gray-50 py-10 overflow-auto scrollbar-hide">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-9/12 mx-auto">
           <Outlet />
         </div>
       </div>

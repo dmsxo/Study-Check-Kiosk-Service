@@ -31,7 +31,7 @@ export class PeriodSchedule {
   @Column()
   periodId: number;
 
-  @ManyToOne(() => StudyPeriod, (period) => period.schedule, {
+  @ManyToOne(() => StudyPeriod, (period) => period.schedules, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'periodId' })

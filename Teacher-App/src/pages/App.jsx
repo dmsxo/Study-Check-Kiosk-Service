@@ -7,22 +7,27 @@ import PosterList from './product/PosterList';
 import TeacherList from './product/TeacherList';
 import StudentList from './product/StudentList';
 import Settings from './product/Settings';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 function App() {
+  const queryClient = new QueryClient();
+
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route element={<MainLayout />}>
-          <Route index element={<Dashboard />} />
-          <Route path="/analytics" element={<Analytics />} />
-          <Route path="/calendar" element={<AcademicCalendar />} />
-          <Route path="/posters" element={<PosterList />} />
-          <Route path="/teachers" element={<TeacherList />} />
-          <Route path="/students" element={<StudentList />} />
-          <Route path="/settings" element={<Settings />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <Routes>
+          <Route element={<MainLayout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="/analytics" element={<Analytics />} />
+            <Route path="/calendar" element={<AcademicCalendar />} />
+            <Route path="/posters" element={<PosterList />} />
+            <Route path="/teachers" element={<TeacherList />} />
+            <Route path="/students" element={<StudentList />} />
+            <Route path="/settings" element={<Settings />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </QueryClientProvider>
   );
 }
 

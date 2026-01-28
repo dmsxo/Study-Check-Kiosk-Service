@@ -12,10 +12,10 @@ export class ResponseUserDto {
   @Expose()
   @IsNumber()
   studentId: number;
-  // @Expose()
-  // @IsString()
-  // @IsEmail()
-  // email: string;
+  @Expose()
+  @IsString()
+  @IsEmail()
+  email: string;
 
   @Expose()
   @IsString()

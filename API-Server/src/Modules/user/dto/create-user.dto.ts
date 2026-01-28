@@ -15,9 +15,9 @@ export class CreateUserDto {
   @IsInt()
   studentId: number;
 
-  // @IsEmail()
-  // @IsString()
-  // email: string;
+  @IsEmail()
+  @IsString()
+  email: string;
 
   @IsString()
   @IsOptional()

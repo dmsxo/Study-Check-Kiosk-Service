@@ -15,12 +15,24 @@ export class OverrideService {
     private dataSource: DataSource,
   ) {}
   // override schedule
-  async getDailyDetail(date: string) {
-    return await this.overrideScheduleRepo.find({
-      where: { date },
-      relations: ['mappings', 'mappings.period'],
-    });
+  async getOverrideSchedule(query: QueryOverrideScheduleDto) {
+    const { date_from, date_to } = query;
+
+    const qb = this.overrideScheduleRepo
+      .createQueryBuilder('s')
+      .leftJoinAndSelect('s.mappings', 'mappings');
+
+    if (date_from) {
+      qb.andWhere('s.date >= :date_from', { date_from });
+    }
+
+    if (date_to) {
+      qb.andWhere('s.date <= :date_to', { date_to });
+    }
+
+    return qb.orderBy('s.date', 'ASC').getMany();
   }
+
   async upsertOverrideBatch(dto: CreateOverrideBatchDto) {
     return await this.dataSource.transaction(async (manager) => {
       let event = await manager.findOneBy(OverrideSchedule, {
@@ -34,7 +46,7 @@ export class OverrideService {
         event = await manager.save(event);
       }
 
-      const targets = dto.targets ?? [];
+      const targets = dto.mappings ?? [];
 
       if (targets.length > 0) {
         const periodIds = targets.map((t) => t.periodId);
@@ -44,7 +56,7 @@ export class OverrideService {
           periodId: In(periodIds),
         });
 
-        const newMaps = dto.targets.map((target) =>
+        const newMaps = dto.mappings.map((target) =>
           manager.create(PeriodOverrideMap, {
             eventId: event.id,
             periodId: target.periodId,

@@ -21,7 +21,9 @@ export class GradeCapacity {
   @Column()
   periodId: number;
 
-  @ManyToOne(() => StudyPeriod, (period: StudyPeriod) => period.capacity)
+  @ManyToOne(() => StudyPeriod, (period: StudyPeriod) => period.capacities, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'periodId' })
   period: StudyPeriod;
 }

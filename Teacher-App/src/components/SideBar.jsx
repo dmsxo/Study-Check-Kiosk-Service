@@ -14,11 +14,11 @@ import {
   Image,
   TrendingUp,
 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 function SideBar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [activeItem, setActiveItem] = useState('Dashboard');
+  const location = useLocation();
   const navigate = useNavigate();
 
   const menuItems = [
@@ -83,15 +83,16 @@ function SideBar() {
         <ul className="space-y-1 px-2">
           {menuItems.map((item) => {
             const Icon = item.icon;
-            const isActive = activeItem === item.id;
+
+            const isActive =
+              item.route === '/'
+                ? location.pathname === '/'
+                : location.pathname.startsWith(item.route);
 
             return (
               <li key={item.id}>
                 <button
-                  onClick={() => {
-                    setActiveItem(item.id);
-                    navigate(item.route);
-                  }}
+                  onClick={() => navigate(item.route)}
                   className={`w-full h-10 flex items-center rounded-lg transition-colors ${
                     isActive
                       ? 'bg-gray-900 text-white'
@@ -101,7 +102,9 @@ function SideBar() {
                 >
                   <div className="w-10 h-10 flex items-center justify-center shrink-0">
                     <Icon
-                      className={`w-5 h-5 ${isActive ? 'text-white' : 'text-gray-500'}`}
+                      className={`w-5 h-5 ${
+                        isActive ? 'text-white' : 'text-gray-500'
+                      }`}
                     />
                   </div>
                   <span

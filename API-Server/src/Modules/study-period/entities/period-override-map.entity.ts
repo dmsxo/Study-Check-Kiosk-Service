@@ -27,7 +27,9 @@ export class PeriodOverrideMap {
   @Column({ default: false })
   isOpen: boolean; // 프로그램별/학년별 운영 여부 핵심 필드
 
-  @ManyToOne(() => StudyPeriod)
+  @ManyToOne(() => StudyPeriod, (period: StudyPeriod) => period.override, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'periodId' })
   period: StudyPeriod;
 

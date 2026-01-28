@@ -22,7 +22,7 @@ export class CreateOverrideBatchDto {
   @ValidateNested({ each: true })
   @Type(() => OverrideTargetDto)
   @IsOptional()
-  targets: OverrideTargetDto[];
+  mappings: OverrideTargetDto[];
 }
 
 export class OverrideTargetDto {

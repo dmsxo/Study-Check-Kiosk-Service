@@ -1,11 +1,11 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect } from 'react';
 import {
   checkSession,
   logout_session,
   login_session,
-} from "../api/AttendanceAPI";
-import api from "../api/Instance";
-import { useNavigate } from "react-router-dom";
+} from '../api/AttendanceAPI';
+import api from '../api/Instance';
+import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext(null);
 
@@ -14,7 +14,7 @@ export async function waitForCookie(maxWaitMs = 3000, intervalMs = 200) {
 
   while (Date.now() - start < maxWaitMs) {
     try {
-      await api.get("/auth/me"); // 쿠키 붙으면 성공함
+      await api.get('/auth/me'); // 쿠키 붙으면 성공함
       // 성공 → 서버가 쿠키 인식 → 세션 존재 → 끝!
       return true;
     } catch (err) {
@@ -38,7 +38,7 @@ export function AuthProvider({ children }) {
       setUser(res);
       const profile = res.profileImageFilename;
       console.log(profile);
-      if (profile && profile != "null") {
+      if (profile && profile != 'null') {
         const preSignedURL = await api.get(`/images/presigned/${profile}`);
         setProfileURL(preSignedURL.data.url);
       } else setProfileURL(null);
@@ -57,22 +57,22 @@ export function AuthProvider({ children }) {
     refetchUser();
   }, []);
 
-  const login = async (/*email*/ studentId) => {
-    const res = await login_session(/*email*/ studentId);
+  const login = async (email) => {
+    const res = await login_session(email);
     setIsLoggedIn(true);
     setUser(res);
 
     await waitForCookie();
 
     await refetchUser();
-    navigate("/", { replace: true });
+    navigate('/', { replace: true });
   };
 
   const logout = async () => {
     await logout_session();
     setIsLoggedIn(false);
     setUser(null);
-    navigate("/login", { replace: true });
+    navigate('/login', { replace: true });
   };
 
   return (

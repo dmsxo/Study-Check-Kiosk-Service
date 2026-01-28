@@ -82,7 +82,11 @@ async function bootstrap() {
 
   // CORS
   app.enableCors({
-    origin: ['https://daein-study.vercel.app', 'http://25.4.70.81:3000'],
+    origin: [
+      'https://daein-study.vercel.app',
+      'http://100.102.62.109:5173',
+      'http://localhost:5173',
+    ],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   });

@@ -21,12 +21,12 @@ import { CreateOverrideBatchDto } from '../dto/override/create-override-schedule
 export class OverrideController {
   constructor(private readonly overrideService: OverrideService) {}
 
-  @Get(':date')
-  async getDaily(@Param('date') date: string) {
-    return await this.overrideService.getDailyDetail(date);
+  @Get('')
+  async get(@Query() query: QueryOverrideScheduleDto) {
+    return await this.overrideService.getOverrideSchedule(query);
   }
 
-  @Post('batch')
+  @Post('')
   async createBatch(@Body() dto: CreateOverrideBatchDto) {
     return await this.overrideService.upsertOverrideBatch(dto);
   }
