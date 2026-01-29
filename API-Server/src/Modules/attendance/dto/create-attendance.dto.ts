@@ -1,11 +1,4 @@
-import {
-  IsNotEmpty,
-  IsString,
-  IsOptional,
-  IsDateString,
-  IsEnum,
-  IsInt,
-} from 'class-validator';
+import { IsNotEmpty, IsOptional, IsDateString, IsInt } from 'class-validator';
 
 export class CreateAttendanceDto {
   @IsNotEmpty()
@@ -14,7 +7,7 @@ export class CreateAttendanceDto {
 
   @IsNotEmpty()
   @IsInt()
-  scheduleId: number;
+  periodId: number;
 
   @IsNotEmpty()
   @IsDateString()

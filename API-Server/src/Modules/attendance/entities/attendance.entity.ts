@@ -6,10 +6,10 @@ import {
   Unique,
 } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
-import { PeriodSchedule } from 'src/Modules/study-period/entities/period-schedule.entity';
+import { StudyPeriod } from 'src/Modules/study-period/entities/period.entity';
 
 @Entity('attendances')
-@Unique(['studentId', 'date', 'schedule'])
+@Unique(['studentId', 'date', 'period'])
 export class Attendance {
   @PrimaryGeneratedColumn()
   id: number;
@@ -31,8 +31,8 @@ export class Attendance {
   })
   studentId: User;
 
-  @ManyToOne(() => PeriodSchedule, (schedule) => schedule.attendances, {
+  @ManyToOne(() => StudyPeriod, (period) => period.attendances, {
     onDelete: 'CASCADE',
   })
-  schedule: PeriodSchedule;
+  period: StudyPeriod;
 }

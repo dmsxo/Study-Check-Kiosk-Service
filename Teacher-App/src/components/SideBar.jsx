@@ -124,7 +124,7 @@ function SideBar() {
       </nav>
 
       {/* User Profile */}
-      {/* <div className="h-16 flex items-center px-2 border-t border-gray-200">
+      <div className="h-16 flex items-center px-2 border-t border-gray-200">
         <div className="w-10 h-10 flex items-center justify-center shrink-0">
           <div className="w-8 h-8 bg-linear-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
             <span className="text-white font-semibold text-xs">A</span>
@@ -132,11 +132,13 @@ function SideBar() {
         </div>
         {!isCollapsed && (
           <div className="flex-1 min-w-0 opacity-100 transition-opacity duration-200">
-            <p className="text-sm font-semibold text-gray-900 truncate">이수미</p>
+            <p className="text-sm font-semibold text-gray-900 truncate">
+              이수미
+            </p>
             <p className="text-xs text-gray-500 truncate">sumi@gmail.com</p>
           </div>
         )}
-      </div> */}
+      </div>
     </div>
   );
 }

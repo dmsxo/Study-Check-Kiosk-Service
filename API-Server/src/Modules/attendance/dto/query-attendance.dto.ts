@@ -1,5 +1,5 @@
 // src/attendance/dto/query-attendance.dto.ts
-import { IsOptional, IsDateString, IsString, IsEnum } from 'class-validator';
+import { IsOptional, IsDateString, IsString, IsInt } from 'class-validator';
 export class QueryAttendanceDto {
   @IsOptional()
   @IsDateString()
@@ -12,6 +12,10 @@ export class QueryAttendanceDto {
   // @IsOptional()
   // @IsEnum(StudyType)
   // type?: StudyType;
+
+  @IsOptional()
+  @IsInt()
+  periodId?: number;
 
   @IsOptional()
   @IsString()

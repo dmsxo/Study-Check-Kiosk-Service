@@ -9,6 +9,7 @@ import { UpdateAttendanceDto } from './dto/update-attendance.dto';
 import { QueryAttendanceDto } from './dto/query-attendance.dto';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { Attendance } from 'src/Modules/attendance/entities/attendance.entity';
+import { StudyPeriod } from '../study-period/entities/period.entity';
 
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
@@ -23,6 +24,8 @@ export class AttendanceService {
   constructor(
     @InjectRepository(Attendance)
     private readonly attendanceRepo: Repository<Attendance>,
+    @InjectRepository(StudyPeriod)
+    private readonly periodRepo: Repository<StudyPeriod>,
     private readonly userService: UserService,
   ) {}
 
@@ -30,15 +33,21 @@ export class AttendanceService {
 
   async create(dto: CreateAttendanceDto): Promise<Attendance> {
     const user: User = await this.userService.get_user(dto.studentId);
+    const period = await this.periodRepo.findOne({
+      where: { id: dto.periodId },
+    });
+    if (!period) throw new NotFoundException('StudyPeriod not found');
     const attendance = this.attendanceRepo.create({
-      ...dto,
+      date: dto.date,
       studentId: user,
+      period,
       check_in_time: dto.check_in_time
         ? this.convertToTime(dto.check_in_time)
         : undefined,
       check_out_time: dto.check_out_time
         ? this.convertToTime(dto.check_out_time)
         : undefined,
+      description: dto.description,
     });
     return this.attendanceRepo.save(attendance);
   }
@@ -52,13 +61,18 @@ export class AttendanceService {
       attendance.check_in_time = this.convertToTime(dto.check_in_time);
     if (dto.check_out_time)
       attendance.check_out_time = this.convertToTime(dto.check_out_time);
-    Object.assign(attendance, { ...dto, studentId: undefined }); // studentId는 변경 금지
+    Object.assign(attendance, {
+      ...dto,
+      studentId: undefined,
+      periodId: undefined,
+    }); // studentId/period는 변경 금지
     return this.attendanceRepo.save(attendance);
   }
 
   async findOneById(attendanceId: number): Promise<Attendance> {
     const attendance = await this.attendanceRepo.findOne({
       where: { id: attendanceId },
+      relations: ['studentId', 'period'],
     });
     if (!attendance) throw new NotFoundException('Attendance not found');
     return attendance;
@@ -80,6 +94,7 @@ export class AttendanceService {
     const qb = this.attendanceRepo
       .createQueryBuilder('attendance')
       .leftJoinAndSelect('attendance.studentId', 'student')
+      .leftJoinAndSelect('attendance.period', 'period')
       .where('attendance.studentId = :studentId', {
         studentId: user.id,
       });
@@ -87,6 +102,12 @@ export class AttendanceService {
     // if (query?.type) {
     //   qb.andWhere('attendance.type = :type', { type: query.type });
     // }
+
+    if (query?.periodId) {
+      qb.andWhere('attendance.period = :periodId', {
+        periodId: query.periodId,
+      });
+    }
 
     if (query?.date_from && query?.date_to) {
       qb.andWhere('attendance.date BETWEEN :from AND :to', {
@@ -104,11 +125,18 @@ export class AttendanceService {
   async findAll(query?: QueryAttendanceDto): Promise<ResponseAttendanceDto[]> {
     const qb = this.attendanceRepo
       .createQueryBuilder('attendance')
-      .leftJoinAndSelect('attendance.studentId', 'student');
+      .leftJoinAndSelect('attendance.studentId', 'student')
+      .leftJoinAndSelect('attendance.period', 'period');
 
     // if (query?.type) {
     //   qb.andWhere('attendance.type = :type', { type: query.type });
     // }
+
+    if (query?.periodId) {
+      qb.andWhere('attendance.period = :periodId', {
+        periodId: query.periodId,
+      });
+    }
 
     if (query?.date_from && query?.date_to) {
       qb.andWhere('attendance.date BETWEEN :from AND :to', {

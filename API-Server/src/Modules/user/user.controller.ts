@@ -63,7 +63,7 @@ export class UserController {
   async get_user(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<ResponseUserDto> {
-    const user = await this.userService.get_user(id);
+    const user = await this.userService.get_user_by_id(id);
     return plainToInstance(ResponseUserDto, user, {
       excludeExtraneousValues: true,
     });

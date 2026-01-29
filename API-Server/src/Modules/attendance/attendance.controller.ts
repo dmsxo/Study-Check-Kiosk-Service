@@ -23,11 +23,7 @@ export class AttendanceController {
   constructor(private readonly attendanceService: AttendanceService) {}
 
   @Post()
-  async create(
-    @Param('userId', ParseIntPipe) userId: number,
-    @Body() dto: CreateAttendanceDto,
-  ) {
-    dto.studentId = userId;
+  async create(@Body() dto: CreateAttendanceDto) {
     const attendance = await this.attendanceService.create(dto);
     return plainToInstance(ResponseAttendanceDto, attendance, {
       excludeExtraneousValues: true,

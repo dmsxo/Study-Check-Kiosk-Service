@@ -18,22 +18,26 @@ import { StudyCacheStatus } from 'src/Modules/attendance/interface/study-cache-s
 import { Registration } from 'src/Modules/registration/entities/registration.entity';
 import { Period } from 'aws-sdk/clients/cloudwatch';
 import { StudyPeriod } from 'src/Modules/study-period/entities/period.entity';
+import { Roles } from '../../../common/decorators/roles.decorator';
+import { RolesGuard } from '../../../common/guards/roles.guard';
+import { UserRole } from '../../../common/enums/user-role.enum';
 
 @Controller('me')
-@UseGuards(AuthGuard)
+@Roles(UserRole.STUDENT)
+@UseGuards(AuthGuard, RolesGuard)
 export class AuthStudentController {
   constructor(private readonly studentService: StudentService) {}
 
   @Get()
   async get_me(@Req() req: Request) {
-    return await this.studentService.getMyProfile(req.session.user!.id);
+    return await this.studentService.getMyProfile(req.session.user!.userId);
   }
 
   @Get('attendances')
   async getMyAttendances(
     @Req() req: Request,
   ): Promise<ResponseAttendanceDto[] | null> {
-    return await this.studentService.getMyAttendances(req.session.user!.id);
+    return await this.studentService.getMyAttendances(req.session.user!.userId);
   }
 
   @Get('attendances/current')
@@ -41,7 +45,7 @@ export class AuthStudentController {
     @Req() req: Request,
   ): Promise<StudyCacheStatus | null> {
     return await this.studentService.getCurrentStudyStatus(
-      req.session.user!.id,
+      req.session.user!.userId,
     );
   }
 
@@ -51,7 +55,10 @@ export class AuthStudentController {
     @Req() req: Request,
     @Body() checkInDto: CheckInDto,
   ): Promise<ResponseAttendanceDto | null> {
-    return await this.studentService.checkIn(req.session.user!.id, checkInDto);
+    return await this.studentService.checkIn(
+      req.session.user!.userId,
+      checkInDto,
+    );
   }
 
   // 체크아웃
@@ -61,7 +68,7 @@ export class AuthStudentController {
     @Body() checkOutDto: CheckOutDto,
   ): Promise<ResponseAttendanceDto | null> {
     return await this.studentService.checkOut(
-      req.session.user!.id,
+      req.session.user!.userId,
       checkOutDto,
     );
   }
@@ -72,7 +79,7 @@ export class AuthStudentController {
     @Param('id') periodId: number,
   ): Promise<Registration> {
     return await this.studentService.application(
-      req.session.user!.id,
+      req.session.user!.userId,
       periodId,
     );
   }
@@ -80,14 +87,16 @@ export class AuthStudentController {
   @Get('registrations')
   async getRegistrations(@Req() req: Request): Promise<Registration[]> {
     const registrations = await this.studentService.getRegistrations(
-      req.session.user!.id,
+      req.session.user!.userId,
     );
     return registrations;
   }
 
   @Get('periods')
   async getPeriods(@Req() req: Request): Promise<StudyPeriod[]> {
-    const periods = await this.studentService.getPeriods(req.session.user!.id);
+    const periods = await this.studentService.getPeriods(
+      req.session.user!.userId,
+    );
     return periods;
   }
 }

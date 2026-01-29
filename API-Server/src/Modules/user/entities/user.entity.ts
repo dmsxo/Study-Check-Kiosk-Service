@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { Attendance } from '../../attendance/entities/attendance.entity';
 import { Registration } from 'src/Modules/registration/entities/registration.entity';
+import { UserRole } from 'src/common/enums/user-role.enum';
 
 @Entity('users')
 export class User {
@@ -16,9 +17,16 @@ export class User {
   @Column()
   name: string;
 
+  @Column({
+    type: 'enum',
+    enum: Object.values(UserRole),
+    default: UserRole.STUDENT,
+  })
+  role: UserRole;
+
   @Index()
-  @Column({ unique: true, type: 'int' })
-  studentId: number;
+  @Column({ unique: true, type: 'int', nullable: true })
+  studentId?: number;
 
   @Column({ unique: true })
   email: string;

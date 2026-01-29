@@ -1,11 +1,7 @@
 import { Type } from 'class-transformer';
-import {
-  IsString,
-  IsEmail,
-  IsNumber,
-  IsOptional,
-  IsInt,
-} from 'class-validator';
+import { IsString, IsEmail, IsOptional, IsInt } from 'class-validator';
+import { IsEnum } from 'class-validator';
+import { UserRole } from 'src/common/enums/user-role.enum';
 
 export class CreateUserDto {
   @IsString()
@@ -13,7 +9,12 @@ export class CreateUserDto {
 
   @Type(() => Number)
   @IsInt()
-  studentId: number;
+  @IsOptional()
+  studentId?: number;
+
+  @IsEnum(UserRole)
+  @IsOptional()
+  role?: UserRole; // 기본값: student
 
   @IsEmail()
   @IsString()

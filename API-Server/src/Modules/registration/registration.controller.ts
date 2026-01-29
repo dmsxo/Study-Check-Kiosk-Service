@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { RegistrationService } from './registration.service';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
@@ -27,7 +28,7 @@ export class RegistrationController {
   }
 
   @Get()
-  async getRegistrationByFilter(@Body() queryDto: QueryRegistrationDto) {
+  async getRegistrationByFilter(@Query() queryDto: QueryRegistrationDto) {
     return await this.registrationService.getRegistrationByFilter(queryDto);
   }
 

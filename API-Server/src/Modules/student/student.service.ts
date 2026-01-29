@@ -45,15 +45,25 @@ export class StudentService {
     @InjectQueue('auto-checkout')
     private readonly autoCheckoutQueue: Queue,
   ) {}
+
+  private async getStudentIdFromUserId(userId: number): Promise<number> {
+    const user = await this.userService.get_user_by_id(userId);
+    if (!user.studentId) {
+      throw new BadRequestException('Student account required');
+    }
+    return user.studentId;
+  }
+
   // 내 프로필 가져오기
-  async getMyProfile(studentId: number) {
-    return this.userService.get_user(studentId);
+  async getMyProfile(userId: number) {
+    return this.userService.get_user_by_id(userId);
   }
 
   // 현재 공부중인 출석기록 가져오기
   async getCurrentStudyStatus(
-    studentId: number,
+    userId: number,
   ): Promise<StudyCacheStatus | null> {
+    const studentId = await this.getStudentIdFromUserId(userId);
     try {
       // redis에서 현재 공부중인 키 조회
       const status = await this.cacheManager.get<StudyCacheStatus>(
@@ -69,8 +79,9 @@ export class StudentService {
 
   // 출석 기록 가져오기
   async getMyAttendances(
-    studentId: number,
+    userId: number,
   ): Promise<ResponseAttendanceDto[] | null> {
+    const studentId = await this.getStudentIdFromUserId(userId);
     const attendances =
       await this.attendanceService.findAllByStudent(studentId);
     return plainToInstance(ResponseAttendanceDto, attendances, {
@@ -78,19 +89,22 @@ export class StudentService {
     });
   }
 
-  async getRegistrations(studentId): Promise<Registration[]> {
+  async getRegistrations(userId: number): Promise<Registration[]> {
+    const studentId = await this.getStudentIdFromUserId(userId);
     const registrations = this.userService.get_registrations(studentId);
     return registrations;
   }
 
-  async application(studentId, periodId): Promise<Registration> {
+  async application(userId: number, periodId: number): Promise<Registration> {
+    const studentId = await this.getStudentIdFromUserId(userId);
     return await this.registrationService.createRegisration({
       studentId,
       periodId,
     });
   }
 
-  async getPeriods(studentId): Promise<StudyPeriod[]> {
+  async getPeriods(userId: number): Promise<StudyPeriod[]> {
+    const studentId = await this.getStudentIdFromUserId(userId);
     const filter: Partial<QueryPeriodDto> = {
       grade: parseInt((studentId / 10000).toString()),
     };
@@ -150,12 +164,13 @@ export class StudentService {
   }
 
   async checkIn(
-    studentId: number,
+    userId: number,
     checkInDto: CheckInDto,
     // periodId: number,
     // ttl: number = 6 * 60 * 60 * 1000,
   ): Promise<ResponseAttendanceDto | null> {
     const { periodId, isAutoCheckOut } = checkInDto;
+    const studentId = await this.getStudentIdFromUserId(userId);
     // period 검증
     const { /*type,*/ startTimeStr, endTimeStr } =
       await this.validateRegistration(studentId, periodId);
@@ -174,7 +189,7 @@ export class StudentService {
     const attendanceDto: CreateAttendanceDto = {
       studentId,
       // type,
-      scheduleId: 0,
+      periodId,
       date: now.format('YYYY-MM-DD'),
       check_in_time,
     };
@@ -207,12 +222,13 @@ export class StudentService {
   }
 
   async checkOut(
-    studentId: number,
+    userId: number,
     checkOutDto: CheckOutDto,
     // description: string,
     // ttl: number = 6 * 60 * 60 * 1000,
   ): Promise<ResponseAttendanceDto | null> {
     const { description } = checkOutDto;
+    const studentId = await this.getStudentIdFromUserId(userId);
     // Redis에서 attendance PK 가져오기
     const status = await this.cacheManager.get<StudyCacheStatus>(
       `study:${studentId}`,

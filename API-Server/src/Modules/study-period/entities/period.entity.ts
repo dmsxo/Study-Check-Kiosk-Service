@@ -12,6 +12,7 @@ import {
 } from 'typeorm';
 import { GradeCapacity } from './grade-capacity.entity';
 import { PeriodOverrideMap } from './period-override-map.entity';
+import { Attendance } from 'src/Modules/attendance/entities/attendance.entity';
 
 @Entity('study_periods')
 export class StudyPeriod {
@@ -44,6 +45,9 @@ export class StudyPeriod {
 
   @OneToMany(() => PeriodSchedule, (schedules) => schedules.period)
   schedules?: PeriodSchedule[];
+
+  @OneToMany(() => Attendance, (attendance) => attendance.period)
+  attendances?: Attendance[];
 
   @OneToMany(() => PeriodOverrideMap, (override) => override.period)
   override?: PeriodOverrideMap[];

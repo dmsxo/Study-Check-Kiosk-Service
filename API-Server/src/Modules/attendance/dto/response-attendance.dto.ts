@@ -1,8 +1,12 @@
-import { Expose } from 'class-transformer';
+import { Expose, Transform } from 'class-transformer';
 
 export class ResponseAttendanceDto {
   @Expose()
-  type: string;
+  @Transform(({ obj }) => obj?.period?.name ?? undefined)
+  type?: string; // (호환용) period.name을 type처럼 사용
+
+  @Expose()
+  id?: number;
 
   @Expose()
   date: string;
@@ -15,4 +19,12 @@ export class ResponseAttendanceDto {
 
   @Expose()
   description?: string;
+
+  @Expose()
+  @Transform(({ obj }) => obj?.period?.id ?? undefined)
+  periodId?: number;
+
+  @Expose()
+  @Transform(({ obj }) => obj?.period?.name ?? undefined)
+  periodName?: string;
 }
