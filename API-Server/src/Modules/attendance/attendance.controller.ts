@@ -30,9 +30,9 @@ export class AttendanceController {
     });
   }
 
-  @Get()
-  async getAll(@Query() query: QueryAttendanceDto) {
-    const attendances = await this.attendanceService.findAll(query);
+  @Post('bulk')
+  async createBulk(@Body() dtos: CreateAttendanceDto[]) {
+    const attendances = await this.attendanceService.create_bulk(dtos);
     return plainToInstance(ResponseAttendanceDto, attendances, {
       excludeExtraneousValues: true,
     });

@@ -52,6 +52,32 @@ export class AttendanceService {
     return this.attendanceRepo.save(attendance);
   }
 
+  // test용
+  async create_bulk(dtos: CreateAttendanceDto[]): Promise<Attendance[]> {
+    const attendances: Attendance[] = [];
+    for (const dto of dtos) {
+      const user: User = await this.userService.get_user(dto.studentId);
+      const period = await this.periodRepo.findOne({
+        where: { id: dto.periodId },
+      });
+      if (!period) throw new NotFoundException('StudyPeriod not found');
+      const attendance = this.attendanceRepo.create({
+        date: dto.date,
+        student: user,
+        period,
+        check_in_time: dto.check_in_time
+          ? this.convertToTime(dto.check_in_time)
+          : undefined,
+        check_out_time: dto.check_out_time
+          ? this.convertToTime(dto.check_out_time)
+          : undefined,
+        description: dto.description,
+      });
+      attendances.push(attendance);
+    }
+    return this.attendanceRepo.save(attendances);
+  }
+
   async update(
     attendanceId: number,
     dto: UpdateAttendanceDto,
