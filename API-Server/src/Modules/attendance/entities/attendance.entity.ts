@@ -9,7 +9,7 @@ import { User } from '../../user/entities/user.entity';
 import { StudyPeriod } from 'src/Modules/study-period/entities/period.entity';
 
 @Entity('attendances')
-@Unique(['studentId', 'date', 'period'])
+@Unique(['student', 'date', 'period'])
 export class Attendance {
   @PrimaryGeneratedColumn()
   id: number;
@@ -29,7 +29,7 @@ export class Attendance {
   @ManyToOne(() => User, (studentId) => studentId.attendances, {
     onDelete: 'CASCADE',
   })
-  studentId: User;
+  student: User;
 
   @ManyToOne(() => StudyPeriod, (period) => period.attendances, {
     onDelete: 'CASCADE',

@@ -62,6 +62,7 @@ const PeriodEditModal = ({ schedule, onSave, onClose }) => {
         });
       }
 
+      console.log('sex', { ...prev, schedules: newSchedule });
       return { ...prev, schedules: newSchedule };
     });
   };

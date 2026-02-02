@@ -39,7 +39,7 @@ export class AttendanceService {
     if (!period) throw new NotFoundException('StudyPeriod not found');
     const attendance = this.attendanceRepo.create({
       date: dto.date,
-      studentId: user,
+      student: user,
       period,
       check_in_time: dto.check_in_time
         ? this.convertToTime(dto.check_in_time)
@@ -96,7 +96,7 @@ export class AttendanceService {
       .leftJoinAndSelect('attendance.studentId', 'student')
       .leftJoinAndSelect('attendance.period', 'period')
       .where('attendance.studentId = :studentId', {
-        studentId: user.id,
+        studentId: user.studentId,
       });
 
     // if (query?.type) {

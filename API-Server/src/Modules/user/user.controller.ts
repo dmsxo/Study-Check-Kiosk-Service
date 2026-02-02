@@ -46,11 +46,6 @@ export class UserController {
     });
   }
 
-  @Get('studentId')
-  async getStudentIdByGrade(@Query('grade') grade: number) {
-    return await this.userService.getStudentIdByGrade(grade);
-  }
-
   @Get()
   async get_everyone(): Promise<ResponseUserDto[]> {
     const users = await this.userService.get_everyone();

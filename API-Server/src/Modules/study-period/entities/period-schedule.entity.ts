@@ -36,7 +36,4 @@ export class PeriodSchedule {
   })
   @JoinColumn({ name: 'periodId' })
   period: StudyPeriod;
-
-  @OneToMany(() => Attendance, (attendance) => attendance.schedule)
-  attendances: Attendance[];
 }

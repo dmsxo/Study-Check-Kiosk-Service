@@ -93,19 +93,4 @@ export class UserService {
     if (profile) await this.imageService.deleteImage(profile);
     return this.userRepo.remove(student);
   }
-
-  async getStudentIdByGrade(grade: number): Promise<number> {
-    const user_count = await this.userRepo
-      .createQueryBuilder('users')
-      .where('CAST(users.studentId AS TEXT) LIKE :id_like', {
-        id_like: `${grade}%`,
-      })
-      .getCount();
-
-    const MAX = 40;
-    const class_id = Math.floor(user_count / MAX) + 1;
-    const student_number = (user_count % MAX) + 1;
-
-    return grade * 10000 + class_id * 100 + student_number;
-  }
 }

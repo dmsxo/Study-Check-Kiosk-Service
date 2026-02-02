@@ -149,7 +149,7 @@ export class StudyPeriodService {
           if (existing) {
             // [수정] 이미 존재한다면 ID를 유지한 채 시간과 isOpen만 업데이트
             await queryRunner.manager.update(PeriodSchedule, existing.id, {
-              isOpen: true, // 목록에 있으니 활성화
+              isOpen: s.isOpen, // 목록에 있으니 활성화
             });
           } else {
             // [추가] 이번에 새로 들어온 요일/학년이라면 신규 생성
@@ -157,7 +157,6 @@ export class StudyPeriodService {
               queryRunner.manager.create(PeriodSchedule, {
                 ...s,
                 periodId: id,
-                isOpen: true,
               }),
             );
           }

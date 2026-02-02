@@ -8,5 +8,5 @@ export const typeORMConfig: TypeOrmModuleOptions = {
   database: process.env.POSTGRES_DB,
   entities: [__dirname + '/../**/*.entity.{js,ts}'],
   synchronize: true,
-  // dropSchema: true,
+  dropSchema: true,
 };
