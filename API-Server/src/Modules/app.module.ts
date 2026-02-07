@@ -7,7 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeORMConfig } from '../configs/typeorm.config';
 import { CacheModule } from '@nestjs/cache-manager';
 import { AttendanceModule } from './attendance/attendance.module';
-import { StudentModule } from './student/student.module';
+// import { StudentModule } from './student/student.module';
 import { redisStore } from 'cache-manager-ioredis-yet';
 import { KioskModule } from './kiosk/kiosk.module';
 import { HealthModule } from './health/health.module';
@@ -74,7 +74,7 @@ src/
     AuthModule,
     AnalysisModule,
     AttendanceModule,
-    StudentModule,
+    // StudentModule,
     KioskModule,
     HealthModule,
     ImagesModule,

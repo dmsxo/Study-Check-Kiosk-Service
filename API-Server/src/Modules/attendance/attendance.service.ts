@@ -16,6 +16,7 @@ import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import { plainToInstance } from 'class-transformer';
 import { ResponseAttendanceDto } from './dto/response-attendance.dto';
+import { StudentAttendanceDto } from './dto/student-attendance.dto';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
@@ -26,6 +27,8 @@ export class AttendanceService {
     private readonly attendanceRepo: Repository<Attendance>,
     @InjectRepository(StudyPeriod)
     private readonly periodRepo: Repository<StudyPeriod>,
+    @InjectRepository(User)
+    private readonly userRepo: Repository<User>,
     private readonly userService: UserService,
   ) {}
 
@@ -111,75 +114,67 @@ export class AttendanceService {
 
   /** ================= 조회 ================= */
 
-  async findAllByStudent(
-    studentId: number,
-    query?: QueryAttendanceDto,
-  ): Promise<ResponseAttendanceDto[]> {
-    const user = await this.userService.get_user(studentId);
+  private buildQuery(queryDto: QueryAttendanceDto) {
+    const qb = this.userRepo
+      .createQueryBuilder('user')
+      .innerJoinAndSelect('user.attendances', 'attendance')
+      .innerJoin('attendance.period', 'period')
+      .where('period.id = :periodId', { periodId: queryDto.periodId });
 
-    const qb = this.attendanceRepo
-      .createQueryBuilder('attendance')
-      .leftJoinAndSelect('attendance.studentId', 'student')
-      .leftJoinAndSelect('attendance.period', 'period')
-      .where('attendance.studentId = :studentId', {
-        studentId: user.studentId,
+    if (queryDto.startDate && queryDto.endDate) {
+      qb.andWhere('attendance.date BETWEEN :start AND :end', {
+        start: queryDto.startDate,
+        end: queryDto.endDate,
       });
-
-    // if (query?.type) {
-    //   qb.andWhere('attendance.type = :type', { type: query.type });
-    // }
-
-    if (query?.periodId) {
-      qb.andWhere('attendance.period = :periodId', {
-        periodId: query.periodId,
+    } else if (queryDto.startDate) {
+      qb.andWhere('attendance.date >= :start', {
+        start: queryDto.startDate,
+      });
+    } else if (queryDto.endDate) {
+      qb.andWhere('attendance.date <= :end', {
+        end: queryDto.endDate,
       });
     }
 
-    if (query?.date_from && query?.date_to) {
-      qb.andWhere('attendance.date BETWEEN :from AND :to', {
-        from: query.date_from,
-        to: query.date_to,
-      });
-    }
+    qb.orderBy('user.id', 'ASC').addOrderBy('attendance.date', 'ASC');
 
-    const attendances = await qb.orderBy('attendance.date', 'DESC').getMany();
-    return plainToInstance(ResponseAttendanceDto, attendances, {
-      excludeExtraneousValues: true,
-    });
+    return qb;
   }
 
-  async findAll(query?: QueryAttendanceDto): Promise<ResponseAttendanceDto[]> {
-    const qb = this.attendanceRepo
-      .createQueryBuilder('attendance')
-      .leftJoinAndSelect('attendance.studentId', 'student')
-      .leftJoinAndSelect('attendance.period', 'period');
+  async getAttendances(
+    queryDto: QueryAttendanceDto,
+  ): Promise<StudentAttendanceDto[]> {
+    const users = await this.buildQuery(queryDto).getMany();
 
-    // if (query?.type) {
-    //   qb.andWhere('attendance.type = :type', { type: query.type });
-    // }
+    return users.map((user) => this.mapToDto(user));
+  }
 
-    if (query?.periodId) {
-      qb.andWhere('attendance.period = :periodId', {
-        periodId: query.periodId,
-      });
-    }
+  async getStudentAttendances(
+    studentId: number,
+    queryDto: QueryAttendanceDto,
+  ): Promise<StudentAttendanceDto | null> {
+    const users = await this.buildQuery(queryDto)
+      .andWhere('user.studentId = :studentId', { studentId })
+      .getOne();
 
-    if (query?.date_from && query?.date_to) {
-      qb.andWhere('attendance.date BETWEEN :from AND :to', {
-        from: query.date_from,
-        to: query.date_to,
-      });
-    }
+    return users ? this.mapToDto(users) : null;
+  }
 
-    if (query?.studentId_like)
-      qb.andWhere(`CAST(student.studentId AS TEXT) LIKE :id_like`, {
-        id_like: `${query.studentId_like}%`,
-      });
+  private mapToDto(user: User): StudentAttendanceDto {
+    const arr = user.attendances ?? [];
+    const attendances = arr.map((a) => ({
+      date: a.date,
+      checkIn: a.check_in_time?.slice(0, 5) ?? null,
+      checkOut: a.check_out_time?.slice(0, 5) ?? null,
+      description: a.description,
+    }));
 
-    const attendances = await qb.orderBy('attendance.date', 'DESC').getMany();
-    return plainToInstance(ResponseAttendanceDto, attendances, {
-      excludeExtraneousValues: true,
-    });
+    return {
+      studentId: user.studentId!,
+      studentName: user.name,
+      totalCount: attendances.length,
+      attendances,
+    };
   }
 
   /** ================= 유틸 ================= */

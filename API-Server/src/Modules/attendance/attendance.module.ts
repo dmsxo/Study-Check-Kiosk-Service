@@ -5,9 +5,10 @@ import { Attendance } from './entities/attendance.entity';
 import { AttendanceService } from './attendance.service';
 import { AttendanceController } from './attendance.controller';
 import { StudyPeriod } from '../study-period/entities/period.entity';
+import { User } from '../user/entities/user.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Attendance, StudyPeriod])],
+  imports: [TypeOrmModule.forFeature([Attendance, StudyPeriod, User])],
   providers: [AttendanceService],
   controllers: [AttendanceController],
   exports: [AttendanceService],

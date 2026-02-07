@@ -46,6 +46,23 @@ export class AttendanceController {
     });
   }
 
+  @Get()
+  async getAll(@Query() queryDto: QueryAttendanceDto) {
+    const attendances = await this.attendanceService.getAttendances(queryDto);
+    return attendances;
+  }
+  @Get('student/:studentId')
+  async getStudentAttendances(
+    @Param('studentId', ParseIntPipe) studentId: number,
+    @Query() queryDto: QueryAttendanceDto,
+  ) {
+    const attendances = await this.attendanceService.getStudentAttendances(
+      studentId,
+      queryDto,
+    );
+    return attendances;
+  }
+
   @Patch(':id')
   async update(
     @Param('id', ParseIntPipe) attendanceId: number,

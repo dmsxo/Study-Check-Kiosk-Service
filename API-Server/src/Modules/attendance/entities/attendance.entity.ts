@@ -21,7 +21,7 @@ export class Attendance {
   check_in_time: string; // HH:MM:SS
 
   @Column({ type: 'time', nullable: true })
-  check_out_time: string; // HH:MM:SS
+  check_out_time?: string; // HH:MM:SS
 
   @Column({ nullable: true })
   description: string;
